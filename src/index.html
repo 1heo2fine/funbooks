@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Game Portal</title>
+  <!-- Import Google Font (Nunito) and Font Awesome using @import inside the style tag -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+    /* ==== Reset & Base Styles ==== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button {
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ==== Dark Mode ==== */
+    .dark-mode {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+    }
+    .dark-mode a {
+      color: #90caf9;
+    }
+
+    /* ==== Layout ==== */
+    header {
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      padding: 1rem;
+      text-align: center;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+    }
+    nav {
+      margin-top: 0.5rem;
+    }
+    nav a {
+      margin: 0 0.8rem;
+      font-weight: 600;
+    }
+    .dark-mode nav a {
+      color: #fff;
+    }
+
+    /* ==== Password Gate ==== */
+    #gate {
+      max-width: 400px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    #gate h2 {
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    #gate input[type="password"] {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+    #gate button {
+      background: #ff6f61;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    #gate button:hover {
+      background: #e65b50;
+    }
+    #error {
+      color: #e53935;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    /* ==== Main App (hidden until correct code) ==== */
+    #app {
+      display: none;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* ==== News Section ==== */
+    .news {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .news h2 {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .news-item {
+      margin-bottom: 0.8rem;
+    }
+    .news-item strong {
+      color: #3949ab;
+    }
+
+    /* ==== Games Grid ==== */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .game-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .game-card:hover {
+      transform: translateY(-4px);
+    }
+    .game-thumb {
+      width: 80px;
+      height: 80px;
+      margin: 0.5rem auto;
+      background: #e0e0e0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #555;
+    }
+    .game-title {
+      margin: 0.5rem 0;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #222;
+    }
+    .play-btn {
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      font-weight: 600;
+      width: 80%;
+      margin-bottom: 0.8rem;
+    }
+    .play-btn:hover {
+      background: #388e3c;
+    }
+
+    /* ==== Game Iframe Container ==== */
+    #game-container {
+      display: none;
+      margin-top: 2rem;
+    }
+    #game-iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    /* ==== Dark Mode Toggle ==== */
+    #dark-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: #ff6f61;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    #dark-toggle:hover {
+      background: #e65b50;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <header>
+    <h1>🎮 School Game Portal</h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#games">Games</a>
+      <a href="#news">News</a>
+    </nav>
+  </header>
+
+  <!-- Password Gate -->
+  <div id="gate">
+    <h2>Enter Code</h2>
+    <input type="password" id="pwd" placeholder="Enter password" autocomplete="off">
+    <button id="loginBtn">Login</button>
+    <div id="error"></div>
+  </div>
+
+  <!-- Main App Content (shown after correct code) -->
+  <div id="app" class="container">
+    <!-- Dark Mode Toggle -->
+    <button id="dark-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
+
+    <!-- News Section -->
+    <section id="news" class="news">
+      <h2>Latest News</h2>
+      <div class="news-item"><strong>New Game Added:</strong> Shell Shockers is now live!</div>
+      <div class="news-item"><strong>School Event:</strong> Tech Club meeting this Friday after school.</div>
+      <div class="news-item"><strong>Update:</strong> Dark mode now supports schedule-based switching.</div>
+      <div class="news-item"><strong>Reminder:</strong> Keep your passwords secure and never share them.</div>
+    </section>
+
+    <!-- Games Grid -->
+    <section id="games">
+      <h2>Featured Games</h2>
+      <div class="games-grid" id="gamesGrid"></div>
+    </section>
+
+    <!-- Iframe to Load Games -->
+    <section id="game-container">
+      <h2>Playing...</h2>
+      <iframe id="game-iframe" src="" allow="autoplay; encrypted-media;"></iframe>
+    </section>
+  </div>
+
+  <!-- ==== JavaScript ==== -->
+  <script>
+    // ==== Configuration ====
+    const CORRECT_CODE = "schoolbook1"; // Password gate code
+
+    // ==== Game Data (editable) ====
+    const games = [
+      {
+        title: "Shell Shockers",
+        emoji: "🥚",
+        url: "https://example.com/shellshockers" // <-- Replace with actual game URL
+      },
+      {
+        title: "Slope",
+        emoji: "⛰️",
+        url: "https://example.com/slope"
+      },
+      {
+        title: "Run 3",
+        emoji: "🚀",
+        url: "https://example.com/run3"
+      },
+      {
+        title: "Moto X3M",
+        emoji: "🏍️",
+        url: "https://example.com/moto-x3m"
+      },
+      {
+        title: "Fireboy and Watergirl",
+        emoji: "🔥💧",
+        url: "https://example.com/fireboy"
+      },
+      {
+        title: "Papa's Games",
+        emoji: "👩‍🍳",
+        url: "https://example.com/papas"
+      },
+      {
+        title: "1v1.LOL",
+        emoji: "👊🏽",
+        url: "https://example.com/1v1lol"
+      },
+      {
+        title: "Cookie Clicker",
+        emoji: "🍪",
+        url: "https://example.com/cookie-clicker"
+      }
+      // Add more games as needed
+    ];
+
+    // ==== DOM Elements ====
+    const gate = document.getElementById('gate');
+    const app = document.getElementById('app');
+    const errorDiv = document.getElementById('error');
+    const gamesGrid = document.getElementById('gamesGrid');
+    const iframe = document.getElementById('game-iframe');
+    const gameContainer = document.getElementById('game-container');
+    const darkToggle = document.getElementById('dark-toggle');
+
+    // ==== Render Games ====
+    function renderGames() {
+      gamesGrid.innerHTML = ''; // Clear any existing content
+      games.forEach((game, index) => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div class="game-thumb">${game.emoji}</div>
+          <h3 class="game-title">${game.title}</h3>
+          <button class="play-btn"><i class="fas fa-play"></i> Play</button>
+        `;
+        // Attach click handler
+        card.querySelector('.play-btn').addEventListener('click', () => {
+          iframe.src = game.url;
+          gameContainer.style.display = 'block';
+        });
+        gamesGrid.appendChild(card);
+      });
+    }
+
+    // ==== Password Gate Logic ====
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const entered = document.getElementById('pwd').value;
+      if (entered === CORRECT_CODE) {
+        gate.style.display = 'none';
+        app.style.display = 'block';
+        renderGames();
+      } else {
+        errorDiv.textContent = '❌ Incorrect code! Try again.';
+      }
+    });
+
+    // Allow pressing Enter in the password field
+    document.getElementById('pwd').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('loginBtn').click();
+      }
+    });
+
+    // ==== Dark Mode Toggle ====
+    darkToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    // ==== Initialization ====
+    // If you want to auto-show the app for testing, comment out the gate display logic above.
+  </script>
+</body>
+</html>
