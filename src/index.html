@@ -17,6 +17,8 @@
       --text-dim: #666666;
       --accent-cyan: #0ff;
       --accent-pink: #f0f;
+      --accent-green: #0f0;
+      --accent-red: #f44;
       --glow: rgba(255, 255, 255, 0.08);
     }
 
@@ -164,11 +166,26 @@
       border-left: 4px solid var(--accent-cyan);
     }
 
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
     /* Games Grid */
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.2rem;
     }
 
     .game-card {
@@ -205,6 +222,53 @@
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
       color: var(--text);
+    }
+
+    .game-description {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-bottom: 0.8rem;
+      line-height: 1.3;
+    }
+
+    .game-actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .like-btn {
+      background: rgba(0, 255, 255, 0.2);
+      color: var(--accent-cyan);
+    }
+
+    .like-btn.liked {
+      background: var(--accent-cyan);
+      color: var(--dark);
+    }
+
+    .dislike-btn {
+      background: rgba(255, 68, 68, 0.2);
+      color: var(--accent-red);
+    }
+
+    .dislike-btn.disliked {
+      background: var(--accent-red);
+      color: var(--dark);
     }
 
     .play-btn {
@@ -332,24 +396,39 @@
   <!-- Live Users Counter -->
   <div id="live-users">Live Users: <span id="user-count">0</span></div>
 
-  <!-- Password Gate (removed - app shows directly) -->
-  <!-- Gate removed per user request -->
-
   <!-- Main App Content -->
   <div id="app" class="container">
     <!-- News Section -->
     <section id="news">
       <div class="news news-release">
         <h2>Release</h2>
-        <div class="news-item"><strong>we released tons of games and this was released on monday aug 16 ptc</strong></div>
+        <div class="news-item"><strong>we released tons of games and this was released on monday aug 16</strong></div>
         <div class="news-item">discord server coming soon</div>
       </div>
     </section>
 
-    <!-- Games Grid -->
-    <section id="games">
-      <h2>Featured Games</h2>
-      <div class="games-grid" id="gamesGrid"></div>
+    <!-- Trending Section -->
+    <section id="trending">
+      <div class="section-header">
+        <h2>Trending</h2>
+      </div>
+      <div class="games-grid" id="trendingGrid"></div>
+    </section>
+
+    <!-- Favorites Section -->
+    <section id="favorites">
+      <div class="section-header">
+        <h2>Favorites</h2>
+      </div>
+      <div class="games-grid" id="favoritesGrid"></div>
+    </section>
+
+    <!-- All Games Section -->
+    <section id="all-games">
+      <div class="section-header">
+        <h2>All Games</h2>
+      </div>
+      <div class="games-grid" id="allGamesGrid"></div>
     </section>
 
     <!-- Iframe to Load Games -->
@@ -361,23 +440,68 @@
 
   <script>
     // ==== Configuration ====
-    const CORRECT_CODE = "schoolbook1"; // Kept for reference but gate is removed
+    const CORRECT_CODE = "schoolbook1";
 
-    // ==== Game Data ====
+    // ==== URL Options for Secret Mode ====
+    const urlOptions = ['math', 'english', 'history'];
+
+    // ==== Game Data with Descriptions ====
     const games = [
-      { title: "Shell Shockers", emoji: "🥚", url: "https://example.com/shellshockers" },
-      { title: "Slope", emoji: "⛰️", url: "https://example.com/slope" },
-      { title: "Run 3", emoji: "🚀", url: "https://example.com/run3" },
-      { title: "Moto X3M", emoji: "🏍️", url: "https://example.com/moto-x3m" },
-      { title: "Fireboy and Watergirl", emoji: "🔥💧", url: "https://example.com/fireboy" },
-      { title: "Papa's Games", emoji: "👩‍🍳", url: "https://example.com/papas" },
-      { title: "1v1.LOL", emoji: "👊🏽", url: "https://example.com/1v1lol" },
-      { title: "Cookie Clicker", emoji: "🍪", url: "https://example.com/cookie-clicker" }
+      {
+        title: "Shell Shockers",
+        emoji: "🥚",
+        description: "Shoot eggs in this fun multiplayer shooter game.",
+        url: "https://example.com/shellshockers"
+      },
+      {
+        title: "Slope",
+        emoji: "⛰️",
+        description: "Survive the endless slope in this fast-paced runner.",
+        url: "https://example.com/slope"
+      },
+      {
+        title: "Run 3",
+        emoji: "🚀",
+        description: "Run through space in this cool endless runner adventure.",
+        url: "https://example.com/run3"
+      },
+      {
+        title: "Moto X3M",
+        emoji: "🏍️",
+        description: "Race through crazy tracks on your motorbike!",
+        url: "https://example.com/moto-x3m"
+      },
+      {
+        title: "Fireboy and Watergirl",
+        emoji: "🔥💧",
+        description: "Solve puzzles with Fireboy and Watergirl in this classic duo game.",
+        url: "https://example.com/fireboy"
+      },
+      {
+        title: "Papa's Games",
+        emoji: "👩‍🍳",
+        description: "Run your own restaurant in this fun cooking simulation.",
+        url: "https://example.com/papas"
+      },
+      {
+        title: "1v1.LOL",
+        emoji: "👊🏽",
+        description: "Battle it out in this Fortnite-style building shooter.",
+        url: "https://example.com/1v1lol"
+      },
+      {
+        title: "Cookie Clicker",
+        emoji: "🍪",
+        description: "Click to bake cookies and build your cookie empire!",
+        url: "https://example.com/cookie-clicker"
+      }
     ];
 
     // ==== State ====
     let secretMode = false;
     let liveUserCount = parseInt(localStorage.getItem('funbooksLiveUsers') || '0');
+    const gameLikes = JSON.parse(localStorage.getItem('funbooksGameLikes') || '{}');
+    const gameDislikes = JSON.parse(localStorage.getItem('funbooksGameDislikes') || '{}');
 
     // ==== DOM Elements ====
     const starfield = document.getElementById('starfield');
@@ -387,13 +511,17 @@
     const closeUrlBtn = document.getElementById('close-url');
     const urlSuffixSpan = document.getElementById('url-suffix');
     const liveUsersSpan = document.getElementById('user-count');
-    const gamesGrid = document.getElementById('gamesGrid');
+    const trendingGrid = document.getElementById('trendingGrid');
+    const favoritesGrid = document.getElementById('favoritesGrid');
+    const allGamesGrid = document.getElementById('allGamesGrid');
     const iframe = document.getElementById('game-iframe');
     const gameContainer = document.getElementById('game-container');
     const darkToggle = document.getElementById('dark-toggle');
     const secretToggle = document.getElementById('secret-toggle');
 
     // ==== Starfield Canvas Setup ====
+    let stars = [];
+
     function initCanvas() {
       starfield.width = window.innerWidth;
       starfield.height = window.innerHeight;
@@ -404,8 +532,8 @@
     }
 
     function createStars() {
-      const starCount = 150;
-      for (let i = 0; i < starCount; i++) {
+      stars = [];
+      for (let i = 0; i < 150; i++) {
         stars.push({
           x: Math.random() * starfield.width,
           y: Math.random() * starfield.height,
@@ -436,26 +564,18 @@
     }
 
     // ==== Secret Mode URL ====
-    const urlOptions = ['math', 'english', 'history'];
-
     secretToggle.addEventListener('click', () => {
       secretMode = !secretMode;
       document.body.classList.toggle('secret-mode', secretMode);
       
       if (secretMode) {
-        // Pick random URL suffix
         const randomSuffix = urlOptions[Math.floor(Math.random() * urlOptions.length)];
         urlSuffixSpan.textContent = randomSuffix;
-        
-        // Change the actual page URL
         const newUrl = window.location.origin + '/funbooks.lol/' + randomSuffix;
         window.history.pushState({ path: newUrl }, '', newUrl);
-        
-        // Show overlay
         urlOverlay.classList.add('active');
       } else {
         urlOverlay.classList.remove('active');
-        // Remove the secret suffix from URL
         const cleanUrl = window.location.origin + window.location.pathname;
         window.history.pushState({ path: cleanUrl }, '', cleanUrl);
       }
@@ -470,34 +590,87 @@
     });
 
     // ==== Live User Counter ====
-    // Increment on page load
     liveUserCount++;
     localStorage.setItem('funbooksLiveUsers', liveUserCount.toString());
     liveUsersSpan.textContent = liveUserCount;
 
-    // Decrement on page unload
     window.addEventListener('beforeunload', () => {
       liveUserCount--;
       localStorage.setItem('funbooksLiveUsers', liveUserCount.toString());
       liveUsersSpan.textContent = Math.max(0, liveUserCount);
     });
 
-    // ==== Render Games ====
-    function renderGames() {
-      gamesGrid.innerHTML = '';
+    // ==== Render Game Card ====
+    function renderGameCard(game, containerId) {
+      const container = document.getElementById(containerId);
+      const card = document.createElement('div');
+      card.className = 'game-card';
+      
+      const likes = gameLikes[game.title] || 0;
+      const dislikes = gameDislikes[game.title] || 0;
+      
+      card.innerHTML = `
+        <div class="game-thumb">${game.emoji}</div>
+        <h3 class="game-title">${game.title}</h3>
+        <div class="game-description">${game.description}</div>
+        <div class="game-actions">
+          <button class="action-btn like-btn" data-game="${game.title}"><i class="fas fa-thumbs-up"></i> ${likes}</button>
+          <button class="action-btn dislike-btn" data-game="${game.title}"><i class="fas fa-thumbs-down"></i> ${dislikes}</button>
+        </div>
+        <button class="play-btn" data-game="${game.title}">Play</button>
+      `;
+      
+      // Like button
+      card.querySelector('.like-btn').addEventListener('click', (e) => {
+        const gameTitle = e.target.dataset.game;
+        gameLikes[gameTitle] = (gameLikes[gameTitle] || 0) + 1;
+        localStorage.setItem('funbooksGameLikes', JSON.stringify(gameLikes));
+        renderGameCard(games.find(g => g.title === gameTitle), containerId);
+      });
+
+      // Dislike button
+      card.querySelector('.dislike-btn').addEventListener('click', (e) => {
+        const gameTitle = e.target.dataset.game;
+        gameDislikes[gameTitle] = (gameDislikes[gameTitle] || 0) + 1;
+        localStorage.setItem('funbooksGameDislikes', JSON.stringify(gameDislikes));
+        renderGameCard(games.find(g => g.title === gameTitle), containerId);
+      });
+
+      // Play button
+      card.querySelector('.play-btn').addEventListener('click', () => {
+        // Set random secret URL
+        const randomSuffix = urlOptions[Math.floor(Math.random() * urlOptions.length)];
+        const newUrl = window.location.origin + '/funbooks.lol/' + randomSuffix;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+        
+        // Show URL overlay if secret mode is enabled
+        if (secretMode) {
+          urlSuffixSpan.textContent = randomSuffix;
+          urlOverlay.classList.add('active');
+        }
+        
+        iframe.src = game.url;
+        gameContainer.style.display = 'block';
+      });
+
+      container.appendChild(card);
+    }
+
+    // ==== Render All Sections ====
+    function renderAllSections() {
+      // Trending - first 4 games
+      games.slice(0, 4).forEach(game => {
+        renderGameCard(game, 'trendingGrid');
+      });
+
+      // Favorites - games 3-6
+      games.slice(2, 6).forEach(game => {
+        renderGameCard(game, 'favoritesGrid');
+      });
+
+      // All Games - all games
       games.forEach(game => {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        card.innerHTML = `
-          <div class="game-thumb">${game.emoji}</div>
-          <h3 class="game-title">${game.title}</h3>
-          <button class="play-btn"><i class="fas fa-play"></i> Play</button>
-        `;
-        card.querySelector('.play-btn').addEventListener('click', () => {
-          iframe.src = game.url;
-          gameContainer.style.display = 'block';
-        });
-        gamesGrid.appendChild(card);
+        renderGameCard(game, 'allGamesGrid');
       });
     }
 
@@ -510,7 +683,7 @@
     initCanvas();
     createStars();
     animateStars();
-    renderGames();
+    renderAllSections();
   </script>
 </body>
 </html>
