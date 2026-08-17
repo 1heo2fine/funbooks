@@ -1,924 +1,210 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Funbooks.lol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --black: #000000;
-      --dark: #0a0a0a;
-      --darker: #050505;
-      --gray: #111111;
-      --lighter-gray: #1a1a1a;
-      --light-gray: #222222;
-      --text: #f0f0f0;
-      --text-dim: #888888;
-      --text-light: #aaaaaa;
-      --white: #ffffff;
-      --accent-white: #e0e0e0;
-      --glow: rgba(255, 255, 255, 0.05);
-      --border: rgba(255, 255, 255, 0.1);
+<script>
+  // ==== Game Data with Descriptions (24+ games) ====
+  const games = [
+    {
+      title: "Shell Shockers",
+      emoji: "🥚",
+      description: "Shoot eggs in this fun multiplayer shooter game.",
+      url: "https://example.com/shellshockers"
+    },
+    {
+      title: "Slope",
+      emoji: "⛰️",
+      description: "Survive the endless slope in this fast-paced runner.",
+      url: "https://example.com/slope"
+    },
+    {
+      title: "Run 3",
+      emoji: "🚀",
+      description: "Run through space in this cool endless runner adventure.",
+      url: "https://example.com/run3"
+    },
+    {
+      title: "Moto X3M",
+      emoji: "🏍️",
+      description: "Race through crazy tracks on your motorbike!",
+      url: "https://example.com/moto-x3m"
+    },
+    {
+      title: "Fireboy and Watergirl",
+      emoji: "🔥💧",
+      description: "Solve puzzles with Fireboy and Watergirl in this classic duo game.",
+      url: "https://example.com/fireboy"
+    },
+    {
+      title: "Papa's Games",
+      emoji: "👩‍🍳",
+      description: "Run your own restaurant in this fun cooking simulation.",
+      url: "https://example.com/papas"
+    },
+    {
+      title: "1v1.LOL",
+      emoji: "👊🏽",
+      description: "Battle it out in this Fortnite-style building shooter.",
+      url: "https://example.com/1v1lol"
+    },
+    {
+      title: "Cookie Clicker",
+      emoji: "🍪",
+      description: "Click to bake cookies and build your cookie empire!",
+      url: "https://example.com/cookie-clicker"
+    },
+    {
+      title: "Among Us",
+      emoji: "🛸",
+      description: "Find the imposter among your crewmates in this social deduction game.",
+      url: "https://example.com/among-us"
+    },
+    {
+      title: "Subway Surfers",
+      emoji: "🚇",
+      description: "Dodge trains and collect coins in this endless runner.",
+      url: "https://example.com/subway-surfers"
+    },
+    {
+      title: "Geometry Dash",
+      emoji: "🔷",
+      description: "Rhythm-based platformer with challenging levels.",
+      url: "https://example.com/geometry-dash"
+    },
+    {
+      title: "Minecraft",
+      emoji: "🧱",
+      description: "Build and explore infinite worlds in this sandbox classic.",
+      url: "https://example.com/minecraft"
+    },
+    {
+      title: "Terraria",
+      emoji: "⛏️",
+      description: "Dig, fight, and explore in this 2D sandbox adventure.",
+      url: "https://example.com/terraria"
+    },
+    {
+      title: "Bloons TD 6",
+      emoji: "🎈",
+      description: "Defend your territory with monkey towers in this tower defense game.",
+      url: "https://example.com/bloons-td6"
+    },
+    {
+      title: "Stardew Valley",
+      emoji: "🌾",
+      description: "Farm, befriend villagers, and explore caves in this charming simulation.",
+      url: "https://example.com/stardew-valley"
+    },
+    {
+      title: "Fall Guys",
+      emoji: "🐻",
+      description: "Compete in chaotic obstacle courses with up to 60 players.",
+      url: "https://example.com/fall-guys"
+    },
+    {
+      title: "Roblox",
+      emoji: "🤖",
+      description: "Play millions of user-generated games in this massive platform.",
+      url: "https://example.com/roblox"
+    },
+    {
+      title: "Fortnite",
+      emoji: "🎮",
+      description: "Battle royale with building mechanics and frequent updates.",
+      url: "https://example.com/fortnite"
+    },
+    {
+      title: "Apex Legends",
+      emoji: "🎯",
+      description: "Team-based battle royale with unique character abilities.",
+      url: "https://example.com/apex-legends"
+    },
+    {
+      title: "Valorant",
+      emoji: "🔫",
+      description: "Tactical shooter with precise gunplay and agent abilities.",
+      url: "https://example.com/valorant"
+    },
+    {
+      title: "Overwatch 2",
+      emoji: "🛡️",
+      description: "Team-based first-person shooter with diverse heroes.",
+      url: "https://example.com/overwatch2"
+    },
+    {
+      title: "CS:GO",
+      emoji: "🔫",
+      description: "Classic tactical shooter with competitive matchmaking.",
+      url: "https://example.com/csgo"
+    },
+    {
+      title: "GTA V",
+      emoji: "🚗",
+      description: "Open-world action-adventure with story and online modes.",
+      url: "https://example.com/gta5"
+    },
+    {
+      title: "FIFA 24",
+      emoji: "⚽",
+      description: "The latest football simulation with realistic gameplay.",
+      url: "https://example.com/fifa24"
+    },
+    // --- Placeholder Games ---
+    {
+      title: "Game 21",
+      emoji: "🎮",
+      description: "Placeholder game 21 with a fun concept.",
+      url: "https://example.com/game21"
+    },
+    {
+      title: "Game 22",
+      emoji: "🕹️",
+      description: "Placeholder game 22 featuring retro vibes.",
+      url: "https://example.com/game22"
+    },
+    {
+      title: "Game 23",
+      emoji: "🚀",
+      description: "Placeholder game 23 with space adventure.",
+      url: "https://example.com/game23"
+    },
+    {
+      title: "Game 24",
+      emoji: "🏰",
+      description: "Placeholder game 24 set in a fantasy kingdom.",
+      url: "https://example.com/game24"
+    },
+    {
+      title: "Game 25",
+      emoji: "🐉",
+      description: "Placeholder game 25 with dragon battles.",
+      url: "https://example.com/game25"
+    },
+    {
+      title: "Game 26",
+      emoji: "🧩",
+      description: "Placeholder game 26 is a puzzle challenge.",
+      url: "https://example.com/game26"
+    },
+    {
+      title: "Game 27",
+      emoji: "🏎️",
+      description: "Placeholder game 27 is a racing simulator.",
+      url: "https://example.com/game27"
+    },
+    {
+      title: "Game 28",
+      emoji: "🛡️",
+      description: "Placeholder game 28 is a medieval strategy game.",
+      url: "https://example.com/game28"
+    },
+    {
+      title: "Game 29",
+      emoji: "🌌",
+      description: "Placeholder game 29 explores the cosmos.",
+      url: "https://example.com/game29"
+    },
+    {
+      title: "Game 30",
+      emoji: "🧙‍♂️",
+      description: "Placeholder game 30 is a wizard adventure.",
+      url: "https://example.com/game30"
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--black);
-      color: var(--text);
-      overflow-x: hidden;
-      min-height: 100vh;
-      transition: background 0.4s ease;
-    }
-
-    body.dark-mode {
-      background: var(--black);
-    }
-
-    /* Starfield Canvas */
-    #starfield {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-
-    /* URL Overlay for Secret Mode */
-    #url-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--black);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    #url-overlay.active {
-      display: flex;
-    }
-    #url-content {
-      text-align: center;
-      max-width: 500px;
-      padding: 2rem;
-    }
-    #url-content h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 1rem;
-    }
-    #url-content p {
-      color: var(--text-dim);
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
-    #url-content button {
-      padding: 0.8rem 2rem;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      background: var(--white);
-      color: var(--black);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    #url-content button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.1);
-    }
-
-    /* Header */
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      padding: 1.2rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: var(--white);
-    }
-
-    nav a {
-      color: var(--text-dim);
-      font-size: 0.85rem;
-      font-weight: 300;
-      margin-left: 1.5rem;
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
-
-    nav a:hover {
-      color: var(--white);
-    }
-
-    /* Main Content */
-    #app {
-      padding-top: 80px;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    /* News Section */
-    .news {
-      background: var(--darker);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      transition: all 0.3s ease;
-    }
-
-    .news:hover {
-      border-color: var(--accent-white);
-      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.03);
-    }
-
-    .news h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 1rem;
-    }
-
-    .news-item {
-      margin-bottom: 0.6rem;
-      font-size: 0.85rem;
-      color: var(--text-dim);
-    }
-
-    .news-item strong {
-      color: var(--text-light);
-    }
-
-    /* News "Release" item - first one */
-    .news-release {
-      background: linear-gradient(135deg, #0a0a0a 0%, #000000 100%);
-      border-left: 4px solid var(--white);
-    }
-
-    /* Section Headers */
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .section-header h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--white);
-    }
-
-    /* Games Grid */
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .game-card {
-      background: var(--darker);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .game-card:hover {
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 20px 50px rgba(255, 255, 255, 0.05);
-      border-color: var(--accent-white);
-    }
-
-    .game-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--white), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .game-card:hover::before {
-      opacity: 0.5;
-    }
-
-    .game-thumb {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1rem;
-      background: linear-gradient(135deg, var(--white), var(--accent-white));
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      color: var(--black);
-      font-weight: 900;
-      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .game-title {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-      color: var(--white);
-    }
-
-    .game-description {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      margin-bottom: 1rem;
-      line-height: 1.4;
-    }
-
-    /* Like/Dislike Percentage System */
-    .game-vote-container {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .vote-bar {
-      flex: 1;
-      height: 8px;
-      background: var(--light-gray);
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .vote-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.5s ease;
-    }
-
-    .vote-fill.positive {
-      background: linear-gradient(90, #4ade80, #22c55e);
-    }
-
-    .vote-fill.negative {
-      background: linear-gradient(90, #f87171, #ef4444);
-    }
-
-    .vote-percentage {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--text-light);
-      min-width: 40px;
-      text-align: center;
-    }
-
-    .vote-buttons {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .vote-btn {
-      flex: 1;
-      padding: 0.5rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--light-gray);
-      color: var(--text-light);
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-    }
-
-    .vote-btn:hover {
-      background: var(--white);
-      color: var(--black);
-      transform: translateY(-2px);
-    }
-
-    .vote-btn.active {
-      background: var(--white);
-      color: var(--black);
-    }
-
-    .play-btn {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      font-size: 0.8rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      background: var(--white);
-      color: var(--black);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .play-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
-    }
-
-    /* Iframe */
-    #game-container {
-      margin-top: 2rem;
-      display: none;
-    }
-
-    #game-iframe {
-      width: 100%;
-      height: 550px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--darker);
-    }
-
-    /* Dark Mode Toggle */
-    #dark-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: var(--gray);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 0.5rem 0.8rem;
-      font-size: 0.8rem;
-      border-radius: 10px;
-      cursor: pointer;
-      z-index: 200;
-      transition: all 0.3s ease;
-    }
-
-    #dark-toggle:hover {
-      border-color: var(--white);
-      color: var(--white);
-    }
-
-    /* Secret Mode Toggle */
-    #secret-toggle {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      background: var(--gray);
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-      padding: 0.5rem 0.8rem;
-      font-size: 0.8rem;
-      border-radius: 10px;
-      cursor: pointer;
-      z-index: 200;
-      transition: all 0.3s ease;
-    }
-
-    #secret-toggle:hover {
-      border-color: var(--accent-white);
-      color: var(--accent-white);
-    }
-
-    /* Live Users Counter */
-    #live-users {
-      position: fixed;
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--darker);
-      border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      font-size: 0.7rem;
-      font-family: 'Orbitron', sans-serif;
-      color: var(--text-dim);
-      border-radius: 20px;
-      z-index: 200;
-      transition: all 0.3s ease;
-    }
-
-    /* Reduced Motion */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0s !important;
-        transition-duration: 0s !important;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Starfield Canvas -->
-  <canvas id="starfield"></canvas>
-
-  <!-- URL Overlay for Secret Mode -->
-  <div id="url-overlay">
-    <div id="url-content">
-      <h2>Secret Mode Active</h2>
-      <p>Current URL: funbooks.lol/<span id="url-suffix"></span></p>
-      <button id="close-url">Close</button>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <header>
-    <h1>funbooks.lol</h1>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#games">Games</a>
-      <a href="#news">News</a>
-    </nav>
-  </header>
-
-  <!-- Live Users Counter -->
-  <div id="live-users">Live Users: <span id="user-count">0</span></div>
-
-  <!-- Main App Content -->
-  <div id="app" class="container">
-    <!-- News Section -->
-    <section id="news">
-      <div class="news news-release">
-        <h2>Release</h2>
-        <div class="news-item"><strong>we released tons of games and this was released on monday aug 16</strong></div>
-        <div class="news-item">discord server coming soon</div>
-      </div>
-    </section>
-
-    <!-- Trending Section -->
-    <section id="trending">
-      <div class="section-header">
-        <h2>Trending</h2>
-      </div>
-      <div class="games-grid" id="trendingGrid"></div>
-    </section>
-
-    <!-- Favorites Section -->
-    <section id="favorites">
-      <div class="section-header">
-        <h2>Favorites</h2>
-      </div>
-      <div class="games-grid" id="favoritesGrid"></div>
-    </section>
-
-    <!-- All Games Section -->
-    <section id="all-games">
-      <div class="section-header">
-        <h2>All Games</h2>
-      </div>
-      <div class="games-grid" id="allGamesGrid"></div>
-    </section>
-
-    <!-- Iframe to Load Games -->
-    <section id="game-container">
-      <h2>Playing...</h2>
-      <iframe id="game-iframe" src="" allow="autoplay; encrypted-media;"></iframe>
-    </section>
-  </div>
-
-  <script>
-    // ==== Configuration ====
-    const CORRECT_CODE = "schoolbook1";
-
-    // ==== URL Options for Secret Mode ====
-    const urlOptions = ['math', 'english', 'history'];
-
-    // ==== Game Data with Descriptions (20+ games) ====
-    const games = [
-      {
-        title: "Shell Shockers",
-        emoji: "🥚",
-        description: "Shoot eggs in this fun multiplayer shooter game.",
-        url: "https://example.com/shellshockers"
-      },
-      {
-        title: "Slope",
-        emoji: "⛰️",
-        description: "Survive the endless slope in this fast-paced runner.",
-        url: "https://example.com/slope"
-      },
-      {
-        title: "Run 3",
-        emoji: "🚀",
-        description: "Run through space in this cool endless runner adventure.",
-        url: "https://example.com/run3"
-      },
-      {
-        title: "Moto X3M",
-        emoji: "🏍️",
-        description: "Race through crazy tracks on your motorbike!",
-        url: "https://example.com/moto-x3m"
-      },
-      {
-        title: "Fireboy and Watergirl",
-        emoji: "🔥💧",
-        description: "Solve puzzles with Fireboy and Watergirl in this classic duo game.",
-        url: "https://example.com/fireboy"
-      },
-      {
-        title: "Papa's Games",
-        emoji: "👩‍🍳",
-        description: "Run your own restaurant in this fun cooking simulation.",
-        url: "https://example.com/papas"
-      },
-      {
-        title: "1v1.LOL",
-        emoji: "👊🏽",
-        description: "Battle it out in this Fortnite-style building shooter.",
-        url: "https://example.com/1v1lol"
-      },
-      {
-        title: "Cookie Clicker",
-        emoji: "🍪",
-        description: "Click to bake cookies and build your cookie empire!",
-        url: "https://example.com/cookie-clicker"
-      },
-      {
-        title: "Among Us",
-        emoji: "🛸",
-        description: "Find the imposter among your crewmates in this social deduction game.",
-        url: "https://example.com/among-us"
-      },
-      {
-        title: "Subway Surfers",
-        emoji: "🚇",
-        description: "Dodge trains and collect coins in this endless runner.",
-        url: "https://example.com/subway-surfers"
-      },
-      {
-        title: "Geometry Dash",
-        emoji: "🔷",
-        description: "Rhythm-based platformer with challenging levels.",
-        url: "https://example.com/geometry-dash"
-      },
-      {
-        title: "Minecraft",
-        emoji: "🧱",
-        description: "Build and explore infinite worlds in this sandbox classic.",
-        url: "https://example.com/minecraft"
-      },
-      {
-        title: "Terraria",
-        emoji: "⛏️",
-        description: "Dig, fight, and explore in this 2D sandbox adventure.",
-        url: "https://example.com/terraria"
-      },
-      {
-        title: "Bloons TD 6",
-        emoji: "🎈",
-        description: "Defend your territory with monkey towers in this tower defense game.",
-        url: "https://example.com/bloons-td6"
-      },
-      {
-        title: "Stardew Valley",
-        emoji: "🌾",
-        description: "Farm, befriend villagers, and explore caves in this charming simulation.",
-        url: "https://example.com/stardew-valley"
-      },
-      {
-        title: "Fall Guys",
-        emoji: "🐻",
-        description: "Compete in chaotic obstacle courses with up to 60 players.",
-        url: "https://example.com/fall-guys"
-      },
-      {
-        title: "Roblox",
-        emoji: "🤖",
-        description: "Play millions of user-generated games in this massive platform.",
-        url: "https://example.com/roblox"
-      },
-      {
-        title: "Fortnite",
-        emoji: "🎮",
-        description: "Battle royale with building mechanics and frequent updates.",
-        url: "https://example.com/fortnite"
-      },
-      {
-        title: "Apex Legends",
-        emoji: "🎯",
-        description: "Team-based battle royale with unique character abilities.",
-        url: "https://example.com/apex-legends"
-      },
-      {
-        title: "Valorant",
-        emoji: "🔫",
-        description: "Tactical shooter with precise gunplay and agent abilities.",
-        url: "https://example.com/valorant"
-      },
-      {
-        title: "Overwatch 2",
-        emoji: "🛡️",
-        description: "Team-based first-person shooter with diverse heroes.",
-        url: "https://example.com/overwatch2"
-      },
-      {
-        title: "CS:GO",
-        emoji: "🔫",
-        description: "Classic tactical shooter with competitive matchmaking.",
-        url: "https://example.com/csgo"
-      },
-      {
-        title: "GTA V",
-        emoji: "🚗",
-        description: "Open-world action-adventure with story and online modes.",
-        url: "https://example.com/gta5"
-      },
-      {
-        title: "FIFA 24",
-        emoji: "⚽",
-        description: "The latest football simulation with realistic gameplay.",
-        url: "https://example.com/fifa24"
-      }
-    ];
-
-    // ==== State ====
-    let secretMode = false;
-    let liveUserCount = parseInt(localStorage.getItem('funbooksLiveUsers') || '0');
-    const gameLikes = JSON.parse(localStorage.getItem('funbooksGameLikes') || '{}');
-    const gameDislikes = JSON.parse(localStorage.getItem('funbooksGameDislikes') || '{}');
-    const userVotes = JSON.parse(localStorage.getItem('funbooksUserVotes') || '{}');
-
-    // ==== DOM Elements ====
-    const starfield = document.getElementById('starfield');
-    const ctx = starfield.getContext('2d');
-    const urlOverlay = document.getElementById('url-overlay');
-    const urlContent = document.getElementById('url-content');
-    const closeUrlBtn = document.getElementById('close-url');
-    const urlSuffixSpan = document.getElementById('url-suffix');
-    const liveUsersSpan = document.getElementById('user-count');
-    const trendingGrid = document.getElementById('trendingGrid');
-    const favoritesGrid = document.getElementById('favoritesGrid');
-    const allGamesGrid = document.getElementById('allGamesGrid');
-    const iframe = document.getElementById('game-iframe');
-    const gameContainer = document.getElementById('game-container');
-    const darkToggle = document.getElementById('dark-toggle');
-    const secretToggle = document.getElementById('secret-toggle');
-
-    // ==== Starfield Canvas Setup ====
-    let stars = [];
-
-    function initCanvas() {
-      starfield.width = window.innerWidth;
-      starfield.height = window.innerHeight;
-      window.addEventListener('resize', () => {
-        starfield.width = window.innerWidth;
-        starfield.height = window.innerHeight;
-      });
-    }
-
-    function createStars() {
-      stars = [];
-      for (let i = 0; i < 150; i++) {
-        stars.push({
-          x: Math.random() * starfield.width,
-          y: Math.random() * starfield.height,
-          size: Math.random() * 2 + 0.5,
-          speed: Math.random() * 0.5 + 0.1,
-          opacity: Math.random() * 0.5 + 0.3
-        });
-      }
-    }
-
-    function animateStars() {
-      ctx.clearRect(0, 0, starfield.width, starfield.height);
-      
-      stars.forEach(star => {
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fill();
-        
-        star.y += star.speed;
-        if (star.y > starfield.height) {
-          star.y = 0;
-          star.x = Math.random() * starfield.width;
-        }
-      });
-      
-      requestAnimationFrame(animateStars);
-    }
-
-    // ==== Secret Mode URL ====
-    secretToggle.addEventListener('click', () => {
-      secretMode = !secretMode;
-      document.body.classList.toggle('secret-mode', secretMode);
-      
-      if (secretMode) {
-        const randomSuffix = urlOptions[Math.floor(Math.random() * urlOptions.length)];
-        urlSuffixSpan.textContent = randomSuffix;
-        const newUrl = window.location.origin + '/funbooks.lol/' + randomSuffix;
-        window.history.pushState({ path: newUrl }, '', newUrl);
-        urlOverlay.classList.add('active');
-      } else {
-        urlOverlay.classList.remove('active');
-        const cleanUrl = window.location.origin + window.location.pathname;
-        window.history.pushState({ path: cleanUrl }, '', cleanUrl);
-      }
-    });
-
-    closeUrlBtn.addEventListener('click', () => {
-      secretMode = false;
-      document.body.classList.remove('secret-mode');
-      urlOverlay.classList.remove('active');
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.pushState({ path: cleanUrl }, '', cleanUrl);
-    });
-
-    // ==== Live User Counter ====
-    liveUserCount++;
-    localStorage.setItem('funbooksLiveUsers', liveUserCount.toString());
-    liveUsersSpan.textContent = liveUserCount;
-
-    window.addEventListener('beforeunload', () => {
-      liveUserCount--;
-      localStorage.setItem('funbooksLiveUsers', liveUserCount.toString());
-      liveUsersSpan.textContent = Math.max(0, liveUserCount);
-    });
-
-    // ==== Calculate Vote Percentage ====
-    function getVotePercentage(gameTitle) {
-      const likes = gameLikes[gameTitle] || 0;
-      const dislikes = gameDislikes[gameTitle] || 0;
-      const total = likes + dislikes;
-      
-      if (total === 0) return { percentage: 0, total: 0, likes: 0, dislikes: 0 };
-      
-      const percentage = Math.round((likes / total) * 100);
-      return { percentage, total, likes, dislikes };
-    }
-
-    // ==== Render Game Card ====
-    function renderGameCard(game, containerId) {
-      const container = document.getElementById(containerId);
-      const card = document.createElement('div');
-      card.className = 'game-card';
-      
-      const voteData = getVotePercentage(game.title);
-      const userVote = userVotes[game.title] || null;
-      
-      card.innerHTML = `
-        <div class="game-thumb">${game.emoji}</div>
-        <h3 class="game-title">${game.title}</h3>
-        <div class="game-description">${game.description}</div>
-        
-        <div class="game-vote-container">
-          <div class="vote-bar">
-            <div class="vote-fill ${voteData.percentage >= 50 ? 'positive' : 'negative'}" style="width: ${voteData.percentage}%"></div>
-          </div>
-          <span class="vote-percentage">${voteData.percentage}%</span>
-        </div>
-        
-        <div class="vote-buttons">
-          <button class="vote-btn like-btn ${userVote === 'like' ? 'active' : ''}" data-game="${game.title}">
-            <i class="fas fa-thumbs-up"></i> ${voteData.likes}
-          </button>
-          <button class="vote-btn dislike-btn ${userVote === 'dislike' ? 'active' : ''}" data-game="${game.title}">
-            <i class="fas fa-thumbs-down"></i> ${voteData.dislikes}
-          </button>
-        </div>
-        
-        <button class="play-btn" data-game="${game.title}">
-          <i class="fas fa-play"></i> Play
-        </button>
-      `;
-      
-      // Like button
-      card.querySelector('.like-btn').addEventListener('click', (e) => {
-        const gameTitle = e.target.dataset.game;
-        if (userVotes[gameTitle] === 'like') {
-          // Remove vote
-          gameLikes[gameTitle] = (gameLikes[gameTitle] || 0) - 1;
-          delete userVotes[gameTitle];
-        } else {
-          // Add like
-          if (userVotes[gameTitle] === 'dislike') {
-            gameDislikes[gameTitle] = (gameDislikes[gameTitle] || 0) - 1;
-          }
-          gameLikes[gameTitle] = (gameLikes[gameTitle] || 0) + 1;
-          userVotes[gameTitle] = 'like';
-        }
-        localStorage.setItem('funbooksGameLikes', JSON.stringify(gameLikes));
-        localStorage.setItem('funbooksGameDislikes', JSON.stringify(gameDislikes));
-        localStorage.setItem('funbooksUserVotes', JSON.stringify(userVotes));
-        renderGameCard(games.find(g => g.title === gameTitle), containerId);
-      });
-
-      // Dislike button
-      card.querySelector('.dislike-btn').addEventListener('click', (e) => {
-        const gameTitle = e.target.dataset.game;
-        if (userVotes[gameTitle] === 'dislike') {
-          // Remove vote
-          gameDislikes[gameTitle] = (gameDislikes[gameTitle] || 0) - 1;
-          delete userVotes[gameTitle];
-        } else {
-          // Add dislike
-          if (userVotes[gameTitle] === 'like') {
-            gameLikes[gameTitle] = (gameLikes[gameTitle] || 0) - 1;
-          }
-          gameDislikes[gameTitle] = (gameDislikes[gameTitle] || 0) + 1;
-          userVotes[gameTitle] = 'dislike';
-        }
-        localStorage.setItem('funbooksGameLikes', JSON.stringify(gameLikes));
-        localStorage.setItem('funbooksGameDislikes', JSON.stringify(gameDislikes));
-        localStorage.setItem('funbooksUserVotes', JSON.stringify(userVotes));
-        renderGameCard(games.find(g => g.title === gameTitle), containerId);
-      });
-
-      // Play button
-      card.querySelector('.play-btn').addEventListener('click', () => {
-        // Set random secret URL
-        const randomSuffix = urlOptions[Math.floor(Math.random() * urlOptions.length)];
-        const newUrl = window.location.origin + '/funbooks.lol/' + randomSuffix;
-        window.history.pushState({ path: newUrl }, '', newUrl);
-        
-        // Show URL overlay if secret mode is enabled
-        if (secretMode) {
-          urlSuffixSpan.textContent = randomSuffix;
-          urlOverlay.classList.add('active');
-        }
-        
-        iframe.src = game.url;
-        gameContainer.style.display = 'block';
-      });
-
-      container.appendChild(card);
-    }
-
-    // ==== Render All Sections ====
-    function renderAllSections() {
-      // Sort games by vote percentage for trending
-      const sortedGames = [...games].sort((a, b) => {
-        const aVotes = getVotePercentage(a.title);
-        const bVotes = getVotePercentage(b.title);
-        return bVotes.percentage - aVotes.percentage;
-      });
-      
-      // Trending - top 4 games by percentage
-      sortedGames.slice(0, 4).forEach(game => {
-        renderGameCard(game, 'trendingGrid');
-      });
-
-      // Favorites - games 3-6
-      games.slice(2, 6).forEach(game => {
-        renderGameCard(game, 'favoritesGrid');
-      });
-
-      // All Games - all games
-      games.forEach(game => {
-        renderGameCard(game, 'allGamesGrid');
-      });
-    }
-
-    // ==== Dark Mode Toggle ====
-    darkToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-    });
-
-    // ==== Initialization ====
-    initCanvas();
-    createStars();
-    animateStars();
-    renderAllSections();
-  </script>
-</body>
-</html>
+  ];
+</script>
