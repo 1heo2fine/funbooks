@@ -4,22 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>School Game Portal</title>
-  <!-- Load external CSS via link tags to avoid @import parsing issues -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <style>
-      /* ==== Reset & Base Styles ==== */
+  <!-- Load Google Font and Font Awesome via link tags -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* ==== CSS Variables & Root ==== */
+    :root {
+      --bg-primary: #0a0a2e;
+      --bg-secondary: #1a1a4e;
+      --accent-cyan: #0ff;
+      --accent-pink: #f0f;
+      --text-primary: #e0e0ff;
+      --text-secondary: #a0a0d0;
+      --border-glow: rgba(0, 255, 255, 0.4);
+    }
+    .secret-mode .root {
+      --bg-primary: #050515;
+      --bg-secondary: #101025;
+      --accent-cyan: #0ff;
+      --accent-pink: #f0f;
+    }
+
+    /* ==== Reset & Base ==== */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
     body {
-      font-family: 'Nunito', sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
+      font-family: 'Comic Neue', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
       line-height: 1.6;
-      transition: background-color 0.3s, color 0.3s;
+      overflow-x: hidden;
+      transition: background-color 0.5s ease;
+    }
+    body.secret-mode {
+      background: linear-gradient(135deg, #050515 0%, #101025 50%, #0a0a2e 100%);
     }
     a {
       color: inherit;
@@ -29,79 +50,149 @@
       cursor: pointer;
       font-family: inherit;
     }
-
-    /* ==== Dark Mode ==== */
-    .dark-mode {
-      background-color: #1e1e1e;
-      color: #e0e0e0;
-    }
-    .dark-mode a {
-      color: #90caf9;
-    }
-
-    /* ==== Layout ==== */
-    header {
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
       padding: 1rem;
-      text-align: center;
+    }
+
+    /* ==== Navigation ==== */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 10, 46, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 0.8rem 1rem;
+      z-index: 100;
     }
     header h1 {
-      font-weight: 700;
-      font-size: 1.8rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     nav {
-      margin-top: 0.5rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 1.5rem;
     }
     nav a {
-      margin: 0 0.8rem;
-      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      transition: color 0.3s ease;
     }
-    .dark-mode nav a {
-      color: #fff;
+    nav a:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* ==== Secret Theme Toggle (Hidden Easter Egg) ==== */
+    #secret-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: transparent;
+      border: 2px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      cursor: pointer;
+      z-index: 200;
+      transition: all 0.3s ease;
+    }
+    #secret-toggle:hover {
+      background: var(--accent-cyan);
+      color: var(--bg-primary);
     }
 
     /* ==== Password Gate ==== */
     #gate {
-      max-width: 400px;
-      margin: 4rem auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      max-width: 450px;
+      margin: 8rem auto 0;
+      padding: 2.5rem;
+      background: linear-gradient(145deg, rgba(26, 26, 78, 0.9), rgba(10, 10, 46, 0.9));
+      border-radius: 20px;
+      box-shadow: 0 0 50px rgba(0, 255, 255, 0.2), 0 0 100px rgba(255, 0, 255, 0.1);
+      border: 1px solid var(--border-glow);
       text-align: center;
+      animation: gateEnter 0.8s ease-out;
+    }
+    @keyframes gateEnter {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
     #gate h2 {
-      margin-bottom: 1rem;
-      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     #gate input[type="password"] {
       width: 100%;
-      padding: 0.8rem;
+      padding: 0.9rem;
       font-size: 1rem;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      margin-bottom: 1rem;
+      margin: 0.8rem 0;
+      border: 2px solid var(--accent-cyan);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--text-primary);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #gate input[type="password"]:focus {
+      outline: none;
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
     }
     #gate button {
-      background: #ff6f61;
-      color: #fff;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+      color: var(--bg-primary);
       border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      font-weight: 600;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      border-radius: 10px;
+      width: 100%;
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     #gate button:hover {
-      background: #e65b50;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
     }
     #error {
-      color: #e53935;
-      margin-top: 0.5rem;
+      color: #ff4444;
+      margin-top: 0.8rem;
       font-size: 0.9rem;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
     }
 
-    /* ==== Main App (hidden until correct code) ==== */
+    /* ==== Main App ==== */
     #app {
       display: none;
+      padding-top: 80px;
     }
     .container {
       max-width: 1200px;
@@ -109,82 +200,184 @@
       padding: 1rem;
     }
 
+    /* ==== Galaxy Background ==== */
+    .galaxy-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .galaxy-bg::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(255, 0, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 40%, rgba(0, 200, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 70%, rgba(255, 0, 200, 0.1) 0%, transparent 50%);
+      animation: galaxyMove 20s linear infinite;
+    }
+    @keyframes galaxyMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-1%, -1%); }
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 80px;
+      background: linear-gradient(to top, white, transparent);
+      animation: shoot 3s ease-in-out infinite;
+    }
+    @keyframes shoot {
+      0% { transform: translateX(-100px) rotate(30deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(110%) rotate(30deg); opacity: 0; }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
     /* ==== News Section ==== */
     .news {
-      background: #fff;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      background: rgba(26, 26, 78, 0.8);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-glow);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.6s ease-out forwards;
+      opacity: 0;
+    }
+    .news.visible {
+      opacity: 1;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     .news h2 {
-      margin-bottom: 0.5rem;
-      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--accent-cyan);
     }
     .news-item {
       margin-bottom: 0.8rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--accent-cyan);
     }
-    .news-item strong {
-      color: #3949ab;
+    .news-item:last-child {
+      margin-bottom: 0;
     }
 
     /* ==== Games Grid ==== */
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
     }
     .game-card {
-      background: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: rgba(10, 10, 46, 0.7);
+      border-radius: 15px;
+      padding: 1.5rem;
       text-align: center;
-      transition: transform 0.2s;
+      border: 1px solid var(--border-glow);
+      transition: all 0.3s ease;
+      animation: cardStagger 0.5s ease-out forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .game-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @keyframes cardStagger {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .game-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3), 0 0 30px rgba(255, 0, 255, 0.2);
+      border-color: var(--accent-cyan);
     }
     .game-thumb {
-      width: 80px;
-      height: 80px;
-      margin: 0.5rem auto;
-      background: #e0e0e0;
-      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+      border-radius: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.5rem;
-      color: #555;
+      font-size: 3rem;
+      color: var(--bg-primary);
+      font-weight: 900;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
     .game-title {
       margin: 0.5rem 0;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 1rem;
-      color: #222;
+      color: var(--text-primary);
     }
     .play-btn {
-      background: #4caf50;
-      color: #fff;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+      color: var(--bg-primary);
       border: none;
-      padding: 0.5rem 0.8rem;
-      border-radius: 6px;
-      font-weight: 600;
-      width: 80%;
-      margin-bottom: 0.8rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      border-radius: 10px;
+      width: 100%;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .play-btn:hover {
-      background: #388e3c;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
     }
 
-    /* ==== Game Iframe Container ==== */
+    /* ==== Iframe Container ==== */
     #game-container {
-      display: none;
-      margin-top: 2rem;
+      margin-top: 3rem;
+      padding: 2rem;
+      background: rgba(10, 10, 46, 0.8);
+      border-radius: 15px;
+      border: 1px solid var(--border-glow);
     }
     #game-iframe {
       width: 100%;
-      height: 500px;
+      height: 600px;
       border: none;
       border-radius: 10px;
     }
@@ -194,19 +387,37 @@
       position: fixed;
       top: 1rem;
       right: 1rem;
-      background: #ff6f61;
-      color: #fff;
-      border: none;
+      background: transparent;
+      border: 2px solid var(--text-secondary);
+      color: var(--text-secondary);
       padding: 0.5rem 0.8rem;
-      border-radius: 6px;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-family: 'Orbitron', sans-serif;
+      cursor: pointer;
+      z-index: 200;
+      transition: all 0.3s ease;
     }
     #dark-toggle:hover {
-      background: #e65b50;
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* ==== Reduced Motion ==== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0s !important;
+        transition-duration: 0s !important;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Galaxy Background -->
+  <div class="galaxy-bg"></div>
+
+  <!-- Secret Theme Toggle (Easter Egg) -->
+  <button id="secret-toggle">Secret Mode</button>
+
   <!-- Navigation -->
   <header>
     <h1>🎮 School Game Portal</h1>
@@ -225,13 +436,13 @@
     <div id="error"></div>
   </div>
 
-  <!-- Main App Content (shown after correct code) -->
+  <!-- Main App Content -->
   <div id="app" class="container">
     <!-- Dark Mode Toggle -->
-    <button id="dark-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
+    <button id="dark-toggle">🌙</button>
 
     <!-- News Section -->
-    <section id="news" class="news">
+    <section id="news">
       <h2>Latest News</h2>
       <div class="news-item"><strong>New Game Added:</strong> Shell Shockers is now live!</div>
       <div class="news-item"><strong>School Event:</strong> Tech Club meeting this Friday after school.</div>
@@ -302,6 +513,9 @@
       // Add more games as needed
     ];
 
+    // ==== State ====
+    let secretMode = false;
+
     // ==== DOM Elements ====
     const gate = document.getElementById('gate');
     const app = document.getElementById('app');
@@ -310,24 +524,60 @@
     const iframe = document.getElementById('game-iframe');
     const gameContainer = document.getElementById('game-container');
     const darkToggle = document.getElementById('dark-toggle');
+    const secretToggle = document.getElementById('secret-toggle');
+
+    // ==== Initialize Galaxy Background ====
+    function createStars() {
+      const bg = document.querySelector('.galaxy-bg');
+      const starCount = 150;
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        star.style.animationDelay = (Math.random() * 2) + 's';
+        star.style.width = (Math.random() * 2 + 1) + 'px';
+        star.style.height = (Math.random() * 2 + 1) + 'px';
+        bg.appendChild(star);
+      }
+      // Create shooting stars
+      for (let i = 0; i < 5; i++) {
+        const star = document.createElement('div');
+        star.className = 'shooting-star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 20 + '%';
+        star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        star.style.animationDelay = (Math.random() * 5) + 's';
+        bg.appendChild(star);
+      }
+    }
+
+    // ==== Secret Theme Toggle ====
+    secretToggle.addEventListener('click', () => {
+      secretMode = !secretMode;
+      document.body.classList.toggle('secret-mode', secretMode);
+    });
 
     // ==== Render Games ====
     function renderGames() {
-      gamesGrid.innerHTML = ''; // Clear any existing content
+      gamesGrid.innerHTML = '';
       games.forEach((game, index) => {
         const card = document.createElement('div');
         card.className = 'game-card';
+        card.style.transitionDelay = `${index * 0.1}s`;
         card.innerHTML = `
           <div class="game-thumb">${game.emoji}</div>
           <h3 class="game-title">${game.title}</h3>
           <button class="play-btn"><i class="fas fa-play"></i> Play</button>
         `;
-        // Attach click handler
         card.querySelector('.play-btn').addEventListener('click', () => {
           iframe.src = game.url;
           gameContainer.style.display = 'block';
         });
         gamesGrid.appendChild(card);
+        // Trigger visibility after a slight delay
+        setTimeout(() => card.classList.add('visible'), 50);
       });
     }
 
@@ -337,9 +587,13 @@
       if (entered === CORRECT_CODE) {
         gate.style.display = 'none';
         app.style.display = 'block';
+        // Trigger star creation after gate opens
+        setTimeout(createStars, 300);
         renderGames();
       } else {
         errorDiv.textContent = '❌ Incorrect code! Try again.';
+        errorDiv.classList.add('shake');
+        setTimeout(() => errorDiv.classList.remove('shake'), 400);
       }
     });
 
@@ -356,7 +610,8 @@
     });
 
     // ==== Initialization ====
-    // If you want to auto-show the app for testing, comment out the gate display logic above.
+    // Gate is shown by default, app hidden until correct code
+    // createStars called after gate opens
   </script>
 </body>
 </html>
