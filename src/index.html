@@ -1,210 +1,279 @@
-<script>
-  // ==== Game Data with Descriptions (24+ games) ====
-  const games = [
-    {
-      title: "Shell Shockers",
-      emoji: "🥚",
-      description: "Shoot eggs in this fun multiplayer shooter game.",
-      url: "https://example.com/shellshockers"
-    },
-    {
-      title: "Slope",
-      emoji: "⛰️",
-      description: "Survive the endless slope in this fast-paced runner.",
-      url: "https://example.com/slope"
-    },
-    {
-      title: "Run 3",
-      emoji: "🚀",
-      description: "Run through space in this cool endless runner adventure.",
-      url: "https://example.com/run3"
-    },
-    {
-      title: "Moto X3M",
-      emoji: "🏍️",
-      description: "Race through crazy tracks on your motorbike!",
-      url: "https://example.com/moto-x3m"
-    },
-    {
-      title: "Fireboy and Watergirl",
-      emoji: "🔥💧",
-      description: "Solve puzzles with Fireboy and Watergirl in this classic duo game.",
-      url: "https://example.com/fireboy"
-    },
-    {
-      title: "Papa's Games",
-      emoji: "👩‍🍳",
-      description: "Run your own restaurant in this fun cooking simulation.",
-      url: "https://example.com/papas"
-    },
-    {
-      title: "1v1.LOL",
-      emoji: "👊🏽",
-      description: "Battle it out in this Fortnite-style building shooter.",
-      url: "https://example.com/1v1lol"
-    },
-    {
-      title: "Cookie Clicker",
-      emoji: "🍪",
-      description: "Click to bake cookies and build your cookie empire!",
-      url: "https://example.com/cookie-clicker"
-    },
-    {
-      title: "Among Us",
-      emoji: "🛸",
-      description: "Find the imposter among your crewmates in this social deduction game.",
-      url: "https://example.com/among-us"
-    },
-    {
-      title: "Subway Surfers",
-      emoji: "🚇",
-      description: "Dodge trains and collect coins in this endless runner.",
-      url: "https://example.com/subway-surfers"
-    },
-    {
-      title: "Geometry Dash",
-      emoji: "🔷",
-      description: "Rhythm-based platformer with challenging levels.",
-      url: "https://example.com/geometry-dash"
-    },
-    {
-      title: "Minecraft",
-      emoji: "🧱",
-      description: "Build and explore infinite worlds in this sandbox classic.",
-      url: "https://example.com/minecraft"
-    },
-    {
-      title: "Terraria",
-      emoji: "⛏️",
-      description: "Dig, fight, and explore in this 2D sandbox adventure.",
-      url: "https://example.com/terraria"
-    },
-    {
-      title: "Bloons TD 6",
-      emoji: "🎈",
-      description: "Defend your territory with monkey towers in this tower defense game.",
-      url: "https://example.com/bloons-td6"
-    },
-    {
-      title: "Stardew Valley",
-      emoji: "🌾",
-      description: "Farm, befriend villagers, and explore caves in this charming simulation.",
-      url: "https://example.com/stardew-valley"
-    },
-    {
-      title: "Fall Guys",
-      emoji: "🐻",
-      description: "Compete in chaotic obstacle courses with up to 60 players.",
-      url: "https://example.com/fall-guys"
-    },
-    {
-      title: "Roblox",
-      emoji: "🤖",
-      description: "Play millions of user-generated games in this massive platform.",
-      url: "https://example.com/roblox"
-    },
-    {
-      title: "Fortnite",
-      emoji: "🎮",
-      description: "Battle royale with building mechanics and frequent updates.",
-      url: "https://example.com/fortnite"
-    },
-    {
-      title: "Apex Legends",
-      emoji: "🎯",
-      description: "Team-based battle royale with unique character abilities.",
-      url: "https://example.com/apex-legends"
-    },
-    {
-      title: "Valorant",
-      emoji: "🔫",
-      description: "Tactical shooter with precise gunplay and agent abilities.",
-      url: "https://example.com/valorant"
-    },
-    {
-      title: "Overwatch 2",
-      emoji: "🛡️",
-      description: "Team-based first-person shooter with diverse heroes.",
-      url: "https://example.com/overwatch2"
-    },
-    {
-      title: "CS:GO",
-      emoji: "🔫",
-      description: "Classic tactical shooter with competitive matchmaking.",
-      url: "https://example.com/csgo"
-    },
-    {
-      title: "GTA V",
-      emoji: "🚗",
-      description: "Open-world action-adventure with story and online modes.",
-      url: "https://example.com/gta5"
-    },
-    {
-      title: "FIFA 24",
-      emoji: "⚽",
-      description: "The latest football simulation with realistic gameplay.",
-      url: "https://example.com/fifa24"
-    },
-    // --- Placeholder Games ---
-    {
-      title: "Game 21",
-      emoji: "🎮",
-      description: "Placeholder game 21 with a fun concept.",
-      url: "https://example.com/game21"
-    },
-    {
-      title: "Game 22",
-      emoji: "🕹️",
-      description: "Placeholder game 22 featuring retro vibes.",
-      url: "https://example.com/game22"
-    },
-    {
-      title: "Game 23",
-      emoji: "🚀",
-      description: "Placeholder game 23 with space adventure.",
-      url: "https://example.com/game23"
-    },
-    {
-      title: "Game 24",
-      emoji: "🏰",
-      description: "Placeholder game 24 set in a fantasy kingdom.",
-      url: "https://example.com/game24"
-    },
-    {
-      title: "Game 25",
-      emoji: "🐉",
-      description: "Placeholder game 25 with dragon battles.",
-      url: "https://example.com/game25"
-    },
-    {
-      title: "Game 26",
-      emoji: "🧩",
-      description: "Placeholder game 26 is a puzzle challenge.",
-      url: "https://example.com/game26"
-    },
-    {
-      title: "Game 27",
-      emoji: "🏎️",
-      description: "Placeholder game 27 is a racing simulator.",
-      url: "https://example.com/game27"
-    },
-    {
-      title: "Game 28",
-      emoji: "🛡️",
-      description: "Placeholder game 28 is a medieval strategy game.",
-      url: "https://example.com/game28"
-    },
-    {
-      title: "Game 29",
-      emoji: "🌌",
-      description: "Placeholder game 29 explores the cosmos.",
-      url: "https://example.com/game29"
-    },
-    {
-      title: "Game 30",
-      emoji: "🧙‍♂️",
-      description: "Placeholder game 30 is a wizard adventure.",
-      url: "https://example.com/game30"
-    }
-  ];
-</script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FunBooks - School Game Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      * { font-family: 'Inter', sans-serif; }
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 221.2 83.2% 53.3%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 221.2 83.2% 53.3%;
+        --radius: 0.5rem;
+      }
+      .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 217.2 91.2% 59.8%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 224.3 76.3% 48%;
+      }
+      .bg-base-100 { background-color: hsl(var(--card)); }
+      .bg-base-200 { background-color: hsl(var(--background)); }
+      .text-base-content { color: hsl(var(--card-foreground)); }
+      .text-base-content\/70 { color: hsl(var(--card-foreground) / 0.7); }
+      .text-base-content\/50 { color: hsl(var(--card-foreground) / 0.5); }
+    </style>
+  </head>
+  <body class="bg-base-200 text-base-content min-h-screen">
+    <div id="root"></div>
+    
+    <script>
+      // ==== Game Data with Descriptions (30 games) ====
+      window.games = [
+        {
+          title: "Shell Shockers",
+          emoji: "🥚",
+          description: "Shoot eggs in this fun multiplayer shooter game.",
+          url: "https://example.com/shellshockers"
+        },
+        {
+          title: "Slope",
+          emoji: "⛰️",
+          description: "Survive the endless slope in this fast-paced runner.",
+          url: "https://example.com/slope"
+        },
+        {
+          title: "Run 3",
+          emoji: "🚀",
+          description: "Run through space in this cool endless runner adventure.",
+          url: "https://example.com/run3"
+        },
+        {
+          title: "Moto X3M",
+          emoji: "🏍️",
+          description: "Race through crazy tracks on your motorbike!",
+          url: "https://example.com/moto-x3m"
+        },
+        {
+          title: "Fireboy and Watergirl",
+          emoji: "🔥💧",
+          description: "Solve puzzles with Fireboy and Watergirl in this classic duo game.",
+          url: "https://example.com/fireboy"
+        },
+        {
+          title: "Papa's Games",
+          emoji: "👩‍🍳",
+          description: "Run your own restaurant in this fun cooking simulation.",
+          url: "https://example.com/papas"
+        },
+        {
+          title: "1v1.LOL",
+          emoji: "👊🏽",
+          description: "Battle it out in this Fortnite-style building shooter.",
+          url: "https://example.com/1v1lol"
+        },
+        {
+          title: "Cookie Clicker",
+          emoji: "🍪",
+          description: "Click to bake cookies and build your cookie empire!",
+          url: "https://example.com/cookie-clicker"
+        },
+        {
+          title: "Among Us",
+          emoji: "🛸",
+          description: "Find the imposter among your crewmates in this social deduction game.",
+          url: "https://example.com/among-us"
+        },
+        {
+          title: "Subway Surfers",
+          emoji: "🚇",
+          description: "Dodge trains and collect coins in this endless runner.",
+          url: "https://example.com/subway-surfers"
+        },
+        {
+          title: "Geometry Dash",
+          emoji: "🔷",
+          description: "Rhythm-based platformer with challenging levels.",
+          url: "https://example.com/geometry-dash"
+        },
+        {
+          title: "Minecraft",
+          emoji: "🧱",
+          description: "Build and explore infinite worlds in this sandbox classic.",
+          url: "https://example.com/minecraft"
+        },
+        {
+          title: "Terraria",
+          emoji: "⛏️",
+          description: "Dig, fight, and explore in this 2D sandbox adventure.",
+          url: "https://example.com/terraria"
+        },
+        {
+          title: "Bloons TD 6",
+          emoji: "🎈",
+          description: "Defend your territory with monkey towers in this tower defense game.",
+          url: "https://example.com/bloons-td6"
+        },
+        {
+          title: "Stardew Valley",
+          emoji: "🌾",
+          description: "Farm, befriend villagers, and explore caves in this charming simulation.",
+          url: "https://example.com/stardew-valley"
+        },
+        {
+          title: "Fall Guys",
+          emoji: "🐻",
+          description: "Compete in chaotic obstacle courses with up to 60 players.",
+          url: "https://example.com/fall-guys"
+        },
+        {
+          title: "Roblox",
+          emoji: "🤖",
+          description: "Play millions of user-generated games in this massive platform.",
+          url: "https://example.com/roblox"
+        },
+        {
+          title: "Fortnite",
+          emoji: "🎮",
+          description: "Battle royale with building mechanics and frequent updates.",
+          url: "https://example.com/fortnite"
+        },
+        {
+          title: "Apex Legends",
+          emoji: "🎯",
+          description: "Team-based battle royale with unique character abilities.",
+          url: "https://example.com/apex-legends"
+        },
+        {
+          title: "Valorant",
+          emoji: "🔫",
+          description: "Tactical shooter with precise gunplay and agent abilities.",
+          url: "https://example.com/valorant"
+        },
+        {
+          title: "Overwatch 2",
+          emoji: "🛡️",
+          description: "Team-based first-person shooter with diverse heroes.",
+          url: "https://example.com/overwatch2"
+        },
+        {
+          title: "CS:GO",
+          emoji: "🔫",
+          description: "Classic tactical shooter with competitive matchmaking.",
+          url: "https://example.com/csgo"
+        },
+        {
+          title: "GTA V",
+          emoji: "🚗",
+          description: "Open-world action-adventure with story and online modes.",
+          url: "https://example.com/gta5"
+        },
+        {
+          title: "FIFA 24",
+          emoji: "⚽",
+          description: "The latest football simulation with realistic gameplay.",
+          url: "https://example.com/fifa24"
+        },
+        // --- Placeholder Games ---
+        {
+          title: "Game 21",
+          emoji: "🎮",
+          description: "Placeholder game 21 with a fun concept.",
+          url: "https://example.com/game21"
+        },
+        {
+          title: "Game 22",
+          emoji: "🕹️",
+          description: "Placeholder game 22 featuring retro vibes.",
+          url: "https://example.com/game22"
+        },
+        {
+          title: "Game 23",
+          emoji: "🚀",
+          description: "Placeholder game 23 with space adventure.",
+          url: "https://example.com/game23"
+        },
+        {
+          title: "Game 24",
+          emoji: "🏰",
+          description: "Placeholder game 24 set in a fantasy kingdom.",
+          url: "https://example.com/game24"
+        },
+        {
+          title: "Game 25",
+          emoji: "🐉",
+          description: "Placeholder game 25 with dragon battles.",
+          url: "https://example.com/game25"
+        },
+        {
+          title: "Game 26",
+          emoji: "🧩",
+          description: "Placeholder game 26 is a puzzle challenge.",
+          url: "https://example.com/game26"
+        },
+        {
+          title: "Game 27",
+          emoji: "🏎️",
+          description: "Placeholder game 27 is a racing simulator.",
+          url: "https://example.com/game27"
+        },
+        {
+          title: "Game 28",
+          emoji: "🛡️",
+          description: "Placeholder game 28 is a medieval strategy game.",
+          url: "https://example.com/game28"
+        },
+        {
+          title: "Game 29",
+          emoji: "🌌",
+          description: "Placeholder game 29 explores the cosmos.",
+          url: "https://example.com/game29"
+        },
+        {
+          title: "Game 30",
+          emoji: "🧙‍♂️",
+          description: "Placeholder game 30 is a wizard adventure.",
+          url: "https://example.com/game30"
+        }
+      ];
+    </script>
+    
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
