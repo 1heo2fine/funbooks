@@ -5,14 +5,14 @@ import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import CardItem from '@/components/CardItem';
 import ItemModal from '@/components/ItemModal';
+import NewsCard from '@/components/NewsCard';
 import { ITEMS_DATA, Item } from '@/data/games';
-import { Flame, Star, Crown, ChevronRight, Play } from 'lucide-react';
+import { Flame, Star, ChevronRight, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Index = () => {
   const [selectedTab, setSelectedTab] = useState<string>("home");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeItem, setActiveItem] = useState<Item | null>(null);
 
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -36,7 +36,6 @@ const Index = () => {
 
   const filteredItems = useMemo(() => {
     return ITEMS_DATA.filter((item) => {
-      // Search
       const matchesSearch =
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -44,7 +43,6 @@ const Index = () => {
 
       if (!matchesSearch) return false;
 
-      // Tab filtering
       if (selectedTab === "home") return true;
       if (selectedTab === "favorites") return favorites.includes(item.id);
       if (selectedTab === "popular") return item.badge === "Hot" || item.badge === "Top";
@@ -54,126 +52,242 @@ const Index = () => {
       if (selectedTab === "multiplayer") return item.category === "Action" || item.category === "Driving";
       if (selectedTab === "recent") return true;
 
-      // Category tab
       return item.category.toLowerCase() === selectedTab.toLowerCase();
     });
   }, [searchQuery, selectedTab, favorites]);
 
-  // Featured hero item for CrazyGames bento style
-  const featuredItem = ITEMS_DATA[0];
-  const secondaryFeatured = ITEMS_DATA[1];
-  const thirdFeatured = ITEMS_DATA[2];
+  // Bento layout items
+  const heroItem = ITEMS_DATA[0];
+  const bentoRow1 = ITEMS_DATA[1];
+  const bentoRow2 = ITEMS_DATA[2];
+  const bentoRow3 = ITEMS_DATA[3];
+  const bentoRow4 = ITEMS_DATA[4];
 
   return (
-    <div className="min-h-screen bg-[#0d0f18] text-white flex flex-col font-sans selection:bg-[#6c38ff] selection:text-white">
+    <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-neutral-800 selection:text-white">
+      {/* Header */}<dyad-write path="src/pages/Index.tsx" description="Complete Home page with pitch black styling, bento layouts, news updates, and hover sidebar integration without restricted words">
+"use client";
+
+import React, { useState, useMemo } from 'react';
+import Header from '@/components/Header';
+import Sidebar from '@/components/Sidebar';
+import CardItem from '@/components/CardItem';
+import ItemModal from '@/components/ItemModal';
+import NewsCard from '@/components/NewsCard';
+import { ITEMS_DATA, Item } from '@/data/games';
+import { Flame, Star, ChevronRight, Play, Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const Index = () => {
+  const [selectedTab, setSelectedTab] = useState<string>("home");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeItem, setActiveItem] = useState<Item | null>(null);
+
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem("funbooks-favorites");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleFavorite = (id: string) => {
+    setFavorites((prev) => {
+      const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
+      try {
+        localStorage.setItem("funbooks-favorites", JSON.stringify(next));
+      } catch (e) {}
+      return next;
+    });
+  };
+
+  const filteredItems = useMemo(() => {
+    return ITEMS_DATA.filter((item) => {
+      const matchesSearch =
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+      if (!matchesSearch) return false;
+
+      if (selectedTab === "home") return true;
+      if (selectedTab === "favorites") return favorites.includes(item.id);
+      if (selectedTab === "popular") return item.badge === "Hot" || item.badge === "Top";
+      if (selectedTab === "new") return item.badge === "New";
+      if (selectedTab === "updated") return item.badge === "Updated";
+      if (selectedTab === "originals") return item.badge === "Originals";
+      if (selectedTab === "multiplayer") return item.category === "Action" || item.category === "Driving";
+      if (selectedTab === "recent") return true;
+
+      return item.category.toLowerCase() === selectedTab.toLowerCase();
+    });
+  }, [searchQuery, selectedTab, favorites]);
+
+  // Bento layout items
+  const heroItem = ITEMS_DATA[0];
+  const bentoRow1 = ITEMS_DATA[1];
+  const bentoRow2 = ITEMS_DATA[2];
+  const bentoRow3 = ITEMS_DATA[3];
+  const bentoRow4 = ITEMS_DATA[4];
+
+  return (
+    <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-neutral-800 selection:text-white">
       {/* Top Header */}
       <Header
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
       />
 
-      {/* Main Body with Sidebar + Content */}
+      {/* Main Container */}
       <div className="flex flex-1 relative">
-        {/* Left Sidebar */}
+        {/* Left Hover Expandable Sidebar */}
         <Sidebar
           selectedTab={selectedTab}
           onSelectTab={(tabId) => setSelectedTab(tabId)}
-          isOpen={isSidebarOpen}
         />
 
-        {/* Content Canvas */}
-        <main
-          className={cn(
-            "flex-1 flex flex-col min-w-0 transition-all duration-200 p-4 sm:p-6",
-            isSidebarOpen ? "md:ml-60" : "ml-0"
-          )}
-        >
-          {/* Bento Featured Header on Home view when no search */}
+        {/* Content Viewport */}
+        <main className="flex-1 flex flex-col min-w-0 p-4 sm:p-6 ml-14 transition-all duration-200">
+          {/* Home View Sections */}
           {selectedTab === "home" && !searchQuery && (
-            <section className="mb-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {/* Large Big Feature Tile */}
-              <div
-                onClick={() => setActiveItem(featuredItem)}
-                className="md:col-span-2 lg:col-span-2 relative aspect-[16/10] sm:aspect-[2/1] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-gradient-to-br from-indigo-700 via-blue-900 to-slate-950 p-6 flex flex-col justify-end shadow-2xl hover:border-[#6c38ff] transition-all duration-200"
-              >
-                <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-black shadow-md uppercase">
-                  <Flame size={13} className="fill-white" />
-                  Featured
+            <>
+              {/* Continue Playing / Top Section */}
+              <div className="mb-6">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-300 mb-3 uppercase tracking-wider">
+                  <span>Continue</span>
+                  <ChevronRight size={13} className="text-neutral-500" />
                 </div>
-                <div className="absolute right-6 top-6 text-7xl opacity-80 group-hover:scale-110 transition-transform duration-300">
-                  {featuredItem.emoji}
-                </div>
-                <div className="relative z-10">
-                  <h2 className="text-2xl sm:text-3xl font-black text-white drop-shadow-md">
-                    {featuredItem.title}
-                  </h2>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-md line-clamp-2">
-                    {featuredItem.description}
-                  </p>
-                  <div className="mt-3 flex items-center gap-3">
-                    <button className="px-5 py-2 rounded-full bg-[#6c38ff] hover:bg-[#7b4aff] text-white text-xs font-bold shadow-lg shadow-[#6c38ff]/30 flex items-center gap-1.5 transition-transform group-hover:scale-105">
-                      <Play size={13} className="fill-white" />
-                      Play Now
-                    </button>
-                    <span className="text-xs text-slate-300">👥 {featuredItem.players} active</span>
+
+                <div className="flex items-center gap-3">
+                  <div
+                    onClick={() => setActiveItem(heroItem)}
+                    className="w-24 sm:w-28 aspect-square rounded-2xl bg-gradient-to-br from-neutral-800 to-black border border-white/10 p-2 flex flex-col items-center justify-center cursor-pointer relative group hover:border-white/30 transition-all shadow-xl"
+                  >
+                    <div className="absolute top-1.5 left-1.5">
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-amber-400 text-black font-extrabold shadow">
+                        Top
+                      </span>
+                    </div>
+                    <span className="text-3xl group-hover:scale-110 transition-transform">
+                      {heroItem.emoji}
+                    </span>
+                    <span className="text-[10px] font-bold text-neutral-300 truncate mt-1 max-w-full text-center">
+                      {heroItem.title}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Second Featured Tile */}
-              <div
-                onClick={() => setActiveItem(secondaryFeatured)}
-                className="relative aspect-[16/10] sm:aspect-auto rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-gradient-to-br from-emerald-600 via-teal-900 to-slate-950 p-5 flex flex-col justify-end shadow-xl hover:border-[#6c38ff] transition-all"
-              >
-                <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-black text-[10px] font-extrabold shadow">
-                  <Star size={11} className="fill-black" />
-                  Top
+              {/* Bento Grid: Top Picks */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-3">
+                  <h2 className="text-sm font-bold text-white tracking-wide uppercase">
+                    Top picks for you
+                  </h2>
                 </div>
-                <div className="absolute right-4 top-4 text-5xl opacity-80 group-hover:scale-110 transition-transform">
-                  {secondaryFeatured.emoji}
-                </div>
-                <div className="relative z-10">
-                  <h3 className="text-lg font-extrabold text-white">{secondaryFeatured.title}</h3>
-                  <p className="text-xs text-slate-300 line-clamp-1">{secondaryFeatured.category}</p>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
+                  {/* Big Hero Banner */}
+                  <div
+                    onClick={() => setActiveItem(heroItem)}
+                    className="md:col-span-6 relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer group border border-white/[0.08] bg-gradient-to-br from-neutral-800 via-neutral-900 to-black p-5 flex flex-col justify-end shadow-2xl hover:border-white/30 transition-all"
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px] opacity-40 pointer-events-none" />
+                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-orange-600 to-red-600 text-white text-[10px] font-bold shadow">
+                      <Flame size={11} className="fill-white" />
+                      Hot
+                    </div>
+                    <div className="absolute right-5 top-5 text-6xl opacity-75 group-hover:scale-110 transition-transform duration-300">
+                      {heroItem.emoji}
+                    </div>
+                    <div className="relative z-10">
+                      <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                        {heroItem.title}
+                      </h3>
+                      <p className="text-xs text-neutral-400 mt-0.5 max-w-sm line-clamp-1">
+                        {heroItem.description}
+                      </p>
+                      <div className="mt-3 flex items-center gap-3">
+                        <button className="px-4 py-1.5 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-bold shadow-lg flex items-center gap-1.5 transition-transform group-hover:scale-105">
+                          <Play size={12} className="fill-black" />
+                          Launch
+                        </button>
+                        {heroItem.players && (
+                          <span className="text-[11px] text-neutral-400">👥 {heroItem.players}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2x2 Bento Mini Tiles */}
+                  <div className="md:col-span-3 grid grid-cols-2 gap-3">
+                    {[bentoRow1, bentoRow2, bentoRow3, bentoRow4].map((item, idx) => (
+                      <div
+                        key={idx}
+                        onClick={() => setActiveItem(item)}
+                        className="relative aspect-square rounded-2xl overflow-hidden cursor-pointer group border border-white/[0.08] bg-gradient-to-br from-neutral-800 via-neutral-900 to-black p-3 flex flex-col justify-between shadow-xl hover:border-white/30 transition-all"
+                      >
+                        <div className="flex justify-between items-start">
+                          <span className="text-2xl group-hover:scale-110 transition-transform">
+                            {item.emoji}
+                          </span>
+                          {item.badge && (
+                            <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-white/10 text-neutral-300">
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white truncate">{item.title}</h4>
+                          <span className="text-[10px] text-neutral-500">{item.category}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Right Wide Labyrinth Maze Tile */}
+                  <div
+                    onClick={() => setActiveItem(ITEMS_DATA[3])}
+                    className="md:col-span-3 relative rounded-2xl overflow-hidden cursor-pointer group border border-white/[0.08] bg-gradient-to-b from-neutral-800 via-neutral-900 to-black p-4 flex flex-col justify-between shadow-2xl hover:border-white/30 transition-all"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] px-2 py-0.5 rounded-full bg-white/10 text-neutral-300 font-bold border border-white/10">
+                        Originals
+                      </span>
+                      <Sparkles size={14} className="text-neutral-400" />
+                    </div>
+                    <div className="flex flex-col items-center justify-center my-3 group-hover:scale-105 transition-transform">
+                      <span className="text-5xl">{ITEMS_DATA[3].emoji}</span>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-extrabold text-white truncate">{ITEMS_DATA[3].title}</h4>
+                      <p className="text-[11px] text-neutral-400 line-clamp-1">{ITEMS_DATA[3].description}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Third Featured Tile */}
-              <div
-                onClick={() => setActiveItem(thirdFeatured)}
-                className="relative aspect-[16/10] sm:aspect-auto rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-gradient-to-br from-orange-600 via-amber-800 to-neutral-950 p-5 flex flex-col justify-end shadow-xl hover:border-[#6c38ff] transition-all"
-              >
-                <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-black text-[10px] font-extrabold shadow">
-                  <Star size={11} className="fill-black" />
-                  Top
-                </div>
-                <div className="absolute right-4 top-4 text-5xl opacity-80 group-hover:scale-110 transition-transform">
-                  {thirdFeatured.emoji}
-                </div>
-                <div className="relative z-10">
-                  <h3 className="text-lg font-extrabold text-white">{thirdFeatured.title}</h3>
-                  <p className="text-xs text-slate-300 line-clamp-1">{thirdFeatured.category}</p>
-                </div>
-              </div>
-            </section>
+              {/* News & Updates Section on Home */}
+              <NewsCard />
+            </>
           )}
 
           {/* Section Header */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3.5">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-extrabold text-white capitalize flex items-center gap-2">
-                {selectedTab === "home" ? "Discover" : selectedTab}
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 text-slate-300">
+              <h2 className="text-sm sm:text-base font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
+                {selectedTab === "home" ? "Featured Items" : selectedTab}
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.08] text-neutral-400">
                   {filteredItems.length}
                 </span>
               </h2>
             </div>
           </div>
 
-          {/* Responsive 6-column Grid */}
+          {/* Clean 6-Column Card Grid */}
           {filteredItems.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-3.5">
               {filteredItems.map((item) => (
                 <CardItem
                   key={item.id}
@@ -185,10 +299,10 @@ const Index = () => {
               ))}
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-[#141724] rounded-3xl border border-white/5 my-8">
-              <div className="text-4xl mb-2">🔍</div>
-              <h3 className="text-base font-bold text-white mb-1">No Results</h3>
-              <p className="text-xs text-slate-400 mb-4">
+            <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-[#0d0d11] rounded-2xl border border-white/[0.06] my-6">
+              <div className="text-3xl mb-2">🔍</div>
+              <h3 className="text-sm font-bold text-white mb-1">No Results Found</h3>
+              <p className="text-xs text-neutral-500 mb-4">
                 No items match your criteria.
               </p>
               <button
@@ -196,16 +310,16 @@ const Index = () => {
                   setSearchQuery("");
                   setSelectedTab("home");
                 }}
-                className="px-4 py-2 text-xs font-bold rounded-full bg-[#6c38ff] text-white hover:bg-[#7b4aff]"
+                className="px-4 py-1.5 text-xs font-bold rounded-full bg-white text-black hover:bg-neutral-200 transition-colors"
               >
-                View Discover
+                Show All
               </button>
             </div>
           )}
         </main>
       </div>
 
-      {/* Modal Viewer */}
+      {/* Item Modal Player */}
       <ItemModal
         item={activeItem}
         onClose={() => setActiveItem(null)}

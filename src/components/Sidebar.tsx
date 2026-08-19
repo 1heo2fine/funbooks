@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Home,
   Clock,
@@ -17,22 +17,20 @@ import {
   Layers,
   MousePointerClick,
   Car,
-  Heart,
-  ChevronRight
+  Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
   selectedTab: string;
   onSelectTab: (tabId: string) => void;
-  isOpen: boolean;
 }
 
 export const MAIN_NAV = [
   { id: "home", label: "Home", icon: Home },
   { id: "recent", label: "Recently played", icon: Clock },
   { id: "new", label: "New", icon: Sparkles },
-  { id: "popular", label: "Popular", icon: Flame, badge: "Hot" },
+  { id: "popular", label: "Popular", icon: Flame },
   { id: "updated", label: "Updated", icon: RotateCw },
   { id: "originals", label: "Originals", icon: Crown },
   { id: "multiplayer", label: "Multiplayer", icon: Users },
@@ -51,15 +49,20 @@ export const CATEGORIES_NAV = [
   { id: "Sports", label: "Sports", icon: Trophy },
 ];
 
-const Sidebar = ({ selectedTab, onSelectTab, isOpen }: SidebarProps) => {
+const Sidebar = ({ selectedTab, onSelectTab }: SidebarProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <aside
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "fixed top-14 left-0 bottom-0 z-30 w-60 bg-[#0d0f18] border-r border-white/5 flex flex-col transition-transform duration-200 overflow-y-auto select-none",
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        "fixed top-14 left-0 bottom-0 z-30 bg-black border-r border-white/[0.08] flex flex-col transition-all duration-300 ease-in-out select-none shadow-2xl overflow-y-auto overflow-x-hidden scrollbar-none",
+        isHovered ? "w-56 shadow-black/80 ring-1 ring-white/10" : "w-14"
       )}
     >
-      <div className="py-2 px-2 flex flex-col gap-0.5">
+      {/* Main Discover Group */}
+      <div className="py-2.5 px-1.5 flex flex-col gap-1">
         {MAIN_NAV.map((item) => {
           const Icon = item.icon;
           const isActive = selectedTab === item.id;
@@ -67,30 +70,42 @@ const Sidebar = ({ selectedTab, onSelectTab, isOpen }: SidebarProps) => {
             <button
               key={item.id}
               onClick={() => onSelectTab(item.id)}
+              title={!isHovered ? item.label : undefined}
               className={cn(
-                "flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-[13px] font-semibold transition-colors duration-150 w-full text-left relative",
+                "flex items-center gap-3.5 px-2.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 w-full text-left relative",
                 isActive
-                  ? "bg-[#6c38ff]/20 text-[#a881ff] font-bold"
-                  : "text-slate-300 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-neutral-800 text-white font-bold ring-1 ring-white/10 shadow-inner"
+                  : "text-neutral-400 hover:text-white hover:bg-neutral-900"
               )}
             >
-              <Icon size={18} className={cn(isActive ? "text-[#a881ff]" : "text-slate-400")} />
-              <span className="flex-1 truncate">{item.label}</span>
-              {isActive && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#a881ff]" />
+              <div className="w-5 flex justify-center shrink-0">
+                <Icon size={18} className={cn(isActive ? "text-white" : "text-neutral-400")} />
+              </div>
+              <span
+                className={cn(
+                  "truncate transition-opacity duration-200 whitespace-nowrap",
+                  isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}
+              >
+                {item.label}
+              </span>
+              {isActive && isHovered && (
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />
               )}
             </button>
           );
         })}
       </div>
 
-      <div className="my-2 border-t border-white/5 mx-3" />
+      <div className="my-1.5 border-t border-white/[0.08] mx-2" />
 
-      {/* Categories Section */}
-      <div className="py-1 px-2 flex flex-col gap-0.5 pb-12">
-        <div className="px-3.5 py-1 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-          Categories
-        </div>
+      {/* Categories Group */}
+      <div className="py-1 px-1.5 flex flex-col gap-1 pb-16">
+        {isHovered && (
+          <div className="px-3 py-1 text-[10px] font-bold text-neutral-500 uppercase tracking-wider animate-in fade-in duration-200">
+            Categories
+          </div>
+        )}
         {CATEGORIES_NAV.map((item) => {
           const Icon = item.icon;
           const isActive = selectedTab === item.id;
@@ -98,15 +113,25 @@ const Sidebar = ({ selectedTab, onSelectTab, isOpen }: SidebarProps) => {
             <button
               key={item.id}
               onClick={() => onSelectTab(item.id)}
+              title={!isHovered ? item.label : undefined}
               className={cn(
-                "flex items-center gap-3.5 px-3.5 py-2 rounded-xl text-[13px] font-medium transition-colors duration-150 w-full text-left",
+                "flex items-center gap-3.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 w-full text-left",
                 isActive
-                  ? "bg-[#6c38ff]/20 text-[#a881ff] font-bold"
-                  : "text-slate-400 hover:text-slate-100 hover:bg-white/[0.04]"
+                  ? "bg-neutral-800 text-white font-bold ring-1 ring-white/10"
+                  : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900"
               )}
             >
-              <Icon size={17} className={cn(isActive ? "text-[#a881ff]" : "text-slate-500")} />
-              <span className="flex-1 truncate">{item.label}</span>
+              <div className="w-5 flex justify-center shrink-0">
+                <Icon size={17} className={cn(isActive ? "text-white" : "text-neutral-500")} />
+              </div>
+              <span
+                className={cn(
+                  "truncate transition-opacity duration-200 whitespace-nowrap",
+                  isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}
+              >
+                {item.label}
+              </span>
             </button>
           );
         })}

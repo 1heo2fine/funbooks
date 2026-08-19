@@ -5,7 +5,6 @@ export interface Item {
   emoji: string;
   gradient: string;
   badge?: "Top" | "Hot" | "Originals" | "Updated" | "New";
-  size?: "large" | "wide" | "normal";
   description: string;
   url: string;
   players?: string;
@@ -17,9 +16,8 @@ export const ITEMS_DATA: Item[] = [
     title: "2v2.io",
     category: "Action",
     emoji: "🍌",
-    gradient: "from-amber-500 via-sky-600 to-indigo-950",
+    gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Hot",
-    size: "large",
     description: "Multiplayer battle arena with intense building & shootouts.",
     url: "https://example.com/2v2",
     players: "128k"
@@ -29,9 +27,8 @@ export const ITEMS_DATA: Item[] = [
     title: "bloxd.io",
     category: "Adventure",
     emoji: "⛏️",
-    gradient: "from-emerald-600 via-teal-800 to-slate-900",
+    gradient: "from-stone-800 via-neutral-900 to-black",
     badge: "Top",
-    size: "normal",
     description: "Voxel multiplayer building, parkour, and creative sandbox.",
     url: "https://example.com/bloxd",
     players: "94.2k"
@@ -41,10 +38,9 @@ export const ITEMS_DATA: Item[] = [
     title: "KOUR.io",
     category: "Action",
     emoji: "🐔",
-    gradient: "from-orange-600 via-amber-700 to-zinc-900",
+    gradient: "from-zinc-800 via-stone-900 to-black",
     badge: "Top",
-    size: "normal",
-    description: "Fast-paced blocky first-person tactical multiplayer battles.",
+    description: "Fast-paced blocky tactical multiplayer battles.",
     url: "https://example.com/kour",
     players: "76.8k"
   },
@@ -53,9 +49,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Labyrinth Run",
     category: "Puzzle",
     emoji: "🧭",
-    gradient: "from-zinc-200 via-slate-400 to-zinc-800",
+    gradient: "from-neutral-700 via-zinc-900 to-black",
     badge: "Originals",
-    size: "wide",
     description: "Find your way through infinite optical black & white mazes.",
     url: "https://example.com/maze",
     players: "43.1k"
@@ -65,10 +60,9 @@ export const ITEMS_DATA: Item[] = [
     title: "Mahjongg Solitaire",
     category: "Board",
     emoji: "🀄",
-    gradient: "from-emerald-900 via-teal-950 to-slate-950",
+    gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Top",
-    size: "normal",
-    description: "Classic tile-matching strategy with traditional Chinese art.",
+    description: "Classic tile-matching strategy with traditional art.",
     url: "https://example.com/mahjongg",
     players: "51.3k"
   },
@@ -77,9 +71,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Soap Sparkle",
     category: "Clicker",
     emoji: "🧼",
-    gradient: "from-pink-500 via-rose-600 to-amber-900",
+    gradient: "from-neutral-800 via-stone-900 to-black",
     badge: "Top",
-    size: "normal",
     description: "Satisfying pressure washing & cleanup simulator.",
     url: "https://example.com/soap-clean",
     players: "38.9k"
@@ -89,9 +82,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Shell Shockers",
     category: "Action",
     emoji: "🥚",
-    gradient: "from-amber-600 via-orange-800 to-stone-950",
+    gradient: "from-stone-800 via-zinc-900 to-black",
     badge: "Top",
-    size: "normal",
     description: "Multiplayer egg combat arena with custom weaponry.",
     url: "https://example.com/shellshockers",
     players: "140k"
@@ -101,10 +93,9 @@ export const ITEMS_DATA: Item[] = [
     title: "Mini Royale",
     category: "Action",
     emoji: "🪖",
-    gradient: "from-violet-800 via-purple-950 to-slate-950",
+    gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Top",
-    size: "normal",
-    description: "Battle royale with fast gunplay and custom soldier gear.",
+    description: "Battle arena with fast combat and custom soldier gear.",
     url: "https://example.com/mini-royale",
     players: "82.4k"
   },
@@ -113,9 +104,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Smash Karts",
     category: "Driving",
     emoji: "🏎️",
-    gradient: "from-cyan-600 via-blue-800 to-slate-950",
+    gradient: "from-neutral-800 via-zinc-900 to-black",
     badge: "Updated",
-    size: "normal",
     description: "3D multiplayer kart battles with rocket launchers and power-ups.",
     url: "https://example.com/smash-karts",
     players: "115k"
@@ -125,10 +115,9 @@ export const ITEMS_DATA: Item[] = [
     title: "Ev.io",
     category: "Action",
     emoji: "🤖",
-    gradient: "from-red-600 via-rose-900 to-stone-950",
+    gradient: "from-stone-800 via-neutral-900 to-black",
     badge: "Hot",
-    size: "normal",
-    description: "Futuristic halo-inspired arena shooter in neon cyberpunk spaces.",
+    description: "Futuristic tactical shooter in cyberpunk arenas.",
     url: "https://example.com/ev-io",
     players: "64.7k"
   },
@@ -137,9 +126,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Slope Speed",
     category: "Arcade",
     emoji: "⛰️",
-    gradient: "from-emerald-500 via-green-800 to-slate-950",
+    gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Top",
-    size: "normal",
     description: "Speed down neon 3D tracks dodging shifting barriers.",
     url: "https://example.com/slope",
     players: "102k"
@@ -149,9 +137,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Moto X3M",
     category: "Driving",
     emoji: "🏍️",
-    gradient: "from-orange-500 via-amber-700 to-neutral-950",
+    gradient: "from-neutral-800 via-stone-900 to-black",
     badge: "Hot",
-    size: "normal",
     description: "Perform crazy motorbike flips over hazardous tracks.",
     url: "https://example.com/moto-x3m",
     players: "91.2k"
@@ -161,9 +148,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Elemental Temple",
     category: "Puzzle",
     emoji: "🔥💧",
-    gradient: "from-rose-600 via-indigo-900 to-slate-950",
+    gradient: "from-stone-800 via-zinc-900 to-black",
     badge: "Top",
-    size: "normal",
     description: "Solve dual-character elemental puzzles through temple mazes.",
     url: "https://example.com/fireboy",
     players: "87.0k"
@@ -173,9 +159,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Cookie Baker",
     category: "Clicker",
     emoji: "🍪",
-    gradient: "from-amber-600 via-yellow-800 to-stone-950",
+    gradient: "from-zinc-800 via-stone-900 to-black",
     badge: "Hot",
-    size: "normal",
     description: "Bake trillions of cookies and build planetary factories.",
     url: "https://example.com/cookie-clicker",
     players: "68.3k"
@@ -185,9 +170,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Subway Track Dash",
     category: "Arcade",
     emoji: "🚇",
-    gradient: "from-cyan-500 via-blue-900 to-slate-950",
+    gradient: "from-neutral-800 via-zinc-900 to-black",
     badge: "Top",
-    size: "normal",
     description: "Dash along endless railway tracks collecting gold coins.",
     url: "https://example.com/subway",
     players: "135k"
@@ -197,9 +181,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Hoop Slam 3D",
     category: "Sports",
     emoji: "🏀",
-    gradient: "from-orange-600 via-red-900 to-slate-950",
+    gradient: "from-stone-800 via-neutral-900 to-black",
     badge: "Originals",
-    size: "normal",
     description: "Dunk basketballs with realistic physics and trick shots.",
     url: "https://example.com/hoop-slam",
     players: "29.4k"
@@ -209,10 +192,9 @@ export const ITEMS_DATA: Item[] = [
     title: "Stickman Brawler",
     category: "Action",
     emoji: "🥋",
-    gradient: "from-indigo-600 via-purple-900 to-slate-950",
+    gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Hot",
-    size: "normal",
-    description: "High-octane duel arena with laser swords and physics.",
+    description: "High-octane duel arena with physics.",
     url: "https://example.com/stickman-brawler",
     players: "73.5k"
   },
@@ -221,9 +203,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Blackjack 21",
     category: "Card",
     emoji: "🃏",
-    gradient: "from-emerald-800 via-green-950 to-neutral-950",
+    gradient: "from-neutral-800 via-stone-900 to-black",
     badge: "New",
-    size: "normal",
     description: "Test card probabilities against dynamic AI dealers.",
     url: "https://example.com/blackjack",
     players: "21.6k"
@@ -233,9 +214,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Drift Boss 3D",
     category: "Driving",
     emoji: "🏎️",
-    gradient: "from-fuchsia-600 via-purple-950 to-slate-950",
+    gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Hot",
-    size: "normal",
     description: "Timing-based drifting along sharp highway cliffs.",
     url: "https://example.com/drift-boss",
     players: "58.1k"
@@ -245,9 +225,8 @@ export const ITEMS_DATA: Item[] = [
     title: "Master Chess",
     category: "Board",
     emoji: "♟️",
-    gradient: "from-stone-700 via-zinc-900 to-black",
+    gradient: "from-stone-800 via-zinc-900 to-black",
     badge: "Top",
-    size: "normal",
     description: "Strategic classic chess with puzzles and multiplayer ranks.",
     url: "https://example.com/chess",
     players: "44.9k"
