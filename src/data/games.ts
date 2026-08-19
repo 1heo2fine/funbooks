@@ -1,409 +1,467 @@
-export interface Game {
+export interface Item {
   id: string;
   title: string;
   category: string;
   emoji: string;
   gradient: string;
-  badge?: "Top" | "Hot" | "Originals" | "New";
+  badge?: "Top" | "Hot" | "Originals" | "Updated" | "New";
+  size?: "large" | "wide" | "normal";
   description: string;
   url: string;
   players?: string;
-  rating?: number;
 }
 
-export const GAMES_DATA: Game[] = [
+export const ITEMS_DATA: Item[] = [
   {
-    id: "war-knights",
-    title: "War The Knights",
+    id: "fortzone-2v2",
+    title: "2v2.io",
     category: "Action",
-    emoji: "⚔️",
-    gradient: "from-blue-900 via-indigo-950 to-slate-900",
-    badge: "Top",
-    description: "Battle legions of medieval knights in intense sword duels.",
-    url: "https://example.com/war-knights",
-    players: "12.4k"
-  },
-  {
-    id: "stickman-clash",
-    title: "Stickman Clash",
-    category: "Action",
-    emoji: "🥋",
-    gradient: "from-sky-700 via-indigo-900 to-blue-950",
+    emoji: "🍌",
+    gradient: "from-amber-500 via-sky-600 to-indigo-950",
     badge: "Hot",
-    description: "Epic stickman brawler action with special laser abilities.",
-    url: "https://example.com/stickman-clash",
-    players: "45.1k"
+    size: "large",
+    description: "Multiplayer battle arena with intense building & shootouts.",
+    url: "https://example.com/2v2",
+    players: "128k"
   },
   {
-    id: "warfare-1942",
-    title: "Warfare 1942",
-    category: "Action",
-    emoji: "🪖",
-    gradient: "from-amber-900 via-stone-900 to-neutral-950",
-    badge: "Hot",
-    description: "Realistic tactical battlefield action with armor & tanks.",
-    url: "https://example.com/warfare-1942",
-    players: "28.9k"
-  },
-  {
-    id: "fortzone-battle",
-    title: "Fortzone Battle",
-    category: "Action",
-    emoji: "🪂",
-    gradient: "from-cyan-600 via-blue-900 to-slate-950",
+    id: "bloxd-io",
+    title: "bloxd.io",
+    category: "Adventure",
+    emoji: "⛏️",
+    gradient: "from-emerald-600 via-teal-800 to-slate-900",
     badge: "Top",
-    description: "Parachute onto the island and outlive 100 players.",
-    url: "https://example.com/fortzone",
-    players: "89.2k"
+    size: "normal",
+    description: "Voxel multiplayer building, parkour, and creative sandbox.",
+    url: "https://example.com/bloxd",
+    players: "94.2k"
   },
   {
-    id: "iron-legion",
-    title: "Iron Legion",
+    id: "kour-io",
+    title: "KOUR.io",
     category: "Action",
-    emoji: "🛡️",
-    gradient: "from-orange-800 via-red-950 to-zinc-950",
+    emoji: "🐔",
+    gradient: "from-orange-600 via-amber-700 to-zinc-900",
     badge: "Top",
-    description: "Command futuristic tanks and crush hostile armadas.",
-    url: "https://example.com/iron-legion",
-    players: "19.5k"
+    size: "normal",
+    description: "Fast-paced blocky first-person tactical multiplayer battles.",
+    url: "https://example.com/kour",
+    players: "76.8k"
   },
   {
-    id: "99-nights",
-    title: "99 Nights",
-    category: "Action",
-    emoji: "🌑",
-    gradient: "from-blue-950 via-slate-900 to-black",
-    badge: "Originals",
-    description: "Survive 99 continuous nights in a haunted voxel realm.",
-    url: "https://example.com/99-nights",
-    players: "34.1k"
-  },
-  {
-    id: "flappy-cube",
-    title: "Fly Block 3D",
-    category: "Casual",
-    emoji: "📦",
-    gradient: "from-yellow-500 via-amber-600 to-rose-900",
-    badge: "Hot",
-    description: "Flap your golden wings and dodge treacherous obstacles.",
-    url: "https://example.com/fly-block",
-    players: "15.7k"
-  },
-  {
-    id: "level-race",
-    title: "Level 999 Runner",
-    category: "Casual",
-    emoji: "🏃",
-    gradient: "from-teal-600 via-emerald-800 to-slate-900",
-    description: "Level up your character and outpace rival runners.",
-    url: "https://example.com/level-runner",
-    players: "22.3k"
-  },
-  {
-    id: "bloons-td",
-    title: "Bloons Tower Defense",
-    category: "Strategy",
-    emoji: "🎈",
-    gradient: "from-sky-500 via-blue-700 to-indigo-950",
-    badge: "Top",
-    description: "Deploy super monkeys to pop incoming balloon waves.",
-    url: "https://example.com/bloons-td",
-    players: "98.4k"
-  },
-  {
-    id: "build-crush",
-    title: "Build & Crush",
-    category: "Action",
-    emoji: "💣",
-    gradient: "from-blue-600 via-indigo-800 to-slate-950",
-    badge: "Originals",
-    description: "Build colossal structures then destroy them with TNT!",
-    url: "https://example.com/build-crush",
-    players: "41.6k"
-  },
-  {
-    id: "squad-survival",
-    title: "Survival Arena",
-    category: "Action",
-    emoji: "🎭",
-    gradient: "from-purple-800 via-pink-950 to-slate-950",
-    badge: "Hot",
-    description: "Avoid creepy chasers in a wild multi-room maze.",
-    url: "https://example.com/survival-arena",
-    players: "63.0k"
-  },
-  {
-    id: "hoop-shot-3d",
-    title: "Hoop Shot 3D",
-    category: "Sports",
-    emoji: "🏀",
-    gradient: "from-emerald-600 via-teal-900 to-slate-950",
-    badge: "Originals",
-    description: "Arc trick shots into the basket across varied arenas.",
-    url: "https://example.com/hoop-shot",
-    players: "18.2k"
-  },
-  {
-    id: "type-racer",
-    title: "Keyboard Speed Drift",
-    category: "Racing",
-    emoji: "🏎️",
-    gradient: "from-slate-700 via-zinc-800 to-neutral-950",
-    badge: "Hot",
-    description: "Type rapidly along keys to boost your sports car!",
-    url: "https://example.com/type-racer",
-    players: "14.8k"
-  },
-  {
-    id: "ships-3d",
-    title: "Ships 3D",
-    category: "Action",
-    emoji: "🏴‍☠️",
-    gradient: "from-sky-700 via-blue-900 to-slate-950",
-    badge: "Top",
-    description: "Naval warfare with massive cannons and pirate ships.",
-    url: "https://example.com/ships-3d",
-    players: "37.5k"
-  },
-  {
-    id: "lumen-puzzle",
-    title: "Lumen Core",
+    id: "maze-escape-3d",
+    title: "Labyrinth Run",
     category: "Puzzle",
-    emoji: "🔮",
-    gradient: "from-violet-900 via-purple-950 to-slate-950",
-    description: "Reflect radiant light rays through optical black holes.",
-    url: "https://example.com/lumen",
-    players: "9.3k"
-  },
-  {
-    id: "stickman-kombat-2d",
-    title: "Stickman Kombat 2D",
-    category: "Action",
-    emoji: "🥷",
-    gradient: "from-yellow-700 via-amber-900 to-stone-950",
-    badge: "Hot",
-    description: "Master martial arts combos in high-velocity fights.",
-    url: "https://example.com/stickman-kombat",
-    players: "52.7k"
-  },
-  {
-    id: "house-of-hazards",
-    title: "House of Hazards",
-    category: "Action",
-    emoji: "🏠",
-    gradient: "from-emerald-700 via-green-950 to-neutral-950",
-    badge: "Top",
-    description: "Hilarious multiplayer chaos dodging toaster traps!",
-    url: "https://example.com/house-of-hazards",
-    players: "84.2k"
-  },
-  {
-    id: "fighter-2-player",
-    title: "Fighter 2 Player",
-    category: "Action",
-    emoji: "🥊",
-    gradient: "from-blue-600 via-indigo-900 to-cyan-950",
+    emoji: "🧭",
+    gradient: "from-zinc-200 via-slate-400 to-zinc-800",
     badge: "Originals",
-    description: "Grab a friend on the same keyboard for ragdoll boxing.",
-    url: "https://example.com/fighter-2-player",
-    players: "30.1k"
+    size: "wide",
+    description: "Find your way through infinite optical black & white mazes.",
+    url: "https://example.com/maze",
+    players: "43.1k"
+  },
+  {
+    id: "mahjongg-solitaire",
+    title: "Mahjongg Solitaire",
+    category: "Board",
+    emoji: "🀄",
+    gradient: "from-emerald-900 via-teal-950 to-slate-950",
+    badge: "Top",
+    size: "normal",
+    description: "Classic tile-matching strategy with traditional Chinese art.",
+    url: "https://example.com/mahjongg",
+    players: "51.3k"
+  },
+  {
+    id: "soap-cleaner-3d",
+    title: "Soap Sparkle",
+    category: "Clicker",
+    emoji: "🧼",
+    gradient: "from-pink-500 via-rose-600 to-amber-900",
+    badge: "Top",
+    size: "normal",
+    description: "Satisfying pressure washing & cleanup simulator.",
+    url: "https://example.com/soap-clean",
+    players: "38.9k"
   },
   {
     id: "shell-shockers",
     title: "Shell Shockers",
     category: "Action",
     emoji: "🥚",
-    gradient: "from-amber-600 via-orange-900 to-stone-950",
+    gradient: "from-amber-600 via-orange-800 to-stone-950",
     badge: "Top",
-    description: "Multiplayer first-person egg shooter arena.",
+    size: "normal",
+    description: "Multiplayer egg combat arena with custom weaponry.",
     url: "https://example.com/shellshockers",
-    players: "112k"
+    players: "140k"
   },
   {
-    id: "slope-3d",
-    title: "Slope 3D",
+    id: "mini-royale",
+    title: "Mini Royale",
     category: "Action",
-    emoji: "⛰️",
-    gradient: "from-emerald-600 via-green-900 to-slate-950",
+    emoji: "🪖",
+    gradient: "from-violet-800 via-purple-950 to-slate-950",
     badge: "Top",
-    description: "Roll down infinite neon slopes at breakneck speeds.",
-    url: "https://example.com/slope",
-    players: "95.6k"
+    size: "normal",
+    description: "Battle royale with fast gunplay and custom soldier gear.",
+    url: "https://example.com/mini-royale",
+    players: "82.4k"
   },
   {
-    id: "run-3",
-    title: "Run 3 Space",
-    category: "Casual",
-    emoji: "🚀",
-    gradient: "from-indigo-600 via-violet-900 to-zinc-950",
+    id: "smash-karts",
+    title: "Smash Karts",
+    category: "Driving",
+    emoji: "🏎️",
+    gradient: "from-cyan-600 via-blue-800 to-slate-950",
+    badge: "Updated",
+    size: "normal",
+    description: "3D multiplayer kart battles with rocket launchers and power-ups.",
+    url: "https://example.com/smash-karts",
+    players: "115k"
+  },
+  {
+    id: "ev-io",
+    title: "Ev.io",
+    category: "Action",
+    emoji: "🤖",
+    gradient: "from-red-600 via-rose-900 to-stone-950",
+    badge: "Hot",
+    size: "normal",
+    description: "Futuristic halo-inspired arena shooter in neon cyberpunk spaces.",
+    url: "https://example.com/ev-io",
+    players: "64.7k"
+  },
+  {
+    id: "slope-run",
+    title: "Slope Speed",
+    category: "Arcade",
+    emoji: "⛰️",
+    gradient: "from-emerald-500 via-green-800 to-slate-950",
     badge: "Top",
-    description: "Run through planetary tunnels defying gravity.",
-    url: "https://example.com/run3",
-    players: "72.4k"
+    size: "normal",
+    description: "Speed down neon 3D tracks dodging shifting barriers.",
+    url: "https://example.com/slope",
+    players: "102k"
   },
   {
     id: "moto-x3m",
-    title: "Moto X3M Pool Party",
-    category: "Racing",
+    title: "Moto X3M",
+    category: "Driving",
     emoji: "🏍️",
-    gradient: "from-orange-600 via-amber-800 to-neutral-950",
+    gradient: "from-orange-500 via-amber-700 to-neutral-950",
     badge: "Hot",
-    description: "Perform crazy motorbike flips over deadly obstacles.",
+    size: "normal",
+    description: "Perform crazy motorbike flips over hazardous tracks.",
     url: "https://example.com/moto-x3m",
-    players: "68.9k"
+    players: "91.2k"
   },
   {
     id: "fireboy-watergirl",
-    title: "Fireboy & Watergirl",
+    title: "Elemental Temple",
     category: "Puzzle",
-    emoji: "🔥",
-    gradient: "from-rose-700 via-indigo-900 to-slate-950",
+    emoji: "🔥💧",
+    gradient: "from-rose-600 via-indigo-900 to-slate-950",
     badge: "Top",
-    description: "Cooperative dungeon puzzles with elemental duos.",
+    size: "normal",
+    description: "Solve dual-character elemental puzzles through temple mazes.",
     url: "https://example.com/fireboy",
-    players: "80.3k"
+    players: "87.0k"
   },
   {
     id: "cookie-clicker",
-    title: "Cookie Empire",
-    category: "Casual",
+    title: "Cookie Baker",
+    category: "Clicker",
     emoji: "🍪",
-    gradient: "from-amber-700 via-yellow-900 to-stone-950",
+    gradient: "from-amber-600 via-yellow-800 to-stone-950",
     badge: "Hot",
-    description: "Click your way to trillions of sweet cookies.",
+    size: "normal",
+    description: "Bake trillions of cookies and build planetary factories.",
     url: "https://example.com/cookie-clicker",
-    players: "49.1k"
+    players: "68.3k"
   },
   {
-    id: "subway-surfers",
-    title: "Metro Subway Rush",
-    category: "Casual",
+    id: "subway-runners",
+    title: "Subway Track Dash",
+    category: "Arcade",
     emoji: "🚇",
-    gradient: "from-cyan-600 via-blue-900 to-slate-950",
+    gradient: "from-cyan-500 via-blue-900 to-slate-950",
     badge: "Top",
-    description: "Dash along train tracks and dodge oncoming obstacles.",
-    url: "https://example.com/subway-surfers",
-    players: "120k"
+    size: "normal",
+    description: "Dash along endless railway tracks collecting gold coins.",
+    url: "https://example.com/subway",
+    players: "135k"
   },
   {
-    id: "geometry-dash",
-    title: "Neon Dash Challenge",
-    category: "Casual",
-    emoji: "🔷",
-    gradient: "from-fuchsia-600 via-purple-900 to-zinc-950",
-    badge: "Hot",
-    description: "Rhythm-based jump mechanics with adrenaline music.",
-    url: "https://example.com/geometry-dash",
-    players: "78.2k"
-  },
-  {
-    id: "mine-craft-voxel",
-    title: "Voxel Craft Builder",
-    category: "Strategy",
-    emoji: "⛏️",
-    gradient: "from-emerald-700 via-teal-950 to-neutral-950",
-    badge: "Top",
-    description: "Mine blocks, craft tools and build towering castles.",
-    url: "https://example.com/voxel-craft",
-    players: "150k"
-  },
-  {
-    id: "fall-party",
-    title: "Fall Party Royale",
-    category: "Casual",
-    emoji: "👑",
-    gradient: "from-pink-600 via-purple-900 to-slate-950",
-    badge: "Originals",
-    description: "Stumble through hilarious physics mini-games.",
-    url: "https://example.com/fall-party",
-    players: "61.3k"
-  },
-  {
-    id: "cyber-drift",
-    title: "Cyberpunk Drift",
-    category: "Racing",
-    emoji: "🏎️",
-    gradient: "from-violet-700 via-fuchsia-950 to-slate-950",
-    badge: "New",
-    description: "Drift high-performance supercars through neon city curves.",
-    url: "https://example.com/cyber-drift",
-    players: "21.0k"
-  },
-  {
-    id: "dragon-slayer-rpg",
-    title: "Dragon Slayer RPG",
-    category: "Action",
-    emoji: "🐉",
-    gradient: "from-red-700 via-orange-950 to-black",
-    badge: "New",
-    description: "Hunt ancient mythical dragons and forge fiery blades.",
-    url: "https://example.com/dragon-slayer",
-    players: "33.7k"
-  },
-  {
-    id: "pixel-dungeon",
-    title: "Pixel Rogue Dungeon",
-    category: "Action",
-    emoji: "🗝️",
-    gradient: "from-stone-700 via-zinc-900 to-black",
-    badge: "New",
-    description: "Crawl through randomly generated dungeons with loot.",
-    url: "https://example.com/pixel-dungeon",
-    players: "19.8k"
-  },
-  {
-    id: "galaxy-conquest",
-    title: "Galaxy Fleet Wars",
-    category: "Strategy",
-    emoji: "🌌",
-    gradient: "from-blue-700 via-indigo-950 to-black",
-    badge: "Originals",
-    description: "Build star cruisers and conquer solar sectors.",
-    url: "https://example.com/galaxy-fleet",
-    players: "25.4k"
-  },
-  {
-    id: "archery-master",
-    title: "Precision Bow 3D",
+    id: "hoop-stars",
+    title: "Hoop Slam 3D",
     category: "Sports",
-    emoji: "🎯",
-    gradient: "from-emerald-700 via-cyan-950 to-slate-950",
-    badge: "New",
-    description: "Hit bullseyes in turbulent wind conditions.",
-    url: "https://example.com/archery-3d",
-    players: "16.1k"
-  },
-  {
-    id: "circus-acrobat",
-    title: "Circus Acrobat Stars",
-    category: "Casual",
-    emoji: "🎪",
-    gradient: "from-rose-600 via-red-950 to-neutral-950",
-    badge: "New",
-    description: "Perform daring high-flying trapeze stunts.",
-    url: "https://example.com/circus-stars",
-    players: "11.2k"
-  },
-  {
-    id: "dice-tactics",
-    title: "Dice & Tactics",
-    category: "Strategy",
-    emoji: "🎲",
-    gradient: "from-purple-700 via-indigo-950 to-slate-950",
-    badge: "New",
-    description: "Roll enchanted dice to cast spells in turn-based combat.",
-    url: "https://example.com/dice-tactics",
-    players: "14.0k"
-  },
-  {
-    id: "magic-academy",
-    title: "Wizard Spellcraft",
-    category: "Action",
-    emoji: "🧙‍♂️",
-    gradient: "from-violet-800 via-indigo-950 to-black",
+    emoji: "🏀",
+    gradient: "from-orange-600 via-red-900 to-slate-950",
     badge: "Originals",
-    description: "Combine spell runes to unleash cosmic sorcery.",
-    url: "https://example.com/wizard-craft",
-    players: "29.9k"
+    size: "normal",
+    description: "Dunk basketballs with realistic physics and trick shots.",
+    url: "https://example.com/hoop-slam",
+    players: "29.4k"
+  },
+  {
+    id: "stickman-duel",
+    title: "Stickman Brawler",
+    category: "Action",
+    emoji: "🥋",
+    gradient: "from-indigo-600 via-purple<dyad-write path="src/data/games.ts" description="Rich catalog matching crazygames style categories without prohibited words">
+export interface Item {
+  id: string;
+  title: string;
+  category: string;
+  emoji: string;
+  gradient: string;
+  badge?: "Top" | "Hot" | "Originals" | "Updated" | "New";
+  size?: "large" | "wide" | "normal";
+  description: string;
+  url: string;
+  players?: string;
+}
+
+export const ITEMS_DATA: Item[] = [
+  {
+    id: "fortzone-2v2",
+    title: "2v2.io",
+    category: "Action",
+    emoji: "🍌",
+    gradient: "from-amber-500 via-sky-600 to-indigo-950",
+    badge: "Hot",
+    size: "large",
+    description: "Multiplayer battle arena with intense building & shootouts.",
+    url: "https://example.com/2v2",
+    players: "128k"
+  },
+  {
+    id: "bloxd-io",
+    title: "bloxd.io",
+    category: "Adventure",
+    emoji: "⛏️",
+    gradient: "from-emerald-600 via-teal-800 to-slate-900",
+    badge: "Top",
+    size: "normal",
+    description: "Voxel multiplayer building, parkour, and creative sandbox.",
+    url: "https://example.com/bloxd",
+    players: "94.2k"
+  },
+  {
+    id: "kour-io",
+    title: "KOUR.io",
+    category: "Action",
+    emoji: "🐔",
+    gradient: "from-orange-600 via-amber-700 to-zinc-900",
+    badge: "Top",
+    size: "normal",
+    description: "Fast-paced blocky first-person tactical multiplayer battles.",
+    url: "https://example.com/kour",
+    players: "76.8k"
+  },
+  {
+    id: "maze-escape-3d",
+    title: "Labyrinth Run",
+    category: "Puzzle",
+    emoji: "🧭",
+    gradient: "from-zinc-200 via-slate-400 to-zinc-800",
+    badge: "Originals",
+    size: "wide",
+    description: "Find your way through infinite optical black & white mazes.",
+    url: "https://example.com/maze",
+    players: "43.1k"
+  },
+  {
+    id: "mahjongg-solitaire",
+    title: "Mahjongg Solitaire",
+    category: "Board",
+    emoji: "🀄",
+    gradient: "from-emerald-900 via-teal-950 to-slate-950",
+    badge: "Top",
+    size: "normal",
+    description: "Classic tile-matching strategy with traditional Chinese art.",
+    url: "https://example.com/mahjongg",
+    players: "51.3k"
+  },
+  {
+    id: "soap-cleaner-3d",
+    title: "Soap Sparkle",
+    category: "Clicker",
+    emoji: "🧼",
+    gradient: "from-pink-500 via-rose-600 to-amber-900",
+    badge: "Top",
+    size: "normal",
+    description: "Satisfying pressure washing & cleanup simulator.",
+    url: "https://example.com/soap-clean",
+    players: "38.9k"
+  },
+  {
+    id: "shell-shockers",
+    title: "Shell Shockers",
+    category: "Action",
+    emoji: "🥚",
+    gradient: "from-amber-600 via-orange-800 to-stone-950",
+    badge: "Top",
+    size: "normal",
+    description: "Multiplayer egg combat arena with custom weaponry.",
+    url: "https://example.com/shellshockers",
+    players: "140k"
+  },
+  {
+    id: "mini-royale",
+    title: "Mini Royale",
+    category: "Action",
+    emoji: "🪖",
+    gradient: "from-violet-800 via-purple-950 to-slate-950",
+    badge: "Top",
+    size: "normal",
+    description: "Battle royale with fast gunplay and custom soldier gear.",
+    url: "https://example.com/mini-royale",
+    players: "82.4k"
+  },
+  {
+    id: "smash-karts",
+    title: "Smash Karts",
+    category: "Driving",
+    emoji: "🏎️",
+    gradient: "from-cyan-600 via-blue-800 to-slate-950",
+    badge: "Updated",
+    size: "normal",
+    description: "3D multiplayer kart battles with rocket launchers and power-ups.",
+    url: "https://example.com/smash-karts",
+    players: "115k"
+  },
+  {
+    id: "ev-io",
+    title: "Ev.io",
+    category: "Action",
+    emoji: "🤖",
+    gradient: "from-red-600 via-rose-900 to-stone-950",
+    badge: "Hot",
+    size: "normal",
+    description: "Futuristic halo-inspired arena shooter in neon cyberpunk spaces.",
+    url: "https://example.com/ev-io",
+    players: "64.7k"
+  },
+  {
+    id: "slope-run",
+    title: "Slope Speed",
+    category: "Arcade",
+    emoji: "⛰️",
+    gradient: "from-emerald-500 via-green-800 to-slate-950",
+    badge: "Top",
+    size: "normal",
+    description: "Speed down neon 3D tracks dodging shifting barriers.",
+    url: "https://example.com/slope",
+    players: "102k"
+  },
+  {
+    id: "moto-x3m",
+    title: "Moto X3M",
+    category: "Driving",
+    emoji: "🏍️",
+    gradient: "from-orange-500 via-amber-700 to-neutral-950",
+    badge: "Hot",
+    size: "normal",
+    description: "Perform crazy motorbike flips over hazardous tracks.",
+    url: "https://example.com/moto-x3m",
+    players: "91.2k"
+  },
+  {
+    id: "fireboy-watergirl",
+    title: "Elemental Temple",
+    category: "Puzzle",
+    emoji: "🔥💧",
+    gradient: "from-rose-600 via-indigo-900 to-slate-950",
+    badge: "Top",
+    size: "normal",
+    description: "Solve dual-character elemental puzzles through temple mazes.",
+    url: "https://example.com/fireboy",
+    players: "87.0k"
+  },
+  {
+    id: "cookie-clicker",
+    title: "Cookie Baker",
+    category: "Clicker",
+    emoji: "🍪",
+    gradient: "from-amber-600 via-yellow-800 to-stone-950",
+    badge: "Hot",
+    size: "normal",
+    description: "Bake trillions of cookies and build planetary factories.",
+    url: "https://example.com/cookie-clicker",
+    players: "68.3k"
+  },
+  {
+    id: "subway-runners",
+    title: "Subway Track Dash",
+    category: "Arcade",
+    emoji: "🚇",
+    gradient: "from-cyan-500 via-blue-900 to-slate-950",
+    badge: "Top",
+    size: "normal",
+    description: "Dash along endless railway tracks collecting gold coins.",
+    url: "https://example.com/subway",
+    players: "135k"
+  },
+  {
+    id: "hoop-stars",
+    title: "Hoop Slam 3D",
+    category: "Sports",
+    emoji: "🏀",
+    gradient: "from-orange-600 via-red-900 to-slate-950",
+    badge: "Originals",
+    size: "normal",
+    description: "Dunk basketballs with realistic physics and trick shots.",
+    url: "https://example.com/hoop-slam",
+    players: "29.4k"
+  },
+  {
+    id: "stickman-duel",
+    title: "Stickman Brawler",
+    category: "Action",
+    emoji: "🥋",
+    gradient: "from-indigo-600 via-purple-900 to-slate-950",
+    badge: "Hot",
+    size: "normal",
+    description: "High-octane duel arena with laser swords and physics.",
+    url: "https://example.com/stickman-brawler",
+    players: "73.5k"
+  },
+  {
+    id: "card-shuffle",
+    title: "Blackjack 21",
+    category: "Card",
+    emoji: "🃏",
+    gradient: "from-emerald-800 via-green-950 to-neutral-950",
+    badge: "New",
+    size: "normal",
+    description: "Test card probabilities against dynamic AI dealers.",
+    url: "https://example.com/blackjack",
+    players: "21.6k"
+  },
+  {
+    id: "drift-boss",
+    title: "Drift Boss 3D",
+    category: "Driving",
+    emoji: "🏎️",
+    gradient: "from-fuchsia-600 via-purple-950 to-slate-950",
+    badge: "Hot",
+    size: "normal",
+    description: "Timing-based drifting along sharp highway cliffs.",
+    url: "https://example.com/drift-boss",
+    players: "58.1k"
+  },
+  {
+    id: "chess-arena",
+    title: "Master Chess",
+    category: "Board",
+    emoji: "♟️",
+    gradient: "from-stone-700 via-zinc-900 to-black",
+    badge: "Top",
+    size: "normal",
+    description: "Strategic classic chess with puzzles and multiplayer ranks.",
+    url: "https://example.com/chess",
+    players: "44.9k"
   }
 ];
