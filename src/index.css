@@ -5,12 +5,21 @@
 @tailwind utilities;
 
 * {
+  box-sizing: border-box;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   scrollbar-width: thin;
   scrollbar-color: #27272a #000000;
 }
 
-/* Webkit (Chrome, Edge, Safari) */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Webkit scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -30,7 +39,6 @@
   background: #3f3f46;
 }
 
-/* Utility to completely hide scrollbar when desired */
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
