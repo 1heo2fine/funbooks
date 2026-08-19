@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { X, Maximize2, Minimize2, Heart, ArrowLeft, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Maximize2, Minimize2, Heart, ArrowLeft, RefreshCw, ExternalLink, AlertCircle, Loader2 } from 'lucide-react';
 import { Item } from '@/data/games';
 import { cn } from '@/lib/utils';
 
@@ -20,10 +20,28 @@ const ItemModal = ({
 }: ItemModalProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [iframeKey, setIframeKey] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showFallbackBanner, setShowFallbackBanner] = useState(false);
+
+  useEffect(() => {
+    if (item) {
+      setIsLoading(true);
+      setShowFallbackBanner(false);
+
+      // If iframe takes more than 7 seconds, display fallback helper button
+      const timer = setTimeout(() => {
+        setShowFallbackBanner(true);
+      }, 7000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [item, iframeKey]);
 
   if (!item) return null;
 
   const handleReload = () => {
+    setIsLoading(true);
+    setShowFallbackBanner(false);
     setIframeKey((prev) => prev + 1);
   };
 
@@ -63,11 +81,23 @@ const ItemModal = ({
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Play in New Tab Fallback Button */}
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-300 hover:text-white transition-colors"
+              title="Play in new tab if blocked"
+            >
+              <ExternalLink size={13} />
+              <span>New Tab</span>
+            </a>
+
             {/* Reload Frame */}
             <button
               onClick={handleReload}
               className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
-              title="Reload Frame"
+              title="Reload Game Frame"
             >
               <RefreshCw size={15} />
             </button>
@@ -97,7 +127,7 @@ const ItemModal = ({
             <button
               onClick={onClose}
               className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-red-600 hover:text-white text-neutral-300 transition-colors ml-1"
-              title="Close"
+              title="Close Game"
             >
               <X size={16} />
             </button>
@@ -106,6 +136,32 @@ const ItemModal = ({
 
         {/* Embedded Iframe Container */}
         <div className="flex-1 w-full h-full bg-black relative flex items-center justify-center overflow-hidden">
+          {/* Loading Indicator */}
+          {isLoading && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-none">
+              <Loader2 className="w-8 h-8 text-neutral-400 animate-spin mb-3" />
+              <p className="text-xs font-semibold text-neutral-300">Loading {item.title}...</p>
+            </div>
+          )}
+
+          {/* Fallback Helper Bar if blocked by school filter or cross-origin */}
+          {showFallbackBanner && (
+            <div className="absolute bottom-4 z-20 px-4 py-2 rounded-xl bg-neutral-900/90 border border-white/20 backdrop-blur-md flex items-center gap-3 shadow-2xl animate-in fade-in">
+              <AlertCircle size={15} className="text-amber-400 shrink-0" />
+              <span className="text-xs text-neutral-200">
+                Having trouble loading?
+              </span>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white text-black text-xs font-bold hover:bg-neutral-200 transition-all shadow"
+              >
+                Play in New Tab <ExternalLink size={12} />
+              </a>
+            </div>
+          )}
+
           <iframe
             key={iframeKey}
             src={item.url}
@@ -113,8 +169,9 @@ const ItemModal = ({
             className="w-full h-full border-0 bg-black"
             allowFullScreen
             allow="autoplay; fullscreen; gamepad; focus-without-user-activation *"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             loading="lazy"
+            onLoad={() => setIsLoading(false)}
           />
         </div>
       </div>

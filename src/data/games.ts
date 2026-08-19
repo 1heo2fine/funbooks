@@ -56,17 +56,6 @@ export const ITEMS_DATA: Item[] = [
     players: "89.2k"
   },
   {
-    id: "moto-x3m",
-    title: "Moto X3M",
-    category: "Driving",
-    emoji: "🏍️",
-    gradient: "from-zinc-800 via-neutral-900 to-black",
-    badge: "Top",
-    description: "Perform crazy motorbike flips over hazardous tracks and exploding obstacles.",
-    url: "https://www.crazygames.com/game/moto-x3m",
-    players: "130k"
-  },
-  {
     id: "drift-boss",
     title: "Drift Boss",
     category: "Driving",
@@ -78,15 +67,15 @@ export const ITEMS_DATA: Item[] = [
     players: "78.9k"
   },
   {
-    id: "papas-pizzeria",
-    title: "Papa's Pizzeria",
-    category: "Clicker",
-    emoji: "🍕",
-    gradient: "from-stone-800 via-zinc-900 to-black",
+    id: "moto-x3m",
+    title: "Moto X3M",
+    category: "Driving",
+    emoji: "🏍️",
+    gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Top",
-    description: "Bake pizzas, manage crazy customer orders, and build your pizzeria empire.",
-    url: "https://www.crazygames.com/game/papas-pizzeria",
-    players: "105k"
+    description: "Perform crazy motorbike flips over hazardous tracks and exploding obstacles.",
+    url: "https://motox3m.io",
+    players: "130k"
   },
   {
     id: "slope",
@@ -96,7 +85,7 @@ export const ITEMS_DATA: Item[] = [
     gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Hot",
     description: "Speed down 3D neon obstacle slopes at extreme speeds.",
-    url: "https://www.crazygames.com/game/slope",
+    url: "https://slope.game",
     players: "160k"
   },
   {
@@ -106,19 +95,30 @@ export const ITEMS_DATA: Item[] = [
     emoji: "🚀",
     gradient: "from-neutral-700 via-stone-900 to-black",
     badge: "Top",
-    url: "https://example.com/run-3",
     description: "Sprint through endless space tunnels defying gravity in deep space.",
+    url: "https://run3.io",
     players: "94.5k"
   },
   {
     id: "fireboy-and-watergirl",
     title: "Fireboy and Watergirl",
-    category: "Arcade",
+    category: "Action",
     emoji: "🔥💧",
     gradient: "from-stone-800 via-zinc-900 to-black",
     badge: "Top",
-    url: "https://example.com/fireboy-and-watergirl",
     description: "Solve dual-character elemental puzzles to escape ancient temples.",
+    url: "https://fireboyandwatergirl.co",
     players: "112k"
+  },
+  {
+    id: "1v1-lol",
+    title: "1v1.LOL",
+    category: "Action",
+    emoji: "👊🏽",
+    gradient: "from-neutral-800 via-zinc-900 to-black",
+    badge: "Hot",
+    description: "Competitive multiplayer third-person building and shooting battle royale.",
+    url: "https://1v1lol.com",
+    players: "210k"
   }
 ];
