@@ -11,7 +11,7 @@ export interface Item {
 }
 
 export const ITEMS_DATA: Item[] = [
-  // === UBGHYPER SOURCE (Most Reliable) ===
+  // UBGHyper - Most Reliable Source
   {
     id: "tunnel-rush",
     title: "Tunnel Rush",
@@ -68,7 +68,7 @@ export const ITEMS_DATA: Item[] = [
     players: "98.7k"
   },
   {
-    id: "2048-ubg",
+    id: "2048",
     title: "2048",
     category: "Puzzle",
     emoji: "🔢",
@@ -93,7 +93,7 @@ export const ITEMS_DATA: Item[] = [
     id: "bloons-td-5",
     title: "Bloons TD 5",
     category: "Puzzle",
-    emoji: " balloons",
+    emoji: "🎈",
     gradient: "from-pink-800 via-red-900 to-black",
     badge: "Top",
     description: "Place towers and pop all the bloons in this classic strategy game.",
@@ -178,7 +178,7 @@ export const ITEMS_DATA: Item[] = [
     players: "89.1k"
   },
   {
-    id: "retro-bowl-ubg",
+    id: "retro-bowl",
     title: "Retro Bowl",
     category: "Sports",
     emoji: "🏈",
@@ -211,7 +211,7 @@ export const ITEMS_DATA: Item[] = [
     players: "68.9k"
   },
   {
-    id: "moto-x3m-ubg",
+    id: "moto-x3m",
     title: "Moto X3M",
     category: "Racing",
     emoji: "🏍️",
@@ -233,7 +233,7 @@ export const ITEMS_DATA: Item[] = [
     players: "116k"
   },
   {
-    id: "run-3-ubg",
+    id: "run-3",
     title: "Run 3",
     category: "Platformer",
     emoji: "🚀",
@@ -255,7 +255,7 @@ export const ITEMS_DATA: Item[] = [
     players: "56.7k"
   },
   {
-    id: "fireboy-and-watergirl-ubg",
+    id: "fireboy-and-watergirl",
     title: "Fireboy and Watergirl",
     category: "Platformer",
     emoji: "🔥💧",
@@ -288,7 +288,7 @@ export const ITEMS_DATA: Item[] = [
     players: "67.3k"
   },
   {
-    id: "1v1-lol-ubg",
+    id: "1v1-lol",
     title: "1v1.LOL",
     category: "Multiplayer",
     emoji: "🔫",
@@ -332,7 +332,7 @@ export const ITEMS_DATA: Item[] = [
     players: "123k"
   },
   {
-    id: "smash-karts-ubg",
+    id: "smash-karts",
     title: "Smash Karts",
     category: "Multiplayer",
     emoji: "🏎️",
@@ -365,7 +365,7 @@ export const ITEMS_DATA: Item[] = [
     players: "92.1k"
   },
 
-  // === OTTERGAMES SOURCE (HTML5 Games) ===
+  // OtterGames - HTML5 Games
   {
     id: "redball-4",
     title: "Redball 4",
@@ -546,7 +546,7 @@ export const ITEMS_DATA: Item[] = [
     id: "flipping-master",
     title: "Flipping Master",
     category: "Sports",
-    emoji: " Gymnastics",
+    emoji: "🤸",
     gradient: "from-cyan-800 via-blue-900 to-black",
     badge: "Hot",
     description: "Perform gymnastics flips and stunts in this physics game.",
@@ -587,7 +587,7 @@ export const ITEMS_DATA: Item[] = [
     players: "27.9k"
   },
 
-  // === PLAYBRAIN & SHAWGAMES SOURCE (Best of 2026) ===
+  // PlayBrain & ShawGames - Best of 2026
   {
     id: "snow-rider",
     title: "Snow Rider 3D",
@@ -600,7 +600,7 @@ export const ITEMS_DATA: Item[] = [
     players: "142k"
   },
   {
-    id: "ovo-platformer-playbrain",
+    id: "ovo-platformer",
     title: "OvO Platformer",
     category: "Action",
     emoji: "🏃",
@@ -611,7 +611,7 @@ export const ITEMS_DATA: Item[] = [
     players: "98.4k"
   },
   {
-    id: "slope-playbrain",
+    id: "slope",
     title: "Slope",
     category: "Arcade",
     emoji: "⛰️",
@@ -622,7 +622,7 @@ export const ITEMS_DATA: Item[] = [
     players: "160k"
   },
   {
-    id: "drift-boss-playbrain",
+    id: "drift-boss",
     title: "Drift Boss",
     category: "Racing",
     emoji: "🚗",
@@ -633,7 +633,7 @@ export const ITEMS_DATA: Item[] = [
     players: "78.9k"
   },
   {
-    id: "basketball-stars-playbrain",
+    id: "basketball-stars",
     title: "Basketball Stars",
     category: "Sports",
     emoji: "🏀",
@@ -644,7 +644,7 @@ export const ITEMS_DATA: Item[] = [
     players: "112k"
   },
   {
-    id: "eggy-car-shaw",
+    id: "eggy-car",
     title: "Eggy Car",
     category: "Arcade",
     emoji: "🥚",
@@ -655,7 +655,7 @@ export const ITEMS_DATA: Item[] = [
     players: "89.2k"
   },
   {
-    id: "crazy-cattle-3d-shaw",
+    id: "crazy-cattle-3d",
     title: "Crazy Cattle 3D",
     category: "Action",
     emoji: "🐄",
@@ -666,7 +666,7 @@ export const ITEMS_DATA: Item[] = [
     players: "67.4k"
   },
   {
-    id: "eagle-craft-shaw",
+    id: "eagle-craft",
     title: "Eagle Craft (Minecraft)",
     category: "Sandbox",
     emoji: "⛏️",
