@@ -6,12 +6,20 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Star, Heart, Search, Filter } from "lucide-react";
 import GameCard from "@/components/GameCard";
+import NewsCard from "@/components/NewsCard";
 
 interface Game {
   title: string;
   emoji: string;
   description: string;
   url: string;
+}
+
+interface NewsItem {
+  title: string;
+  description: string;
+  url: string;
+  date: string;
 }
 
 const Index = () => {
@@ -119,6 +127,28 @@ const Index = () => {
   const isFavorite = (title: string) => favorites.includes(title);
   const userVote = (title: string) => userVotes[title] || null;
 
+  // Sample news data
+  const news: NewsItem[] = [
+    {
+      title: "New Games Added to FunBooks",
+      description: "We've added 10 new exciting games to our collection including the latest multiplayer hits.",
+      url: "#",
+      date: "Jan 15, 2024"
+    },
+    {
+      title: "Site Maintenance Scheduled",
+      description: "FunBooks will undergo maintenance on Jan 20th from 2-4 AM. Expect brief downtime.",
+      url: "#",
+      date: "Jan 10, 2024"
+    },
+    {
+      title: "Community Vote Results",
+      description: "Check out which games are trending this week based on community votes!",
+      url: "#",
+      date: "Jan 8, 2024"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-base-200">
       {/* Starfield Canvas */}
@@ -149,6 +179,9 @@ const Index = () => {
           </div>
         </div>
 
+        {/* News Card */}
+        <NewsCard news={news} />
+
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-4xl mx-auto">
           <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -166,7 +199,15 @@ const Index = () => {
           <TabsContent value="trending" className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {filteredGames.map((game) => (
-                <GameCard key={game.title} game={game} />
+                <GameCard 
+                  key={game.title} 
+                  game={game} 
+                  isFavorite={isFavorite(game.title)}
+                  onToggleFavorite={toggleFavorite}
+                  onVote={handleVote}
+                  votePercentage={getVotePercentage(game.title)}
+                  userVote={userVote(game.title)}
+                />
               ))}
             </div>
             {filteredGames.length === 0 && (
@@ -177,7 +218,15 @@ const Index = () => {
           <TabsContent value="favorites" className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {filteredGames.map((game) => (
-                <GameCard key={game.title} game={game} />
+                <GameCard 
+                  key={game.title} 
+                  game={game} 
+                  isFavorite={isFavorite(game.title)}
+                  onToggleFavorite={toggleFavorite}
+                  onVote={handleVote}
+                  votePercentage={getVotePercentage(game.title)}
+                  userVote={userVote(game.title)}
+                />
               ))}
             </div>
             {filteredGames.length === 0 && (
@@ -188,7 +237,15 @@ const Index = () => {
           <TabsContent value="all" className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {filteredGames.map((game) => (
-                <GameCard key={game.title} game={game} />
+                <GameCard 
+                  key={game.title} 
+                  game={game} 
+                  isFavorite={isFavorite(game.title)}
+                  onToggleFavorite={toggleFavorite}
+                  onVote={handleVote}
+                  votePercentage={getVotePercentage(game.title)}
+                  userVote={userVote(game.title)}
+                />
               ))}
             </div>
             {filteredGames.length === 0 && (

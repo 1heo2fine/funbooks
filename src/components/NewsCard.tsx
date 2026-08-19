@@ -1,0 +1,39 @@
+"use client";
+
+import React from 'react';
+
+interface NewsItem {
+  title: string;
+  description: string;
+  url: string;
+  date: string;
+}
+
+interface NewsCardProps {
+  news: NewsItem[];
+}
+
+const NewsCard = ({ news }: NewsCardProps) => {
+  return (
+    <div className="bg-base-100 rounded-lg shadow-md p-6 mb-8">
+      <h2 className="text-2xl font-bold mb-4 text-base-content">
+        Latest News
+      </h2>
+      <div className="space-y-4">
+        {news.map((item, index) => (
+          <div key={index} className="border-b pb-4 last:border-b-0 last:pb-0">
+            <h3 className="font-semibold text-base-content mb-1">
+              <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                {item.title}
+              </a>
+            </h3>
+            <p className="text-sm text-base-content/70 mb-2">{item.description}</p>
+            <span className="text-xs text-base-content/50">{item.date}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default NewsCard;
