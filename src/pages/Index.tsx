@@ -41,11 +41,26 @@ const Index = () => {
   });
 
   useEffect(() => {
-    // Load games from the global games array
-    if (typeof window !== "undefined" && (window as any).games) {
-      setGames((window as any).games);
-    }
-  }, []);
+      // Load games from the global games array
+      const loadGames = () => {
+        if (typeof window !== "undefined" && (window as any).games) {
+          setGames((window as any).games);
+        }
+      };
+  
+      // Try immediately
+      loadGames();
+  
+      // Also listen for the games to be defined (in case of timing issues)
+      const checkInterval = setInterval(() => {
+        if (typeof window !== "undefined" && (window as any).games && games.length === 0) {
+          loadGames();
+        }
+      }, 100);
+  
+      // Cleanup
+      return () => clearInterval(checkInterval);
+    }, []);
 
   useEffect(() => {
     let filtered = [...games];
