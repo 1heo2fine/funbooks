@@ -3,7 +3,6 @@ export default {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,html}",
     "./index.html",
-    "./src/index.html"
   ],
   theme: {
     extend: {
@@ -13,4 +12,4 @@ export default {
     },
   },
   plugins: [],
-}
+};
