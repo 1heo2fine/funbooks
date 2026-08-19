@@ -127,25 +127,13 @@ const Index = () => {
   const isFavorite = (title: string) => favorites.includes(title);
   const userVote = (title: string) => userVotes[title] || null;
 
-  // Sample news data
+  // Sample news data - only one release news item
   const news: NewsItem[] = [
     {
-      title: "New Games Added to FunBooks",
-      description: "We've added 10 new exciting games to our collection including the latest multiplayer hits.",
+      title: "FunBooks Official Release!",
+      description: "Welcome to FunBooks - your new school game portal with 30+ games to play!",
       url: "#",
       date: "Jan 15, 2024"
-    },
-    {
-      title: "Site Maintenance Scheduled",
-      description: "FunBooks will undergo maintenance on Jan 20th from 2-4 AM. Expect brief downtime.",
-      url: "#",
-      date: "Jan 10, 2024"
-    },
-    {
-      title: "Community Vote Results",
-      description: "Check out which games are trending this week based on community votes!",
-      url: "#",
-      date: "Jan 8, 2024"
     }
   ];
 
