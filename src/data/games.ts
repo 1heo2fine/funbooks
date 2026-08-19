@@ -74,7 +74,7 @@ export const ITEMS_DATA: Item[] = [
     gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Top",
     description: "Perform crazy motorbike flips over hazardous tracks and exploding obstacles.",
-    url: "https://motox3m.io",
+    url: "https://www.hoodamath.com/games/moto-x3m.html",
     players: "130k"
   },
   {
@@ -85,7 +85,7 @@ export const ITEMS_DATA: Item[] = [
     gradient: "from-zinc-800 via-neutral-900 to-black",
     badge: "Hot",
     description: "Speed down 3D neon obstacle slopes at extreme speeds.",
-    url: "https://slope.game",
+    url: "https://www.hoodamath.com/games/slope.html",
     players: "160k"
   },
   {
@@ -96,7 +96,7 @@ export const ITEMS_DATA: Item[] = [
     gradient: "from-neutral-700 via-stone-900 to-black",
     badge: "Top",
     description: "Sprint through endless space tunnels defying gravity in deep space.",
-    url: "https://run3.io",
+    url: "https://www.hoodamath.com/games/run-3.html",
     players: "94.5k"
   },
   {
@@ -107,18 +107,18 @@ export const ITEMS_DATA: Item[] = [
     gradient: "from-stone-800 via-zinc-900 to-black",
     badge: "Top",
     description: "Solve dual-character elemental puzzles to escape ancient temples.",
-    url: "https://fireboyandwatergirl.co",
+    url: "https://www.hoodamath.com/games/fireboy-and-watergirl.html",
     players: "112k"
   },
   {
-    id: "1v1-lol",
-    title: "1v1.LOL",
-    category: "Action",
-    emoji: "👊🏽",
-    gradient: "from-neutral-800 via-zinc-900 to-black",
-    badge: "Hot",
-    description: "Competitive multiplayer third-person building and shooting battle royale.",
-    url: "https://1v1lol.com",
-    players: "210k"
+    id: "papas-pizzeria",
+    title: "Papa's Pizzeria",
+    category: "Arcade",
+    emoji: "🍕",
+    gradient: "from-orange-700 via-red-800 to-black",
+    badge: "New",
+    description: "Manage your own pizzeria, take orders, bake pizzas, and serve customers fast!",
+    url: "https://www.hoodamath.com/games/papas-pizzeria.html",
+    players: "88.7k"
   }
 ];

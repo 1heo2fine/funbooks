@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Maximize2, Minimize2, Heart, ArrowLeft, RefreshCw, ExternalLink, AlertCircle, Loader2 } from 'lucide-react';
 import { Item } from '@/data/games';
 import { cn } from '@/lib/utils';
@@ -22,6 +22,7 @@ const ItemModal = ({
   const [iframeKey, setIframeKey] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showFallbackBanner, setShowFallbackBanner] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     if (item) {
@@ -33,11 +34,23 @@ const ItemModal = ({
         setShowFallbackBanner(true);
       }, 7000);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        // Clear iframe src when component unmounts to stop the game
+        if (iframeRef.current) {
+          iframeRef.current.src = '';
+        }
+      };
     }
   }, [item, iframeKey]);
 
-  if (!item) return null;
+  // Handle close button click - clear iframe src first
+  const handleClose = () => {
+    if (iframeRef.current) {
+      iframeRef.current.src = '';
+    }
+    onClose();
+  };
 
   const handleReload = () => {
     setIsLoading(true);
@@ -48,6 +61,8 @@ const ItemModal = ({
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
   };
+
+  if (!item) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/95 backdrop-blur-md animate-in fade-in duration-200">
@@ -61,7 +76,7 @@ const ItemModal = ({
         <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-black border-b border-white/[0.08] select-none shrink-0">
           <div className="flex items-center gap-3">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white text-xs font-semibold transition-all"
               title="Return to selection"
             >
@@ -125,7 +140,7 @@ const ItemModal = ({
 
             {/* Close Button */}
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-red-600 hover:text-white text-neutral-300 transition-colors ml-1"
               title="Close Game"
             >
@@ -163,13 +178,15 @@ const ItemModal = ({
           )}
 
           <iframe
+            ref={iframeRef}
             key={iframeKey}
             src={item.url}
             title={item.title}
             className="w-full h-full border-0 bg-black"
             allowFullScreen
-            allow="autoplay; fullscreen; gamepad; focus-without-user-activation *"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+            width="100%"
+            height="100%"
             loading="lazy"
             onLoad={() => setIsLoading(false)}
           />
