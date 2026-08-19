@@ -29,14 +29,12 @@ const ItemModal = ({
       setIsLoading(true);
       setShowFallbackBanner(false);
 
-      // If iframe takes more than 7 seconds, display fallback helper button
       const timer = setTimeout(() => {
         setShowFallbackBanner(true);
       }, 7000);
 
       return () => {
         clearTimeout(timer);
-        // Clear iframe src when component unmounts to stop the game
         if (iframeRef.current) {
           iframeRef.current.src = '';
         }
@@ -44,7 +42,6 @@ const ItemModal = ({
     }
   }, [item, iframeKey]);
 
-  // Handle close button click - clear iframe src first
   const handleClose = () => {
     if (iframeRef.current) {
       iframeRef.current.src = '';
@@ -72,7 +69,6 @@ const ItemModal = ({
           isFullscreen ? "h-[98vh] max-w-[98vw]" : "h-[90vh] max-w-6xl"
         )}
       >
-        {/* Overlay Header Bar */}
         <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-black border-b border-white/[0.08] select-none shrink-0">
           <div className="flex items-center gap-3">
             <button
@@ -96,7 +92,6 @@ const ItemModal = ({
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Play in New Tab Fallback Button */}
             <a
               href={item.url}
               target="_blank"
@@ -108,7 +103,6 @@ const ItemModal = ({
               <span>New Tab</span>
             </a>
 
-            {/* Reload Frame */}
             <button
               onClick={handleReload}
               className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
@@ -117,7 +111,6 @@ const ItemModal = ({
               <RefreshCw size={15} />
             </button>
 
-            {/* Favorite Toggle */}
             <button
               onClick={() => onToggleFavorite(item.id)}
               className={cn(
@@ -129,7 +122,6 @@ const ItemModal = ({
               <Heart size={15} className={cn(isFavorite && "fill-red-500 text-red-500")} />
             </button>
 
-            {/* Toggle Fullscreen / Expanded View */}
             <button
               onClick={toggleFullscreen}
               className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
@@ -138,7 +130,6 @@ const ItemModal = ({
               {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
             </button>
 
-            {/* Close Button */}
             <button
               onClick={handleClose}
               className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-red-600 hover:text-white text-neutral-300 transition-colors ml-1"
@@ -149,9 +140,7 @@ const ItemModal = ({
           </div>
         </div>
 
-        {/* Embedded Iframe Container */}
         <div className="flex-1 w-full h-full bg-black relative flex items-center justify-center overflow-hidden">
-          {/* Loading Indicator */}
           {isLoading && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-none">
               <Loader2 className="w-8 h-8 text-neutral-400 animate-spin mb-3" />
@@ -159,7 +148,6 @@ const ItemModal = ({
             </div>
           )}
 
-          {/* Fallback Helper Bar if blocked by school filter or cross-origin */}
           {showFallbackBanner && (
             <div className="absolute bottom-4 z-20 px-4 py-2 rounded-xl bg-neutral-900/90 border border-white/20 backdrop-blur-md flex items-center gap-3 shadow-2xl animate-in fade-in">
               <AlertCircle size={15} className="text-amber-400 shrink-0" />
