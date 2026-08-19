@@ -1,32 +1,23 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { Search, Flame, Star, Sparkles, Trophy, Grid, Gamepad2, ChevronRight, SlidersHorizontal, Heart, ShieldCheck } from "lucide-react";
-import GameCard from "@/components/GameCard";
-import GameModal from "@/components/GameModal";
-import { GAMES_DATA, Game } from "@/data/games";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-
-const CATEGORIES = [
-  { id: "all", label: "All Games", icon: Grid },
-  { id: "Action", label: "Action", icon: Gamepad2 },
-  { id: "Casual", label: "Casual", icon: Sparkles },
-  { id: "Strategy", label: "Strategy", icon: ShieldCheck },
-  { id: "Racing", label: "Racing", icon: Flame },
-  { id: "Sports", label: "Sports", icon: Trophy },
-  { id: "favorites", label: "Favorites", icon: Heart },
-];
+import Header from '@/components/Header';
+import Sidebar from '@/components/Sidebar';
+import CardItem from '@/components/CardItem';
+import ItemModal from '@/components/ItemModal';
+import { ITEMS_DATA, Item } from '@/data/games';
+import { Flame, Star, Crown, ChevronRight, Play } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const Index = () => {
+  const [selectedTab, setSelectedTab] = useState<string>("home");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortBy, setSortBy] = useState<"popular" | "newest" | "az">("popular");
-  const [activeGame, setActiveGame] = useState<Game | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeItem, setActiveItem] = useState<Item | null>(null);
 
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem("funbooks-favorites");
+      const saved = localStorage.getItem("portal-favorites");
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -37,186 +28,188 @@ const Index = () => {
     setFavorites((prev) => {
       const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
       try {
-        localStorage.setItem("funbooks-favorites", JSON.stringify(next));
+        localStorage.setItem("portal-favorites", JSON.stringify(next));
       } catch (e) {}
       return next;
     });
   };
 
-  const filteredGames = useMemo(() => {
-    return GAMES_DATA.filter((game) => {
-      // Search matching
+  const filteredItems = useMemo(() => {
+    return ITEMS_DATA.filter((item) => {
+      // Search
       const matchesSearch =
-        game.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.category.toLowerCase().includes(searchQuery.toLowerCase());
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase());
 
       if (!matchesSearch) return false;
 
-      // Category matching
-      if (selectedCategory === "favorites") {
-        return favorites.includes(game.id);
-      }
-      if (selectedCategory !== "all") {
-        return game.category.toLowerCase() === selectedCategory.toLowerCase();
-      }
-      return true;
-    }).sort((a, b) => {
-      if (sortBy === "az") return a.title.localeCompare(b.title);
-      if (sortBy === "newest") return (b.badge === "New" ? 1 : 0) - (a.badge === "New" ? 1 : 0);
-      // Popular default
-      const badgeScore = { Top: 3, Hot: 2, Originals: 1, New: 1 };
-      const scoreA = (a.badge ? badgeScore[a.badge] : 0) || 0;
-      const scoreB = (b.badge ? badgeScore[b.badge] : 0) || 0;
-      return scoreB - scoreA;
+      // Tab filtering
+      if (selectedTab === "home") return true;
+      if (selectedTab === "favorites") return favorites.includes(item.id);
+      if (selectedTab === "popular") return item.badge === "Hot" || item.badge === "Top";
+      if (selectedTab === "new") return item.badge === "New";
+      if (selectedTab === "updated") return item.badge === "Updated";
+      if (selectedTab === "originals") return item.badge === "Originals";
+      if (selectedTab === "multiplayer") return item.category === "Action" || item.category === "Driving";
+      if (selectedTab === "recent") return true;
+
+      // Category tab
+      return item.category.toLowerCase() === selectedTab.toLowerCase();
     });
-  }, [searchQuery, selectedCategory, sortBy, favorites]);
+  }, [searchQuery, selectedTab, favorites]);
+
+  // Featured hero item for CrazyGames bento style
+  const featuredItem = ITEMS_DATA[0];
+  const secondaryFeatured = ITEMS_DATA[1];
+  const thirdFeatured = ITEMS_DATA[2];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
-      {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xl shadow-lg shadow-blue-500/20 font-black">
-              🎮
-            </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-white leading-none">FunBooks</h1>
-              <span className="text-[11px] text-blue-400 font-medium">Free Unblocked Games</span>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#0d0f18] text-white flex flex-col font-sans selection:bg-[#6c38ff] selection:text-white">
+      {/* Top Header */}
+      <Header
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+      />
 
-          {/* Centered Search Bar */}
-          <div className="relative max-w-md w-full hidden sm:block">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <Input
-              type="text"
-              placeholder="Search all 35+ games..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-slate-800/80 border-slate-700/80 focus:border-blue-500 text-white rounded-xl placeholder:text-slate-400 h-10 w-full"
-            />
-          </div>
+      {/* Main Body with Sidebar + Content */}
+      <div className="flex flex-1 relative">
+        {/* Left Sidebar */}
+        <Sidebar
+          selectedTab={selectedTab}
+          onSelectTab={(tabId) => setSelectedTab(tabId)}
+          isOpen={isSidebarOpen}
+        />
 
-          {/* Quick Counter */}
-          <div className="flex items-center gap-2 text-xs font-semibold bg-slate-800/80 px-3 py-1.5 rounded-xl border border-white/5 text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>{filteredGames.length} Games</span>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 py-6 flex-1 flex flex-col">
-        {/* Mobile Search input */}
-        <div className="sm:hidden mb-4 relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-          <Input
-            type="text"
-            placeholder="Search games..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-900 border-slate-800 text-white rounded-xl h-10 w-full"
-          />
-        </div>
-
-        {/* Breadcrumb & Title Section matching reference */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs text-slate-400 mb-1.5 font-medium">
-              <span className="hover:text-slate-200 cursor-pointer">Home</span>
-              <ChevronRight size={12} className="text-slate-600" />
-              <span className="text-blue-400 capitalize">{selectedCategory === "all" ? "All Games" : selectedCategory}</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
-              <span>{selectedCategory === "all" ? "Explore Games" : `${selectedCategory} Games`}</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">
-                {filteredGames.length}
-              </span>
-            </h2>
-          </div>
-
-          {/* Filter & Sort Controls */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300">
-              <SlidersHorizontal size={14} className="text-slate-400" />
-              <span className="text-slate-500">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-transparent text-slate-200 outline-none cursor-pointer font-medium"
+        {/* Content Canvas */}
+        <main
+          className={cn(
+            "flex-1 flex flex-col min-w-0 transition-all duration-200 p-4 sm:p-6",
+            isSidebarOpen ? "md:ml-60" : "ml-0"
+          )}
+        >
+          {/* Bento Featured Header on Home view when no search */}
+          {selectedTab === "home" && !searchQuery && (
+            <section className="mb-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {/* Large Big Feature Tile */}
+              <div
+                onClick={() => setActiveItem(featuredItem)}
+                className="md:col-span-2 lg:col-span-2 relative aspect-[16/10] sm:aspect-[2/1] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-gradient-to-br from-indigo-700 via-blue-900 to-slate-950 p-6 flex flex-col justify-end shadow-2xl hover:border-[#6c38ff] transition-all duration-200"
               >
-                <option value="popular" className="bg-slate-900 text-white">Popular First</option>
-                <option value="newest" className="bg-slate-900 text-white">Newest First</option>
-                <option value="az" className="bg-slate-900 text-white">Alphabetical (A-Z)</option>
-              </select>
+                <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-black shadow-md uppercase">
+                  <Flame size={13} className="fill-white" />
+                  Featured
+                </div>
+                <div className="absolute right-6 top-6 text-7xl opacity-80 group-hover:scale-110 transition-transform duration-300">
+                  {featuredItem.emoji}
+                </div>
+                <div className="relative z-10">
+                  <h2 className="text-2xl sm:text-3xl font-black text-white drop-shadow-md">
+                    {featuredItem.title}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-md line-clamp-2">
+                    {featuredItem.description}
+                  </p>
+                  <div className="mt-3 flex items-center gap-3">
+                    <button className="px-5 py-2 rounded-full bg-[#6c38ff] hover:bg-[#7b4aff] text-white text-xs font-bold shadow-lg shadow-[#6c38ff]/30 flex items-center gap-1.5 transition-transform group-hover:scale-105">
+                      <Play size={13} className="fill-white" />
+                      Play Now
+                    </button>
+                    <span className="text-xs text-slate-300">👥 {featuredItem.players} active</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Second Featured Tile */}
+              <div
+                onClick={() => setActiveItem(secondaryFeatured)}
+                className="relative aspect-[16/10] sm:aspect-auto rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-gradient-to-br from-emerald-600 via-teal-900 to-slate-950 p-5 flex flex-col justify-end shadow-xl hover:border-[#6c38ff] transition-all"
+              >
+                <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-black text-[10px] font-extrabold shadow">
+                  <Star size={11} className="fill-black" />
+                  Top
+                </div>
+                <div className="absolute right-4 top-4 text-5xl opacity-80 group-hover:scale-110 transition-transform">
+                  {secondaryFeatured.emoji}
+                </div>
+                <div className="relative z-10">
+                  <h3 className="text-lg font-extrabold text-white">{secondaryFeatured.title}</h3>
+                  <p className="text-xs text-slate-300 line-clamp-1">{secondaryFeatured.category}</p>
+                </div>
+              </div>
+
+              {/* Third Featured Tile */}
+              <div
+                onClick={() => setActiveItem(thirdFeatured)}
+                className="relative aspect-[16/10] sm:aspect-auto rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-gradient-to-br from-orange-600 via-amber-800 to-neutral-950 p-5 flex flex-col justify-end shadow-xl hover:border-[#6c38ff] transition-all"
+              >
+                <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-black text-[10px] font-extrabold shadow">
+                  <Star size={11} className="fill-black" />
+                  Top
+                </div>
+                <div className="absolute right-4 top-4 text-5xl opacity-80 group-hover:scale-110 transition-transform">
+                  {thirdFeatured.emoji}
+                </div>
+                <div className="relative z-10">
+                  <h3 className="text-lg font-extrabold text-white">{thirdFeatured.title}</h3>
+                  <p className="text-xs text-slate-300 line-clamp-1">{thirdFeatured.category}</p>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Section Header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-extrabold text-white capitalize flex items-center gap-2">
+                {selectedTab === "home" ? "Discover" : selectedTab}
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 text-slate-300">
+                  {filteredItems.length}
+                </span>
+              </h2>
             </div>
           </div>
-        </div>
 
-        {/* Categories Pill Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-4 scrollbar-none">
-          {CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            const isSelected = selectedCategory === cat.id;
-            return (
+          {/* Responsive 6-column Grid */}
+          {filteredItems.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+              {filteredItems.map((item) => (
+                <CardItem
+                  key={item.id}
+                  item={item}
+                  isFavorite={favorites.includes(item.id)}
+                  onToggleFavorite={toggleFavorite}
+                  onSelect={(sel) => setActiveItem(sel)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-[#141724] rounded-3xl border border-white/5 my-8">
+              <div className="text-4xl mb-2">🔍</div>
+              <h3 className="text-base font-bold text-white mb-1">No Results</h3>
+              <p className="text-xs text-slate-400 mb-4">
+                No items match your criteria.
+              </p>
               <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 shrink-0",
-                  isSelected
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400"
-                    : "bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 border border-slate-800"
-                )}
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedTab("home");
+                }}
+                className="px-4 py-2 text-xs font-bold rounded-full bg-[#6c38ff] text-white hover:bg-[#7b4aff]"
               >
-                <Icon size={14} className={cn(isSelected ? "text-white" : "text-slate-400")} />
-                {cat.label}
+                View Discover
               </button>
-            );
-          })}
-        </div>
-
-        {/* Game Grid with rounded responsive cards matching screenshot layout */}
-        {filteredGames.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
-            {filteredGames.map((game) => (
-              <GameCard
-                key={game.id}
-                game={game}
-                isFavorite={favorites.includes(game.id)}
-                onToggleFavorite={toggleFavorite}
-                onPlay={(selected) => setActiveGame(selected)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-12 bg-slate-900/40 rounded-3xl border border-slate-800/80 my-8">
-            <div className="text-4xl mb-3">🔍</div>
-            <h3 className="text-lg font-bold text-white mb-1">No Games Found</h3>
-            <p className="text-slate-400 text-sm max-w-sm mb-4">
-              We couldn't find any games matching "{searchQuery}". Try a different keyword or category.
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCategory("all");
-              }}
-              className="px-4 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors"
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
+            </div>
+          )}
+        </main>
       </div>
 
-      {/* Play Modal */}
-      <GameModal
-        game={activeGame}
-        onClose={() => setActiveGame(null)}
-        isFavorite={activeGame ? favorites.includes(activeGame.id) : false}
+      {/* Modal Viewer */}
+      <ItemModal
+        item={activeItem}
+        onClose={() => setActiveItem(null)}
+        isFavorite={activeItem ? favorites.includes(activeItem.id) : false}
         onToggleFavorite={toggleFavorite}
       />
     </div>
