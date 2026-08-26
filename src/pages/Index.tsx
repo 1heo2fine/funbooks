@@ -34,6 +34,17 @@ const Index = () => {
     });
   };
 
+  // Get top 3 most favorited games for the HOT section
+  const hotGames = useMemo(() => {
+    return [...ITEMS_DATA]
+      .sort((a, b) => {
+        const aFavs = favorites.filter(f => f === a.id).length;
+        const bFavs = favorites.filter(f => f === b.id).length;
+        return bFavs - aFavs;
+      })
+      .slice(0, 3);
+  }, [favorites]);
+
   const filteredItems = useMemo(() => {
     return ITEMS_DATA.filter((item) => {
       const matchesSearch =
@@ -44,6 +55,7 @@ const Index = () => {
       if (!matchesSearch) return false;
 
       if (selectedTab === "home") return true;
+      if (selectedTab === "hot") return hotGames.includes(item);
       if (selectedTab === "favorites") return favorites.includes(item.id);
       if (selectedTab === "popular") return item.badge === "Hot" || item.badge === "Top";
       if (selectedTab === "new") return item.badge === "New";
@@ -54,7 +66,7 @@ const Index = () => {
 
       return item.category.toLowerCase() === selectedTab.toLowerCase();
     });
-  }, [searchQuery, selectedTab, favorites]);
+  }, [searchQuery, selectedTab, favorites, hotGames]);
 
   // Bento layout items
   const heroItem = ITEMS_DATA[0];
@@ -209,7 +221,7 @@ const Index = () => {
           <div className="flex items-center justify-between mb-3.5">
             <div className="flex items-center gap-2">
               <h2 className="text-sm sm:text-base font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
-                {selectedTab === "home" ? "Featured Items" : selectedTab}
+                {selectedTab === "home" ? "Featured Items" : selectedTab === "hot" ? "HOT Games" : selectedTab}
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.08] text-neutral-400">
                   {filteredItems.length}
                 </span>

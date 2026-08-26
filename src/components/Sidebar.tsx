@@ -28,6 +28,7 @@ interface SidebarProps {
 
 export const MAIN_NAV = [
   { id: "home", label: "Home", icon: Home },
+  { id: "hot", label: "HOT", icon: Flame },
   { id: "recent", label: "Recently played", icon: Clock },
   { id: "new", label: "New", icon: Sparkles },
   { id: "popular", label: "Popular", icon: Flame },

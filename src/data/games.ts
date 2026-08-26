@@ -500,5 +500,40 @@ export const ITEMS_DATA: Item[] = [
     description: "Create and experiment with people in this physics sandbox.",
     url: "https://peopleplayground.io",
     players: "98.2k"
+  },
+
+  // New Games Added
+  {
+    id: "subway-surfers",
+    title: "Subway Surfers",
+    category: "Action",
+    emoji: "🚇",
+    gradient: "from-blue-800 via-cyan-900 to-black",
+    badge: "New",
+    description: "Dodge trains and surf through the subway in this endless runner.",
+    url: "https://subwaysurfers.io",
+    players: "201k"
+  },
+  {
+    id: "among-us",
+    title: "Among Us",
+    category: "Multiplayer",
+    emoji: "🛸",
+    gradient: "from-red-800 via-pink-900 to-black",
+    badge: "New",
+    description: "Work with crewmates or sabotage as an impostor in space.",
+    url: "https://amongus.io",
+    players: "178k"
+  },
+  {
+    id: "monopoly-go",
+    title: "Monopoly Go",
+    category: "Board",
+    emoji: "🎲",
+    gradient: "from-green-700 via-emerald-800 to-black",
+    badge: "New",
+    description: "Roll the dice and build your property empire in this digital board game.",
+    url: "https://monopolygo.io",
+    players: "95.3k"
   }
 ];
