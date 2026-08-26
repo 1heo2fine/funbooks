@@ -451,6 +451,7 @@
     ];
 
     const VOTES_KEY = "mirror_votes";
+    const SEEDED_KEY = "mirror_votes_seeded_v2";
     let currentFilter = "all";
     let searchTerm = "";
 
@@ -469,6 +470,46 @@
     function getVoteData(url) {
       const votes = loadVotes();
       return votes[url] || { up: 0, down: 0, userVote: null };
+    }
+
+    // Seed random vote counts ONCE so the page looks alive on first visit.
+    // Distribution: ~70% unblocked, ~25% partial, ~5% blocked
+    function seedRandomVotes() {
+      if (localStorage.getItem(SEEDED_KEY)) return;
+      const votes = {};
+      const total = MIRRORS.length;
+      // Pick exactly 4 to be "blocked" (down > up) to match the user's request.
+      const blockedIndexes = new Set();
+      while (blockedIndexes.size < 4) {
+        blockedIndexes.add(Math.floor(Math.random() * total));
+      }
+      // Pick ~25% to be "partial" (equal up/down)
+      const partialCount = Math.max(1, Math.floor(total * 0.25));
+      const partialIndexes = new Set();
+      while (partialIndexes.size < partialCount) {
+        const i = Math.floor(Math.random() * total);
+        if (!blockedIndexes.has(i) && !partialIndexes.has(i)) {
+          partialIndexes.add(i);
+        }
+      }
+
+      MIRRORS.forEach((m, i) => {
+        let up, down;
+        if (blockedIndexes.has(i)) {
+          down = 100 + Math.floor(Math.random() * 400);
+          up = Math.floor(Math.random() * 80);
+        } else if (partialIndexes.has(i)) {
+          const n = 100 + Math.floor(Math.random() * 200);
+          up = n;
+          down = n;
+        } else {
+          up = 100 + Math.floor(Math.random() * 900);
+          down = Math.floor(Math.random() * 50);
+        }
+        votes[m.url] = { up, down, userVote: null };
+      });
+      saveVotes(votes);
+      localStorage.setItem(SEEDED_KEY, "1");
     }
 
     function setVote(url, direction, event) {
@@ -572,7 +613,10 @@
       renderAll();
     });
 
-    renderAll();
-  </script>
+    // Seed random vote counts for first-time visitors
+        seedRandomVotes();
+    
+        renderAll();
+      </script>
 </body>
 </html>
