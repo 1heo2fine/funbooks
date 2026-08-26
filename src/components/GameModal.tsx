@@ -87,4 +87,3 @@ const GameModal = ({
 };
 
 export default GameModal;
-</invoke>

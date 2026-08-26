@@ -87,4 +87,3 @@ const NewsCard = ({ news = DEFAULT_NEWS }: NewsCardProps) => {
 };
 
 export default NewsCard;
-</invoke>
