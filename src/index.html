@@ -36,9 +36,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 20px;
+      padding: 8px 16px;
       height: 56px;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       z-index: 20;
@@ -64,10 +64,44 @@
       -webkit-text-fill-color: transparent;
     }
 
+    .source-selector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .source-selector label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .source-selector select {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .source-selector select:hover {
+      border-color: #38bdf8;
+    }
+
     .controls-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .btn {
@@ -75,15 +109,16 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 8px;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.15s ease-in-out;
       border: 1px solid transparent;
       outline: none;
+      white-space: nowrap;
     }
 
     .btn-secondary {
@@ -110,10 +145,6 @@
       box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
     }
 
-    .btn:active {
-      transform: translateY(0);
-    }
-
     /* Game Viewport */
     main {
       flex: 1;
@@ -134,15 +165,51 @@
       background: #000;
     }
 
+    /* Banner notification for mirror fallback */
+    #fallback-alert {
+      display: none;
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(239, 68, 68, 0.9);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+      pointer-events: none;
+      animation: fadeInOut 4s ease forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -10px); }
+      10% { opacity: 1; transform: translate(-50%, 0); }
+      80% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -10px); display: none; }
+    }
+
     /* Fallback / Loading Banner */
     .loading-hint {
       position: absolute;
-      bottom: 12px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 0.75rem;
       color: rgba(255, 255, 255, 0.35);
       pointer-events: none;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .source-selector label {
+        display: none;
+      }
+      .title-text {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -154,23 +221,42 @@
         <h1 class="title-text">Retro Bowl</h1>
       </div>
 
+      <!-- Server / Mirror Switcher -->
+      <div class="source-selector">
+        <label for="server-select">Server:</label>
+        <select id="server-select" onchange="manualChangeServer(this.value)">
+          <option value="0">GitHub WebGL (Primary)</option>
+          <option value="1">RetroBowl.me (Official)</option>
+          <option value="2">Unblocked Today</option>
+          <option value="3">Vercel Mirror</option>
+          <option value="4">RetroBowl.io</option>
+          <option value="5">Classroom 6x</option>
+        </select>
+      </div>
+
       <div class="controls-group">
+        <button id="next-mirror-btn" class="btn btn-secondary" onclick="tryNextMirror()" title="Switch to next mirror if blocked">
+          🔄 Next Server
+        </button>
         <button id="fullscreen-btn" class="btn btn-secondary" onclick="toggleFullScreen()" title="Full Screen">
           ⛶ Fullscreen
         </button>
         <a 
+          id="newtab-btn"
           href="https://webglmath.github.io/retro-bowl/" 
           target="_blank" 
           rel="noopener noreferrer" 
           class="btn btn-primary"
-          title="Open in a fresh tab if game doesn't load"
+          title="Open in a fresh tab"
         >
-          ↗ Open in New Tab
+          ↗ Open in Tab
         </a>
       </div>
     </header>
 
     <main id="game-wrapper">
+      <div id="fallback-alert">Mirror unreachable, trying backup server...</div>
+      
       <iframe
         id="game-frame"
         src="https://webglmath.github.io/retro-bowl/"
@@ -179,11 +265,72 @@
         frameborder="0"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       ></iframe>
-      <div class="loading-hint">Click inside to control the game • Works with touch, mouse & keyboard</div>
+      <div class="loading-hint">If a school filter blocks this server, click "🔄 Next Server" or select from the dropdown above</div>
     </main>
   </div>
 
   <script>
+    // List of mirror servers
+    const MIRRORS = [
+      { name: "GitHub WebGL (Primary)", url: "https://webglmath.github.io/retro-bowl/" },
+      { name: "RetroBowl.me (Official)", url: "https://retrobowl.me/" },
+      { name: "Unblocked Today", url: "https://retro-bowl.unblocked.today/" },
+      { name: "Vercel Mirror", url: "https://retro-bowl-six.vercel.app" },
+      { name: "RetroBowl.io", url: "https://retrobowl.io/" },
+      { name: "Classroom 6x", url: "https://classroom6x.com/games/retro-bowl/" }
+    ];
+
+    let currentMirrorIndex = 0;
+    let fallbackTimeout = null;
+
+    function loadMirror(index) {
+      currentMirrorIndex = (index + MIRRORS.length) % MIRRORS.length;
+      const mirror = MIRRORS[currentMirrorIndex];
+      const iframe = document.getElementById("game-frame");
+      const select = document.getElementById("server-select");
+      const newTabBtn = document.getElementById("newtab-btn");
+
+      if (select) select.value = currentMirrorIndex;
+      if (newTabBtn) newTabBtn.href = mirror.url;
+
+      // Update iframe source
+      iframe.src = mirror.url;
+
+      // Reset fallback monitor
+      if (fallbackTimeout) clearTimeout(fallbackTimeout);
+      
+      // Auto-fallback check: if iframe fails to trigger load within 7 seconds or onError
+      fallbackTimeout = setTimeout(() => {
+        // Can be triggered if completely blocked or hung
+      }, 7000);
+    }
+
+    function tryNextMirror(isAutoFallback = false) {
+      if (isAutoFallback) {
+        showFallbackAlert();
+      }
+      loadMirror(currentMirrorIndex + 1);
+    }
+
+    function manualChangeServer(value) {
+      loadMirror(parseInt(value, 10));
+    }
+
+    function showFallbackAlert() {
+      const alertElem = document.getElementById("fallback-alert");
+      if (alertElem) {
+        alertElem.style.display = "block";
+        setTimeout(() => {
+          alertElem.style.display = "none";
+        }, 4000);
+      }
+    }
+
+    const iframeElem = document.getElementById("game-frame");
+    iframeElem.addEventListener("error", () => {
+      tryNextMirror(true);
+    });
+
     function toggleFullScreen() {
       const elem = document.getElementById("game-wrapper") || document.documentElement;
       if (!document.fullscreenElement) {
@@ -200,6 +347,9 @@
         }
       }
     }
+
+    // Initialize with primary mirror
+    loadMirror(0);
   </script>
 </body>
 </html>
