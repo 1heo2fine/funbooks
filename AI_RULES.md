@@ -18,3 +18,4 @@
 8. Dark mode toggle implemented via CSS variables
 9. All code must be well-commented for school use
 10. No third-party libraries beyond specified ones
+</invoke>
