@@ -21,4 +21,3 @@ window.addEventListener('load', () => {
       })
   }
 })
-</invoke>
