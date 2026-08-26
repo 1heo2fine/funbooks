@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🏈 Retro Bowl - Unblocked</title>
+  <title>🔗 Mirror Status Checker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -17,120 +17,207 @@
 
     html, body {
       width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #0f172a;
+      min-height: 100%;
+      background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
       color: #f8fafc;
     }
 
-    #app-container {
+    body {
       display: flex;
       flex-direction: column;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0f172a 100%);
-    }
-
-    /* Top Navigation Bar */
-    header {
-      display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 8px 16px;
-      height: 56px;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      z-index: 20;
+      padding: 40px 20px;
     }
 
-    .title-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .page-header {
+      text-align: center;
+      margin-bottom: 32px;
+      max-width: 600px;
     }
 
-    .title-badge {
-      font-size: 1.5rem;
-      line-height: 1;
-    }
-
-    .title-text {
-      font-size: 1.25rem;
+    .page-title {
+      font-size: 2.5rem;
       font-weight: 900;
-      letter-spacing: -0.02em;
       background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
     }
 
-    .source-selector {
+    .page-subtitle {
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
+    .links-list {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px 20px;
+      transition: all 0.2s ease;
+      gap: 16px;
+    }
+
+    .link-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .link-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .check-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .check-icon.loading {
+      background: rgba(234, 179, 8, 0.15);
+      color: #eab308;
+      font-size: 1rem;
+    }
+
+    .check-icon.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+
+    .check-icon.spinner {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+    }
+
+    .check-icon.spinner::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      border: 2px solid transparent;
+      border-top-color: #94a3b8;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .link-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .link-url {
+      color: #f1f5f9;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      word-break: break-all;
+      display: block;
+    }
+
+    .link-url:hover {
+      color: #38bdf8;
+    }
+
+    .link-status-text {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .link-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .vote-btn {
       display: flex;
       align-items: center;
       gap: 6px;
       background: rgba(255, 255, 255, 0.05);
-      padding: 4px 8px;
-      border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .source-selector label {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .source-selector select {
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      outline: none;
+      border-radius: 8px;
+      padding: 7px 12px;
       cursor: pointer;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: all 0.15s ease;
+      font-family: inherit;
     }
 
-    .source-selector select:hover {
-      border-color: #38bdf8;
+    .vote-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .controls-group {
+    .vote-btn.up:hover, .vote-btn.up.active {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .vote-btn.down:hover, .vote-btn.down.active {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .vote-count {
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .actions-bar {
+      margin-top: 32px;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.15s ease-in-out;
-      border: 1px solid transparent;
-      outline: none;
-      white-space: nowrap;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.07);
-      color: #e2e8f0;
-      border-color: rgba(255, 255, 255, 0.12);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.14);
-      color: #ffffff;
-      transform: translateY(-1px);
+      font-family: inherit;
     }
 
     .btn-primary {
@@ -142,214 +229,204 @@
     .btn-primary:hover {
       background: #0369a1;
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
     }
 
-    /* Game Viewport */
-    main {
-      flex: 1;
-      position: relative;
-      width: 100%;
-      height: calc(100vh - 56px);
-      background: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.07);
+      color: #e2e8f0;
+      border-color: rgba(255, 255, 255, 0.12);
     }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-      background: #000;
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
     }
 
-    /* Banner notification for mirror fallback */
-    #fallback-alert {
-      display: none;
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(239, 68, 68, 0.9);
-      color: #fff;
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-      z-index: 10;
-      pointer-events: none;
-      animation: fadeInOut 4s ease forwards;
-    }
-
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translate(-50%, -10px); }
-      10% { opacity: 1; transform: translate(-50%, 0); }
-      80% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; transform: translate(-50%, -10px); display: none; }
-    }
-
-    /* Fallback / Loading Banner */
-    .loading-hint {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.35);
-      pointer-events: none;
-      text-align: center;
-    }
-
-    @media (max-width: 768px) {
-      .source-selector label {
-        display: none;
-      }
-      .title-text {
-        font-size: 1rem;
-      }
+    @media (max-width: 600px) {
+      .page-title { font-size: 1.8rem; }
+      .link-card { flex-direction: column; align-items: stretch; }
+      .link-right { justify-content: flex-end; }
     }
   </style>
 </head>
 <body>
-  <div id="app-container">
-    <header>
-      <div class="title-group">
-        <span class="title-badge">🏈</span>
-        <h1 class="title-text">Retro Bowl</h1>
-      </div>
+  <div class="page-header">
+    <h1 class="page-title">🔗 Mirror Status Checker</h1>
+    <p class="page-subtitle">Click a link to open it. Vote on whether it works.</p>
+  </div>
 
-      <!-- Server / Mirror Switcher -->
-      <div class="source-selector">
-        <label for="server-select">Server:</label>
-        <select id="server-select" onchange="manualChangeServer(this.value)">
-          <option value="0">GitHub WebGL (Primary)</option>
-          <option value="1">RetroBowl.me (Official)</option>
-          <option value="2">Unblocked Today</option>
-          <option value="3">Vercel Mirror</option>
-          <option value="4">RetroBowl.io</option>
-          <option value="5">Classroom 6x</option>
-        </select>
-      </div>
+  <div class="links-list" id="links-list">
+    <!-- Link cards will be dynamically inserted here -->
+  </div>
 
-      <div class="controls-group">
-        <button id="next-mirror-btn" class="btn btn-secondary" onclick="tryNextMirror()" title="Switch to next mirror if blocked">
-          🔄 Next Server
-        </button>
-        <button id="fullscreen-btn" class="btn btn-secondary" onclick="toggleFullScreen()" title="Full Screen">
-          ⛶ Fullscreen
-        </button>
-        <a 
-          id="newtab-btn"
-          href="https://webglmath.github.io/retro-bowl/" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="btn btn-primary"
-          title="Open in a fresh tab"
-        >
-          ↗ Open in Tab
-        </a>
-      </div>
-    </header>
-
-    <main id="game-wrapper">
-      <div id="fallback-alert">Mirror unreachable, trying backup server...</div>
-      
-      <iframe
-        id="game-frame"
-        src="https://webglmath.github.io/retro-bowl/"
-        title="Retro Bowl"
-        allowfullscreen="true"
-        frameborder="0"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-      ></iframe>
-      <div class="loading-hint">If a school filter blocks this server, click "🔄 Next Server" or select from the dropdown above</div>
-    </main>
+  <div class="actions-bar">
+    <button class="btn btn-secondary" onclick="recheckAll()">🔄 Re-check All</button>
   </div>
 
   <script>
-    // List of mirror servers
+    // Edit this list to add/remove mirrors
     const MIRRORS = [
-      { name: "GitHub WebGL (Primary)", url: "https://webglmath.github.io/retro-bowl/" },
-      { name: "RetroBowl.me (Official)", url: "https://retrobowl.me/" },
-      { name: "Unblocked Today", url: "https://retro-bowl.unblocked.today/" },
+      { name: "Unblocked Test", url: "https://unblockedtest.com" },
+      { name: "Retro Bowl Official", url: "https://retrobowl.me" },
+      { name: "Retro Bowl Unblocked", url: "https://retro-bowl.unblocked.today" },
       { name: "Vercel Mirror", url: "https://retro-bowl-six.vercel.app" },
-      { name: "RetroBowl.io", url: "https://retrobowl.io/" },
-      { name: "Classroom 6x", url: "https://classroom6x.com/games/retro-bowl/" }
+      { name: "RetroBowl.io", url: "https://retrobowl.io" },
+      { name: "Classroom 6x", url: "https://classroom6x.com/games/retro-bowl" }
     ];
 
-    let currentMirrorIndex = 0;
-    let fallbackTimeout = null;
+    // Storage keys
+    const VOTES_KEY = "mirror_votes";
+    const STATUS_KEY = "mirror_status";
 
-    function loadMirror(index) {
-      currentMirrorIndex = (index + MIRRORS.length) % MIRRORS.length;
-      const mirror = MIRRORS[currentMirrorIndex];
-      const iframe = document.getElementById("game-frame");
-      const select = document.getElementById("server-select");
-      const newTabBtn = document.getElementById("newtab-btn");
-
-      if (select) select.value = currentMirrorIndex;
-      if (newTabBtn) newTabBtn.href = mirror.url;
-
-      // Update iframe source
-      iframe.src = mirror.url;
-
-      // Reset fallback monitor
-      if (fallbackTimeout) clearTimeout(fallbackTimeout);
-      
-      // Auto-fallback check: if iframe fails to trigger load within 7 seconds or onError
-      fallbackTimeout = setTimeout(() => {
-        // Can be triggered if completely blocked or hung
-      }, 7000);
-    }
-
-    function tryNextMirror(isAutoFallback = false) {
-      if (isAutoFallback) {
-        showFallbackAlert();
-      }
-      loadMirror(currentMirrorIndex + 1);
-    }
-
-    function manualChangeServer(value) {
-      loadMirror(parseInt(value, 10));
-    }
-
-    function showFallbackAlert() {
-      const alertElem = document.getElementById("fallback-alert");
-      if (alertElem) {
-        alertElem.style.display = "block";
-        setTimeout(() => {
-          alertElem.style.display = "none";
-        }, 4000);
+    function loadVotes() {
+      try {
+        return JSON.parse(localStorage.getItem(VOTES_KEY) || "{}");
+      } catch (e) {
+        return {};
       }
     }
 
-    const iframeElem = document.getElementById("game-frame");
-    iframeElem.addEventListener("error", () => {
-      tryNextMirror(true);
-    });
+    function saveVotes(votes) {
+      localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
+    }
 
-    function toggleFullScreen() {
-      const elem = document.getElementById("game-wrapper") || document.documentElement;
-      if (!document.fullscreenElement) {
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
-        }
+    function loadStoredStatus() {
+      try {
+        return JSON.parse(localStorage.getItem(STATUS_KEY) || "{}");
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveStoredStatus(status) {
+      localStorage.setItem(STATUS_KEY, JSON.stringify(status));
+    }
+
+    function getVoteData(mirrorId) {
+      const votes = loadVotes();
+      return votes[mirrorId] || { up: 0, down: 0, userVote: null };
+    }
+
+    function setVote(mirrorId, direction) {
+      const votes = loadVotes();
+      const current = votes[mirrorId] || { up: 0, down: 0, userVote: null };
+      const newVote = { up: current.up, down: current.down, userVote: current.userVote };
+
+      // If user already voted this way, undo it
+      if (newVote.userVote === direction) {
+        if (direction === "up") newVote.up = Math.max(0, newVote.up - 1);
+        else newVote.down = Math.max(0, newVote.down - 1);
+        newVote.userVote = null;
       } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
+        // Remove old vote
+        if (newVote.userVote === "up") newVote.up = Math.max(0, newVote.up - 1);
+        else if (newVote.userVote === "down") newVote.down = Math.max(0, newVote.down - 1);
+        // Add new vote
+        if (direction === "up") newVote.up += 1;
+        else newVote.down += 1;
+        newVote.userVote = direction;
+      }
+
+      votes[mirrorId] = newVote;
+      saveVotes(votes);
+      renderAll();
+    }
+
+    function renderLinkCard(mirror, index) {
+      const stored = loadStoredStatus();
+      const status = stored[mirror.url] || { state: "checking", text: "Checking..." };
+      const voteData = getVoteData(mirror.url);
+      const isUp = voteData.userVote === "up";
+      const isDown = voteData.userVote === "down";
+
+      const checkClass = status.state === "ok" ? "" : 
+                        status.state === "error" ? "error" : 
+                        status.state === "checking" ? "spinner" : "loading";
+      const checkIcon = status.state === "ok" ? "✓" : 
+                       status.state === "error" ? "✕" : "";
+
+      return `
+        <div class="link-card" data-url="${mirror.url}">
+          <div class="link-left">
+            <div class="check-icon ${checkClass}">${checkIcon}</div>
+            <div class="link-info">
+              <a class="link-url" href="${mirror.url}" target="_blank" rel="noopener noreferrer">${mirror.name}</a>
+              <div class="link-status-text">${status.text}</div>
+            </div>
+          </div>
+          <div class="link-right">
+            <button class="vote-btn up ${isUp ? "active" : ""}" onclick="setVote('${mirror.url}', 'up')" title="Mark as working">
+              👍 <span class="vote-count">${voteData.up}</span>
+            </button>
+            <button class="vote-btn down ${isDown ? "active" : ""}" onclick="setVote('${mirror.url}', 'down')" title="Mark as broken">
+              👎 <span class="vote-count">${voteData.down}</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAll() {
+      const list = document.getElementById("links-list");
+      list.innerHTML = MIRRORS.map(renderLinkCard).join("");
+    }
+
+    // Check status of a URL by trying to fetch it
+    async function checkStatus(url) {
+      return new Promise((resolve) => {
+        // Use an image trick to avoid CORS issues
+        const img = new Image();
+        let resolved = false;
+
+        const finish = (state, text) => {
+          if (resolved) return;
+          resolved = true;
+          resolve({ state, text });
+        };
+
+        const timeout = setTimeout(() => {
+          finish("error", "Timeout / Possibly blocked");
+        }, 5000);
+
+        img.onload = () => {
+          clearTimeout(timeout);
+          finish("ok", "Reachable ✓");
+        };
+        img.onerror = () => {
+          clearTimeout(timeout);
+          // Some sites block image loading, try alternative
+          finish("error", "Blocked or unreachable");
+        };
+
+        // Use a dummy image path on the target domain
+        img.src = url + "/favicon.ico?cb=" + Date.now();
+      });
+    }
+
+    async function recheckAll() {
+      const stored = loadStoredStatus();
+      // Mark all as checking
+      MIRRORS.forEach(m => {
+        stored[m.url] = { state: "checking", text: "Checking..." };
+      });
+      saveStoredStatus(stored);
+      renderAll();
+
+      // Check each one
+      for (const mirror of MIRRORS) {
+        const result = await checkStatus(mirror.url);
+        const s = loadStoredStatus();
+        s[mirror.url] = result;
+        saveStoredStatus(s);
+        renderAll();
       }
     }
 
-    // Initialize with primary mirror
-    loadMirror(0);
+    // Initial render
+    renderAll();
+
+    // Auto check on load
+    recheckAll();
   </script>
 </body>
 </html>
