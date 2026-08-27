@@ -94,7 +94,7 @@ function statusToIcon(kind) {
   if (kind === "unblocked") return "✓";
   if (kind === "blocked") return "✕";
   if (kind === "partial") return "!";
-  return "?";
+  return "";
 }
 
 function escapeHtml(s) {
@@ -112,16 +112,14 @@ function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
-  const badgeHtml = mirror.tag
-    ? `<span class="badge-pill badge-${mirror.tag}">${mirror.tag}</span>`
-    : "";
+  const icon = statusToIcon(status.kind);
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
       <div class="link-left">
-        <div class="status-icon ${status.kind}">${statusToIcon(status.kind)}</div>
+        ${icon ? `<div class="status-icon ${status.kind}">${icon}</div>` : `<div class="status-icon empty"></div>`}
         <div class="link-info">
-          <span class="link-url">${escapeHtml(mirror.name)}${badgeHtml}</span>
+          <span class="link-url">${escapeHtml(mirror.name)}</span>
           <div class="link-status-text">${status.label}</div>
         </div>
       </div>
