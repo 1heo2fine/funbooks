@@ -1,7 +1,7 @@
 import { MIRRORS } from './data/mirrors.js';
 
 const VOTES_KEY = "mirror_votes";
-const SEEDED_KEY = "mirror_votes_seeded_v3";
+const SEEDED_KEY = "mirror_votes_seeded_v4";
 let currentFilter = "all";
 let searchTerm = "";
 
@@ -30,14 +30,9 @@ function seedRandomVotes() {
   while (blockedIndexes.size < 4) {
     blockedIndexes.add(Math.floor(Math.random() * total));
   }
-  const partialCount = Math.max(1, Math.floor(total * 0.25));
+  // No more "50/50" group — every link will be clearly recommended or low rated.
+  // We assign votes so that up and down are never equal (with a comfortable margin).
   const partialIndexes = new Set();
-  while (partialIndexes.size < partialCount) {
-    const i = Math.floor(Math.random() * total);
-    if (!blockedIndexes.has(i) && !partialIndexes.has(i)) {
-      partialIndexes.add(i);
-    }
-  }
 
   MIRRORS.forEach((m, i) => {
     let up, down;
@@ -45,12 +40,22 @@ function seedRandomVotes() {
       down = 100 + Math.floor(Math.random() * 400);
       up = Math.floor(Math.random() * 80);
     } else if (partialIndexes.has(i)) {
+      // Mid-range — lean toward up but never equal
       const n = 100 + Math.floor(Math.random() * 200);
-      up = n;
-      down = n;
+      const margin = 15 + Math.floor(Math.random() * 60);
+      if (Math.random() < 0.5) {
+        up = n + margin;
+        down = n;
+      } else {
+        up = n;
+        down = n + margin;
+      }
     } else {
       up = 100 + Math.floor(Math.random() * 900);
-      down = 20 + Math.floor(Math.random() * 90);  // Minimum 20 down votes
+      // Ensure up is always strictly greater than down
+      const maxDown = Math.max(20, up - 30 - Math.floor(Math.random() * 40));
+      down = 20 + Math.floor(Math.random() * (maxDown - 20));
+      if (down >= up) down = Math.max(0, up - 1);
     }
     votes[m.url] = { up, down, userVote: null };
   });
@@ -87,7 +92,8 @@ function computeStatus(url) {
   if (total === 0) return { kind: "new", label: "Unverified" };
   if (v.up > v.down) return { kind: "recommended", label: "Recommended" };
   if (v.down > v.up) return { kind: "low", label: "Low rated" };
-  return { kind: "50/50", label: "50/50" };
+  // Fallback: should not occur with seeded data, but keep a clear label
+  return { kind: "recommended", label: "Recommended" };
 }
 
 function getPercentages(url) {
@@ -145,7 +151,6 @@ export function renderAll() {
 
     if (currentFilter === "all") return true;
     if (currentFilter === "hot") {
-      // Top 5 most liked by upvotes
       return true; // handled in sort below
     }
     if (currentFilter === "new") return m.tag === "new";
@@ -177,6 +182,16 @@ window.__setVote = setVote;
 window.__setFilter = setFilter;
 
 export function init() {
+  // If the user is upgrading from a previous seed that produced 50/50 results,
+  // clear out the old seed so the new randomized votes take effect.
+  try {
+    const previousSeed = localStorage.getItem(SEEDED_KEY);
+    if (!previousSeed) {
+      localStorage.removeItem("mirror_votes_seeded_v3");
+      localStorage.removeItem(VOTES_KEY);
+    }
+  } catch (e) {}
+
   seedRandomVotes();
   const searchInput = document.getElementById("search-input");
   if (searchInput) {
