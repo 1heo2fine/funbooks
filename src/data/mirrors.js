@@ -1,5 +1,5 @@
 export const MIRRORS = [
-  // Hot mirrors
+  // Hot section
   { name: "Cool Math Games", url: "https://coolmathgames.com", tag: "hot" },
   { name: "Slope Game", url: "https://slope-game.org", tag: "hot" },
   { name: "1v1.LOL", url: "https://1v1lol.com", tag: "hot" },
@@ -10,7 +10,7 @@ export const MIRRORS = [
   { name: "Bitlife", url: "https://bitlife.io", tag: "hot" },
   { name: "Shell Shockers", url: "https://shellshockers.io", tag: "hot" },
 
-  // New additions
+  // New section
   { name: "Paper.io 2", url: "https://paper-io.com", tag: "new" },
   { name: "Stickman Hook", url: "https://stickmanhook.io", tag: "new" },
   { name: "Temple Run 2", url: "https://templerun2.me", tag: "new" },
@@ -18,7 +18,7 @@ export const MIRRORS = [
   { name: "Subway Surfers", url: "https://subwaysurfers.io", tag: "new" },
   { name: "Among Us Online", url: "https://amongus.io", tag: "new" },
 
-  // Classic mirrors
+  // All other links
   { name: "Hooda Math", url: "https://hoodamath.com" },
   { name: "PBS Kids", url: "https://pbskids.org/games" },
   { name: "Scratch", url: "https://scratch.mit.edu" },
