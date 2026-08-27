@@ -3,147 +3,386 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>fykk gamehub - Unblocked Redirects</title>
+  <title>funbooks.lol — Curated Unblocked Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    :root {
+      --bg: #030305;
+      --surface-glass: rgba(255, 255, 255, 0.035);
+      --surface-glass-hover: rgba(255, 255, 255, 0.07);
+      --surface-glass-active: rgba(255, 255, 255, 0.12);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-glass-hover: rgba(255, 255, 255, 0.22);
+      --border-specular: rgba(255, 255, 255, 0.16);
+      
+      --text-main: #f4f4f7;
+      --text-muted: #8b8d99;
+      --text-dim: #545663;
+      
+      --accent-white: #ffffff;
+      --accent-emerald: #22c55e;
+      --accent-rose: #f43f5e;
+      
+      --radius-full: 9999px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html, body {
       width: 100%;
       min-height: 100%;
-      background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #0a0a0a 100%);
-      color: #f8fafc;
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px 80px;
-    }
-
-    .page-header {
-      text-align: center;
-      margin-bottom: 24px;
-      max-width: 600px;
-    }
-
-    .page-title {
-      font-size: 2.5rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .page-subtitle {
-      color: #94a3b8;
-      font-weight: 600;
-      font-size: 1rem;
-      margin-top: 8px;
-    }
-
-    .search-bar {
-      width: 100%;
-      max-width: 700px;
-      margin-bottom: 20px;
+      padding: 60px 20px 100px;
       position: relative;
     }
 
-    .search-bar input {
-      width: 100%;
-      padding: 12px 16px 12px 44px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      color: #f8fafc;
-      font-size: 0.95rem;
-      font-weight: 600;
-      outline: none;
-      transition: all 0.2s ease;
-      font-family: inherit;
+    /* Ambient Orb Lighting Background */
+    .bg-sphere {
+      position: fixed;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 820px;
+      height: 520px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 45%, transparent 75%);
+      border-radius: 50%;
+      filter: blur(40px);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .search-bar input::placeholder {
-      color: #64748b;
-    }
-
-    .search-bar input:focus {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: #737373;
-    }
-
-    .search-bar .search-icon {
-      position: absolute;
-      left: 16px;
+    .bg-ring {
+      position: fixed;
       top: 50%;
-      transform: translateY(-50%);
-      color: #64748b;
-      font-size: 1.1rem;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90vw;
+      max-width: 1200px;
+      height: 700px;
+      border: 1px solid rgba(255, 255, 255, 0.025);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .filter-bar {
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Branding */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--surface-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.4);
+      margin-bottom: 22px;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-white);
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    .page-title {
+      font-size: clamp(2.4rem, 6.5vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, #d6d7e0 55%, #76788a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+      font-weight: 400;
+      text-align: center;
+      max-width: 540px;
+      line-height: 1.55;
+      letter-spacing: -0.01em;
+      margin-bottom: 34px;
+    }
+
+    /* Reference Style Live Stats Row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 36px;
+    }
+
+    .stat-pill {
+      background: var(--surface-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 12px 30px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s var(--ease);
+    }
+
+    .stat-pill:hover {
+      border-color: var(--border-glass-hover);
+      background: var(--surface-glass-hover);
+      transform: translateY(-2px);
+    }
+
+    .stat-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--accent-white);
+    }
+
+    .stat-lbl {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Liquid Glass Search Bar */
+    .search-container {
+      width: 100%;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .search-glass-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      padding: 6px 10px 6px 20px;
+      backdrop-filter: blur(36px) saturate(190%);
+      -webkit-backdrop-filter: blur(36px) saturate(190%);
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.15),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+        0 20px 45px rgba(0, 0, 0, 0.65);
+      transition: all 0.3s var(--ease);
+    }
+
+    .search-glass-shell:hover {
+      border-color: var(--border-glass-hover);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .search-glass-shell:focus-within {
+      background: rgba(255, 255, 255, 0.075);
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.25),
+        0 0 0 3px rgba(255, 255, 255, 0.06),
+        0 24px 50px rgba(0, 0, 0, 0.75);
+    }
+
+    .search-icon-svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      margin-right: 12px;
+      transition: color 0.2s var(--ease);
+    }
+
+    .search-glass-shell:focus-within .search-icon-svg {
+      color: var(--accent-white);
+    }
+
+    .search-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-weight: 500;
+      font-family: inherit;
+      padding: 10px 0;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-dim);
+      font-weight: 400;
+    }
+
+    .search-badge-hint {
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 4px 8px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    /* Liquid Glass Filter Pills */
+    .filter-scroll-wrap {
+      width: 100%;
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
       flex-wrap: wrap;
       justify-content: center;
     }
 
-    .filter-chip {
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #cbd5e1;
-      font-size: 0.8rem;
-      font-weight: 700;
+    .filter-glass-pill {
+      position: relative;
+      background: var(--surface-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      padding: 9px 18px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.15s ease;
-      font-family: inherit;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 16px rgba(0, 0, 0, 0.25);
+      transition: all 0.25s var(--ease);
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .filter-chip:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
+    .filter-glass-pill:hover {
+      background: var(--surface-glass-hover);
+      border-color: var(--border-glass-hover);
+      color: var(--text-main);
+      transform: translateY(-1px);
     }
 
-    .filter-chip.active {
-      background: #404040;
-      border-color: #737373;
-      color: #fff;
+    .filter-glass-pill.active {
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #030305;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
 
+    /* Liquid Glass List Cards */
     .links-list {
       width: 100%;
-      max-width: 700px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 9px;
     }
 
     .link-card {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 14px 18px;
-      transition: all 0.2s ease;
       gap: 16px;
+      background: var(--surface-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      backdrop-filter: blur(32px) saturate(180%);
+      -webkit-backdrop-filter: blur(32px) saturate(180%);
+      box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.09),
+        0 10px 30px rgba(0, 0, 0, 0.4);
       cursor: pointer;
+      transition: all 0.25s var(--ease);
+      overflow: hidden;
+    }
+
+    .link-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.18) 50%, transparent 100%);
+      opacity: 0.6;
     }
 
     .link-card:hover {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
+      background: var(--surface-glass-hover);
+      border-color: var(--border-glass-hover);
+      transform: translateY(-2px);
+      box-shadow: 
+        inset 0 1px 1.5px rgba(255, 255, 255, 0.18),
+        0 16px 40px rgba(0, 0, 0, 0.6);
     }
 
     .link-left {
@@ -154,109 +393,212 @@
       min-width: 0;
     }
 
+    .link-dot-status {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      flex-shrink: 0;
+      transition: all 0.2s var(--ease);
+    }
+
+    .link-card:hover .link-dot-status {
+      background: var(--accent-white);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
     .link-info {
       flex: 1;
       min-width: 0;
     }
 
     .link-url {
-      color: #f1f5f9;
-      font-weight: 700;
-      font-size: 1rem;
-      word-break: break-all;
-      display: block;
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.015em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.2s var(--ease);
     }
 
-    .link-status-text {
+    .link-card:hover .link-url {
+      color: var(--accent-white);
+    }
+
+    .link-sub-url {
       font-size: 0.72rem;
-      color: #94a3b8;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
       margin-top: 2px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .link-right {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       flex-shrink: 0;
     }
 
-    .vote-btn {
-      display: flex;
+    /* Liquid Glass Vote & Launch Buttons */
+    .glass-btn {
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 6px 10px;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      padding: 7px 11px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
       cursor: pointer;
-      color: #cbd5e1;
-      font-size: 0.85rem;
-      font-weight: 800;
-      transition: all 0.15s ease;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
+      transition: all 0.2s var(--ease);
+      user-select: none;
+    }
+
+    .glass-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: var(--border-glass-hover);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .glass-btn:active {
+      transform: scale(0.96);
+    }
+
+    .glass-btn.up:hover,
+    .glass-btn.up.active {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: var(--accent-emerald);
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.2), inset 0 1px 1px rgba(34, 197, 94, 0.3);
+    }
+
+    .glass-btn.down:hover,
+    .glass-btn.down.active {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.35);
+      color: var(--accent-rose);
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.2), inset 0 1px 1px rgba(244, 63, 94, 0.3);
+    }
+
+    .glass-btn-cta {
+      background: #ffffff;
+      border: 1px solid #ffffff;
+      color: #030305;
+      padding: 7px 14px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
       font-family: inherit;
+      font-size: 0.78rem;
+      letter-spacing: -0.01em;
+      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25);
     }
 
-    .vote-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .vote-btn.up:hover, .vote-btn.up.active {
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-      border-color: rgba(34, 197, 94, 0.4);
-    }
-
-    .vote-btn.down:hover, .vote-btn.down.active {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border-color: rgba(239, 68, 68, 0.4);
-    }
-
-    .vote-count {
-      min-width: 16px;
-      text-align: center;
-      font-size: 0.8rem;
+    .glass-btn-cta:hover {
+      background: #e8e8ee;
+      border-color: #e8e8ee;
+      color: #000000;
     }
 
     .empty-state {
       text-align: center;
-      color: #64748b;
-      padding: 40px 20px;
-      font-weight: 700;
+      color: var(--text-dim);
+      padding: 60px 20px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      background: var(--surface-glass);
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      width: 100%;
     }
 
-    @media (max-width: 600px) {
-      .page-title { font-size: 1.8rem; }
+    /* Custom Minimal Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+    @media (max-width: 640px) {
+      body { padding: 40px 16px 80px; }
+      .stats-row { grid-template-columns: 1fr; }
       .link-card { padding: 12px 14px; }
-      .link-url { font-size: 0.9rem; }
-      .link-right { gap: 4px; }
-      .vote-btn { padding: 5px 8px; font-size: 0.8rem; }
+      .link-url { font-size: 0.88rem; }
+      .link-sub-url { display: none; }
+      .filter-glass-pill { padding: 7px 14px; font-size: 0.7rem; }
+      .glass-btn { padding: 6px 9px; font-size: 0.7rem; }
+      .glass-btn-cta { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="page-header">
-    <h1 class="page-title">funbook.lol</h1>
-    <p class="page-subtitle">Click a link to open it. Vote on whether it works at your school.</p>
-  </div>
+  <!-- Ambient Orbs & Geometric Rings matching reference -->
+  <div class="bg-sphere"></div>
+  <div class="bg-ring"></div>
+  <div class="bg-grid"></div>
 
-  <div class="search-bar">
-    <span class="search-icon">🔍</span>
-    <input id="search-input" type="text" placeholder="Search links..." />
-  </div>
+  <div class="app-container">
+    <!-- Header Badge -->
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span>Verified Fast Nodes</span>
+    </div>
 
-  <div class="filter-bar">
-    <button class="filter-chip active" data-filter="all">All</button>
-    <button class="filter-chip" data-filter="hot">Hot</button>
-    <button class="filter-chip" data-filter="new">New</button>
-    <button class="filter-chip" data-filter="recommended">Recommended</button>
-    <button class="filter-chip" data-filter="low">Low rated</button>
-  </div>
+    <!-- Title & Subtitle -->
+    <h1 class="page-title">funbooks.lol</h1>
+    <p class="page-subtitle">Decentralized, unblocked school redirect portals and gaming networks with real-time status telemetry.</p>
 
-  <div class="links-list" id="links-list"></div>
+    <!-- Reference Stats Row -->
+    <div class="stats-row">
+      <div class="stat-pill">
+        <span class="stat-val" id="stat-nodes">100+</span>
+        <span class="stat-lbl">Active Proxies</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-val">99.8%</span>
+        <span class="stat-lbl">Uptime Index</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-val">Instant</span>
+        <span class="stat-lbl">Bypass Latency</span>
+      </div>
+    </div>
+
+    <!-- Liquid Glass Search Bar -->
+    <div class="search-container">
+      <div class="search-glass-shell">
+        <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input id="search-input" class="search-input" type="text" placeholder="Search mirrors, proxy nodes, educational apps..." autocomplete="off" />
+        <span class="search-badge-hint">⌘K</span>
+      </div>
+    </div>
+
+    <!-- Liquid Glass Filter Bar -->
+    <div class="filter-scroll-wrap" id="filter-bar">
+      <button class="filter-glass-pill active" data-filter="all">All Portals</button>
+      <button class="filter-glass-pill" data-filter="hot">🔥 Hot</button>
+      <button class="filter-glass-pill" data-filter="new">⚡ New</button>
+      <button class="filter-glass-pill" data-filter="recommended">✦ Recommended</button>
+      <button class="filter-glass-pill" data-filter="low">Low Rated</button>
+    </div>
+
+    <!-- Link Directory -->
+    <div class="links-list" id="links-list"></div>
+  </div>
 
   <script type="module" src="./app.js"></script>
 </body>
