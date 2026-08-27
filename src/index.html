@@ -157,37 +157,6 @@
       min-width: 0;
     }
 
-    .status-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      font-size: 1rem;
-      font-weight: 900;
-      flex-shrink: 0;
-    }
-
-    .status-icon.unblocked {
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-    }
-
-    .status-icon.blocked {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-    }
-
-    .status-icon.partial {
-      background: rgba(234, 179, 8, 0.15);
-      color: #eab308;
-    }
-
-    .status-icon.empty {
-      display: none;
-    }
-
     .link-info {
       flex: 1;
       min-width: 0;
@@ -286,9 +255,9 @@
     <button class="filter-chip active" data-filter="all">All</button>
     <button class="filter-chip" data-filter="hot">Hot</button>
     <button class="filter-chip" data-filter="new">New</button>
-    <button class="filter-chip" data-filter="unblocked">Unblocked</button>
-    <button class="filter-chip" data-filter="partial">Partial</button>
-    <button class="filter-chip" data-filter="blocked">Blocked</button>
+    <button class="filter-chip" data-filter="recommended">Recommended</button>
+    <button class="filter-chip" data-filter="50/50">50/50</button>
+    <button class="filter-chip" data-filter="low">Low rated</button>
   </div>
 
   <div class="links-list" id="links-list"></div>

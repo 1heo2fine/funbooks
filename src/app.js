@@ -85,16 +85,18 @@ function computeStatus(url) {
   const v = getVoteData(url);
   const total = v.up + v.down;
   if (total === 0) return { kind: "new", label: "Unverified" };
-  if (v.up > v.down) return { kind: "unblocked", label: "Unblocked" };
-  if (v.down > v.up) return { kind: "blocked", label: "Blocked" };
-  return { kind: "partial", label: "Unblocked for some schools" };
+  if (v.up > v.down) return { kind: "recommended", label: "Recommended" };
+  if (v.down > v.up) return { kind: "low", label: "Low rated" };
+  return { kind: "50/50", label: "50/50" };
 }
 
-function statusToIcon(kind) {
-  if (kind === "unblocked") return "✓";
-  if (kind === "blocked") return "✕";
-  if (kind === "partial") return "!";
-  return "";
+function getPercentages(url) {
+  const v = getVoteData(url);
+  const total = v.up + v.down;
+  if (total === 0) return { likePct: 0, dislikePct: 0 };
+  const likePct = Math.round((v.up / total) * 100);
+  const dislikePct = 100 - likePct;
+  return { likePct, dislikePct };
 }
 
 function escapeHtml(s) {
@@ -112,18 +114,21 @@ function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
+  const { likePct, dislikePct } = getPercentages(mirror.url);
+  // Hide status label when viewing recommended tab
+  const showStatus = currentFilter !== "recommended";
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
       <div class="link-left">
         <div class="link-info">
           <span class="link-url">${escapeHtml(mirror.name)}</span>
-          <div class="link-status-text">${status.label}</div>
+          ${showStatus ? `<div class="link-status-text">${status.label}</div>` : ""}
         </div>
       </div>
       <div class="link-right">
-        <button class="vote-btn up ${isUp ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'up', event)" title="Works at my school">👍 <span class="vote-count">${v.up}</span></button>
-        <button class="vote-btn down ${isDown ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'down', event)" title="Blocked at my school">👎 <span class="vote-count">${v.down}</span></button>
+        <button class="vote-btn up ${isUp ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'up', event)" title="Works at my school">👍 <span class="vote-count">${likePct}%</span></button>
+        <button class="vote-btn down ${isDown ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'down', event)" title="Blocked at my school">👎 <span class="vote-count">${dislikePct}%</span></button>
       </div>
     </div>
   `;
@@ -139,10 +144,18 @@ export function renderAll() {
     if (!matchesSearch) return false;
 
     if (currentFilter === "all") return true;
-    if (currentFilter === "hot") return m.tag === "hot";
+    if (currentFilter === "hot") {
+      // Top 5 most liked by upvotes
+      return true; // handled in sort below
+    }
     if (currentFilter === "new") return m.tag === "new";
     return computeStatus(m.url).kind === currentFilter;
   });
+
+  // For "hot" filter, sort by upvotes descending and take top 5
+  if (currentFilter === "hot") {
+    filtered = [...filtered].sort((a, b) => getVoteData(b.url).up - getVoteData(a.url).up).slice(0, 5);
+  }
 
   if (filtered.length === 0) {
     list.innerHTML = `<div class="empty-state">No links match your search.</div>`;
