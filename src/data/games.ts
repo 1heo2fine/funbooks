@@ -81,7 +81,7 @@ const gradients = [
   "from-violet-800 via-purple-900 to-black",
   "from-indigo-800 via-blue-900 to-black",
   "from-emerald-800 via-teal-900 to-black",
-  "from-fuchsia-800 via-pink-900 to-black",
+  "from-fuchsia-800 via-pink-900-to-black",
 ];
 
 const emojiForCategory = (category: string): string => {
@@ -216,7 +216,6 @@ const rawUrls: string[] = [
   "https://sites.google.com/site/unblockedgames110",
   "https://www.google.com/sites",
   "https://sites.google.com",
-  "https://github.com",
   "https://vercel.com",
   "https://netlify.app",
   "https://pages.github.com",
