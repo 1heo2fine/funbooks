@@ -50,7 +50,7 @@ function seedRandomVotes() {
       down = n;
     } else {
       up = 100 + Math.floor(Math.random() * 900);
-      down = 20 + Math.floor(Math.random() * 90);  // Minimum 20 down votes
+      down = 20 + Math.floor(Math.random() * 90);
     }
     votes[m.url] = { up, down, userVote: null };
   });
@@ -87,7 +87,7 @@ function computeStatus(url) {
   if (total === 0) return { kind: "new", label: "Unverified" };
   if (v.up > v.down) return { kind: "recommended", label: "Recommended" };
   if (v.down > v.up) return { kind: "low", label: "Low rated" };
-  return { kind: "50/50", label: "50/50" };
+  return { kind: "50/50", label: "mostly blocked" };
 }
 
 function getPercentages(url) {
@@ -115,15 +115,16 @@ function renderLinkCard(mirror) {
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
   const { likePct, dislikePct } = getPercentages(mirror.url);
-  // Hide status label when viewing recommended tab
-  const showStatus = currentFilter !== "recommended";
+
+  // Unique description per card; for "mostly blocked" show that text
+  const description = status.kind === "50/50" ? "Mostly blocked" : `Unblocked games at ${mirror.name}`;
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
       <div class="link-left">
         <div class="link-info">
           <span class="link-url">${escapeHtml(mirror.name)}</span>
-          ${showStatus ? `<div class="link-status-text">${status.label}</div>` : ""}
+          <div class="link-description">${escapeHtml(description)}</div>
         </div>
       </div>
       <div class="link-right">
@@ -145,14 +146,12 @@ export function renderAll() {
 
     if (currentFilter === "all") return true;
     if (currentFilter === "hot") {
-      // Top 5 most liked by upvotes
       return true; // handled in sort below
     }
     if (currentFilter === "new") return m.tag === "new";
     return computeStatus(m.url).kind === currentFilter;
   });
 
-  // For "hot" filter, sort by upvotes descending and take top 5
   if (currentFilter === "hot") {
     filtered = [...filtered].sort((a, b) => getVoteData(b.url).up - getVoteData(a.url).up).slice(0, 5);
   }
