@@ -114,7 +114,7 @@ function escapeHtml(s) {
     ">": ">",
     '"': "&quot;",
     "'": "&#39;"
-  })[c];
+  })[c]);
 }
 
 function renderLinkCard(mirror) {
