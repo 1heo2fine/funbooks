@@ -52,21 +52,48 @@ export function setVote(url, direction, event) {
   if (event) event.stopPropagation();
   const votes = loadVotes();
   const current = votes[url] || { up: 0, down: 0, userVote: null };
-  const newVote = { up: current.up, down: current.down, userVote: current.userVote };
-
-  if (newVote.userVote === direction) {
-    if (direction === "up") newVote.up = Math.max(0, newVote.up - 1);
-    else newVote.down = Math.max(0, newVote.down - 1);
-    newVote.userVote = null;
+  
+  // If clicking same vote again, toggle off
+  if (current.userVote === direction) {
+    if (direction === "up") {
+      votes[url] = { 
+        up: Math.max(0, current.up - 1), 
+        down: current.down, 
+        userVote: null 
+      };
+    } else {
+      votes[url] = { 
+        up: current.up, 
+        down: Math.max(0, current.down - 1), 
+        userVote: null 
+      };
+    }
   } else {
-    if (newVote.userVote === "up") newVote.up = Math.max(0, newVote.up - 1);
-    else if (newVote.userVote === "down") newVote.down = Math.max(0, newVote.down - 1);
-    if (direction === "up") newVote.up += 1;
-    else newVote.down += 1;
-    newVote.userVote = direction;
+    // Switching from opposite vote or new vote
+    let newUp = current.up;
+    let newDown = current.down;
+    
+    // Remove opposite vote if exists
+    if (current.userVote === "up") {
+      newUp = Math.max(0, current.up - 1);
+    } else if (current.userVote === "down") {
+      newDown = Math.max(0, current.down - 1);
+    }
+    
+    // Add new vote
+    if (direction === "up") {
+      newUp += 1;
+    } else {
+      newDown += 1;
+    }
+    
+    votes[url] = { 
+      up: newUp, 
+      down: newDown, 
+      userVote: direction 
+    };
   }
-
-  votes[url] = newVote;
+  
   saveVotes(votes);
   renderAll();
 }
@@ -78,15 +105,6 @@ function computeStatus(url) {
   if (v.up > v.down) return { kind: "recommended", label: "Recommended" };
   if (v.down > v.up) return { kind: "low", label: "Low rated" };
   return { kind: "recommended", label: "Recommended" };
-}
-
-function getPercentages(url) {
-  const v = getVoteData(url);
-  const total = v.up + v.down;
-  if (total === 0) return { likePct: 0, dislikePct: 0 };
-  const likePct = Math.round((v.up / total) * 100);
-  const dislikePct = 100 - likePct;
-  return { likePct, dislikePct };
 }
 
 function escapeHtml(s) {
@@ -103,7 +121,6 @@ function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
-  const { likePct, dislikePct } = getPercentages(mirror.url);
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
@@ -115,11 +132,11 @@ function renderLinkCard(mirror) {
       <div class="link-right">
         <button class="vote-btn up ${isUp ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'up', event)" title="Works at my school" aria-label="Upvote: works at my school">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-          <span class="vote-count">${likePct}%</span>
+          <span class="vote-count">${v.up}</span>
         </button>
         <button class="vote-btn down ${isDown ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'down', event)" title="Blocked at my school" aria-label="Downvote: blocked at my school">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2-1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
-          <span class="vote-count">${dislikePct}%</span>
+          <span class="vote-count">${v.down}</span>
         </button>
       </div>
     </div>
