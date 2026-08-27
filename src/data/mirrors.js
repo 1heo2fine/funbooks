@@ -1,5 +1,24 @@
 export const MIRRORS = [
-  { name: "Cool Math Games", url: "https://coolmathgames.com" },
+  // Hot mirrors
+  { name: "Cool Math Games", url: "https://coolmathgames.com", tag: "hot" },
+  { name: "Slope Game", url: "https://slope-game.org", tag: "hot" },
+  { name: "1v1.LOL", url: "https://1v1lol.com", tag: "hot" },
+  { name: "Retro Bowl", url: "https://retrobowl.io", tag: "hot" },
+  { name: "Drift Hunters", url: "https://drifthunters.io", tag: "hot" },
+  { name: "Moto X3M", url: "https://motox3m.io", tag: "hot" },
+  { name: "Tunnel Rush", url: "https://tunnelrush.app", tag: "hot" },
+  { name: "Bitlife", url: "https://bitlife.io", tag: "hot" },
+  { name: "Shell Shockers", url: "https://shellshockers.io", tag: "hot" },
+
+  // New additions
+  { name: "Paper.io 2", url: "https://paper-io.com", tag: "new" },
+  { name: "Stickman Hook", url: "https://stickmanhook.io", tag: "new" },
+  { name: "Temple Run 2", url: "https://templerun2.me", tag: "new" },
+  { name: "Cut the Rope", url: "https://cuttherope.net", tag: "new" },
+  { name: "Subway Surfers", url: "https://subwaysurfers.io", tag: "new" },
+  { name: "Among Us Online", url: "https://amongus.io", tag: "new" },
+
+  // Classic mirrors
   { name: "Hooda Math", url: "https://hoodamath.com" },
   { name: "PBS Kids", url: "https://pbskids.org/games" },
   { name: "Scratch", url: "https://scratch.mit.edu" },

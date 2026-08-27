@@ -211,6 +211,28 @@
       letter-spacing: 0.03em;
     }
 
+    .badge-pill {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .badge-hot {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .badge-new {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+
     .link-right {
       display: flex;
       align-items: center;
@@ -285,10 +307,11 @@
 
   <div class="filter-bar">
     <button class="filter-chip active" data-filter="all">All</button>
+    <button class="filter-chip" data-filter="hot">Hot</button>
+    <button class="filter-chip" data-filter="new">New</button>
     <button class="filter-chip" data-filter="unblocked">Unblocked</button>
     <button class="filter-chip" data-filter="partial">Partial</button>
     <button class="filter-chip" data-filter="blocked">Blocked</button>
-    <button class="filter-chip" data-filter="new">New</button>
   </div>
 
   <div class="links-list" id="links-list"></div>
