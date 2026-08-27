@@ -24,16 +24,13 @@ const idFromUrl = (url: string): string => {
 // Helper to derive a display title from a url
 const titleFromUrl = (url: string): string => {
   let host = url.replace(/^https?:\/\//, "").replace(/^www\./, "");
-  // For Google Sites subpaths, use a friendlier name
   if (host.startsWith("sites.google.com/site/")) {
     const sub = host.split("/")[2] || host;
     return sub.replace(/unblockedgames/i, "Unblocked Games ").replace(/\d+/g, (n) => ` ${n}`);
   }
-  // For sub-paths, use the first path segment if it's a common brand
   if (host.includes("/games")) {
     host = host.split("/")[0];
   }
-  // Take the main domain (drop TLD for friendlier display)
   const parts = host.split("/")[0].split(".");
   if (parts.length >= 2) {
     const name = parts[parts.length - 2];
@@ -53,14 +50,13 @@ const categorize = (url: string): string => {
   if (u.includes("math") || u.includes("coolmath") || u.includes("duckmath") || u.includes("quackprep") || u.includes("teacherease") || u.includes("schoolfacts") || u.includes("gn-math") || u.includes("multiplication") || u.includes("prodigy")) return "Educational";
   if (u.includes("pbs") || u.includes("scratch") || u.includes("abcya") || u.includes("funbrain") || u.includes("playbrain") || u.includes("shawgames") || u.includes("turbowarp") || u.includes("bonk.io") || u.includes("gogy.com") || u.includes("roomrecess") || u.includes("turtlediary") || u.includes("primarygames") || u.includes("mathplayground")) return "Educational";
   if (u.includes("poki") || u.includes("crazygames") || u.includes("kizi")) return "Games Hub";
-  if (u.includes("github") || u.includes("gitlab") || u.includes("bitbucket") || u.includes("codeberg") || u.includes("sourceforge") || u.includes("vercel") || u.includes("netlify") || u.includes("glitch") || u.includes("replit") || u.includes("heroku") || u.includes("render") || u.includes("cyclic") || u.includes("koyeb") || u.includes("fly.io") || u.includes("railway") || u.includes("deno") || u.includes("cloudflare") || u.includes("surge") || u.includes("neocities") || u.includes("supabase") || u.includes("firebase") || u.includes("aws") || u.includes("azure") || u.includes("gcp") || u.includes("digitalocean") || u.includes("linode") || u.includes("vultr") || u.includes("namecheap") || u.includes("godaddy")) return "Dev/Hosting";
+  if (u.includes("gitlab") || u.includes("bitbucket") || u.includes("codeberg") || u.includes("sourceforge") || u.includes("vercel") || u.includes("netlify") || u.includes("glitch") || u.includes("replit") || u.includes("heroku") || u.includes("render") || u.includes("cyclic") || u.includes("koyeb") || u.includes("fly.io") || u.includes("railway") || u.includes("deno") || u.includes("cloudflare") || u.includes("surge") || u.includes("neocities") || u.includes("supabase") || u.includes("firebase") || u.includes("aws") || u.includes("azure") || u.includes("gcp") || u.includes("digitalocean") || u.includes("linode") || u.includes("vultr") || u.includes("namecheap") || u.includes("godaddy")) return "Dev/Hosting";
   if (u.includes("archlinux") || u.includes("debian") || u.includes("ubuntu") || u.includes("fedora") || u.includes("centos") || u.includes("redhat") || u.includes("suse") || u.includes("almalinux") || u.includes("rockylinux") || u.includes("nixos") || u.includes("voidlinux") || u.includes("gentoo") || u.includes("slackware") || u.includes("freebsd") || u.includes("openbsd") || u.includes("netbsd") || u.includes("illumos") || u.includes("openwrt") || u.includes("fosstodon")) return "Linux/OS";
   if (u.includes("shsgames")) return "Games Hub";
   if (u.includes("teletubbies")) return "Games Hub";
   return "Web";
 };
 
-// Gradient rotation
 const gradients = [
   "from-purple-800 via-indigo-900 to-black",
   "from-zinc-800 via-neutral-900 to-black",
@@ -81,7 +77,7 @@ const gradients = [
   "from-violet-800 via-purple-900 to-black",
   "from-indigo-800 via-blue-900 to-black",
   "from-emerald-800 via-teal-900 to-black",
-  "from-fuchsia-800 via-pink-900-to-black",
+  "from-fuchsia-800 via-pink-900 to-black",
 ];
 
 const emojiForCategory = (category: string): string => {
@@ -218,7 +214,6 @@ const rawUrls: string[] = [
   "https://sites.google.com",
   "https://vercel.com",
   "https://netlify.app",
-  "https://pages.github.com",
   "https://glitch.com",
   "https://replit.com",
   "https://heroku.com",
@@ -267,7 +262,6 @@ const rawUrls: string[] = [
   "https://illumos.org",
 ];
 
-// Dedupe by normalized url (preserves first occurrence)
 const seen = new Set<string>();
 const uniqueUrls = rawUrls.filter((u) => {
   const key = u.replace(/^https?:\/\//, "").replace(/^www\./, "").toLowerCase();

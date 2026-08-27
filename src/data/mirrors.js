@@ -90,13 +90,11 @@ export const MIRRORS = [
   { name: "Illuminating (Surge)", url: "https://illuminating.surge.sh" },
 
   // Developer & hosting platforms
-  { name: "GitHub", url: "https://github.com" },
   { name: "GitLab.io", url: "https://gitlab.io" },
   { name: "Bitbucket.io", url: "https://bitbucket.io" },
   { name: "Codeberg", url: "https://codeberg.org" },
   { name: "SourceForge", url: "https://sourceforge.net" },
   { name: "Google Sites", url: "https://sites.google.com" },
-  { name: "GitHub Pages", url: "https://pages.github.com" },
   { name: "Vercel", url: "https://vercel.com" },
   { name: "Netlify", url: "https://netlify.app" },
   { name: "Glitch", url: "https://glitch.com" },
