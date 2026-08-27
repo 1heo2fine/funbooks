@@ -10,7 +10,7 @@ interface HeaderProps {
 
 const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   return (
-    <header className="sticky top-0 z-40 h-14 bg-black border-b border-white/[0.08] px-3 sm:px-5 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 h-14 bg-black/80 border-b border-white/[0.08] px-3 sm:px-5 flex items-center justify-between gap-4 backdrop-blur-xl">
       {/* Left Brand */}
       <div className="flex items-center gap-3 shrink-0">
         <div className="flex items-center gap-2 cursor-pointer select-none">
@@ -23,7 +23,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         </div>
       </div>
 
-      {/* Centered Pill Search Bar */}
+      {/* Centered Pill Search Bar - Liquid Glass */}
       <div className="flex-1 max-w-xl mx-auto px-2">
         <div className="relative w-full">
           <Search
@@ -35,7 +35,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             placeholder="Search titles and categories..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full h-10 pl-11 pr-4 rounded-full bg-[#0a0a0a] border border-white/[0.08] text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-[#111111] transition-all"
+            className="w-full h-10 pl-11 pr-4 rounded-full bg-black/50 border border-white/10 text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-emerald-500/40 focus:bg-black/60 transition-all backdrop-blur-sm"
           />
         </div>
       </div>

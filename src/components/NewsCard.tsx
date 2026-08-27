@@ -41,10 +41,10 @@ const DEFAULT_NEWS: NewsItem[] = [
 
 const NewsCard = ({ news = DEFAULT_NEWS }: NewsCardProps) => {
   return (
-    <div className="bg-[#0f0f13] border border-white/[0.08] rounded-2xl p-5 mb-8 shadow-xl">
+    <div className="bg-neutral-950/50 border border-white/10 rounded-2xl p-5 mb-8 shadow-xl backdrop-blur-xl">
       <div className="flex items-center justify-between mb-4 border-b border-white/[0.06] pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-neutral-800 border border-white/10 text-white">
+          <div className="p-2 rounded-xl bg-neutral-800/50 border border-white/10 text-white backdrop-blur-sm">
             <Newspaper size={16} />
           </div>
           <div>
@@ -58,12 +58,12 @@ const NewsCard = ({ news = DEFAULT_NEWS }: NewsCardProps) => {
         {news.map((item, index) => (
           <div
             key={index}
-            className="p-3.5 rounded-xl bg-[#14141a] border border-white/[0.06] hover:border-white/20 transition-all flex flex-col justify-between"
+            className="p-3.5 rounded-xl bg-neutral-900/50 border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between backdrop-blur-sm"
           >
             <div>
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 {item.tag && (
-                  <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-gray-200 text-gray-900 border border-gray-300/20">
+                  <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/10 text-white border border-white/20">
                     {item.tag}
                   </span>
                 )}

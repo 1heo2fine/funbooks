@@ -22,9 +22,9 @@ const GameModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-5xl h-[85vh] max-h-[850px] bg-slate-900 border border-slate-800 rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+      <div className="relative w-full max-w-5xl h-[85vh] max-h-[850px] bg-slate-900/80 border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl backdrop-blur-xl">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/80">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-slate-950/80 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <span className="text-2xl">{game.emoji}</span>
             <div>
@@ -37,7 +37,7 @@ const GameModal = ({
             <button
               onClick={() => onToggleFavorite(game.id)}
               className={cn(
-                "p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors",
+                "p-2 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-neutral-800/50 text-slate-300 transition-colors backdrop-blur-sm",
                 isFavorite && "text-red-500 border-red-500/40 bg-red-500/10"
               )}
               title="Add to favorites"
@@ -49,7 +49,7 @@ const GameModal = ({
               href={game.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              className="p-2 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-neutral-800/50 text-slate-300 transition-colors backdrop-blur-sm"
               title="Open in new window"
             >
               <ExternalLink size={18} />
@@ -57,7 +57,7 @@ const GameModal = ({
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-red-600/80 hover:text-white text-slate-300 transition-colors ml-1"
+              className="p-2 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-red-600/80 hover:text-white text-slate-300 transition-colors ml-1 backdrop-blur-sm"
               title="Close game"
             >
               <X size={18} />
@@ -66,7 +66,7 @@ const GameModal = ({
         </div>
 
         {/* Modal Game Play Area */}
-        <div className="flex-1 bg-slate-950 flex flex-col items-center justify-center relative">
+        <div className="flex-1 bg-slate-950/50 flex flex-col items-center justify-center relative backdrop-blur-xl">
           <div className="flex flex-col items-center text-center p-6 max-w-md">
             <span className="text-6xl mb-4 animate-bounce">{game.emoji}</span>
             <h3 className="text-2xl font-bold text-white mb-2">{game.title}</h3>
@@ -75,7 +75,7 @@ const GameModal = ({
               href={game.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-600/30 transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold shadow-lg shadow-emerald-500/30 transition-all hover:scale-105"
             >
               Launch Game Frame <ExternalLink size={16} />
             </a>
@@ -87,4 +87,3 @@ const GameModal = ({
 };
 
 export default GameModal;
-</invoke>

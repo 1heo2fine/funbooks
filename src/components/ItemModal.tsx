@@ -65,15 +65,15 @@ const ItemModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/95 backdrop-blur-md animate-in fade-in duration-200">
       <div
         className={cn(
-          "relative w-full bg-[#0a0a0e] border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl transition-all duration-200",
+          "relative w-full bg-[#0a0a0e]/80 border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl transition-all duration-200 backdrop-blur-xl",
           isFullscreen ? "h-[98vh] max-w-[98vw]" : "h-[90vh] max-w-6xl"
         )}
       >
-        <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-black border-b border-white/[0.08] select-none shrink-0">
+        <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-black/50 border-b border-white/[0.08] select-none shrink-0 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <button
               onClick={handleClose}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white text-xs font-semibold transition-all"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-neutral-800/50 text-neutral-300 hover:text-white text-xs font-semibold transition-all backdrop-blur-sm"
               title="Return to selection"
             >
               <ArrowLeft size={14} />
@@ -96,7 +96,7 @@ const ItemModal = ({
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-300 hover:text-white transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-neutral-800/50 text-xs font-semibold text-neutral-300 hover:text-white transition-colors backdrop-blur-sm"
               title="Play in new tab if blocked"
             >
               <ExternalLink size={13} />
@@ -105,7 +105,7 @@ const ItemModal = ({
 
             <button
               onClick={handleReload}
-              className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
+              className="p-2 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-neutral-800/50 text-neutral-400 hover:text-white transition-colors backdrop-blur-sm"
               title="Reload Game Frame"
             >
               <RefreshCw size={15} />
@@ -114,7 +114,7 @@ const ItemModal = ({
             <button
               onClick={() => onToggleFavorite(item.id)}
               className={cn(
-                "p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors",
+                "p-2 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-neutral-800/50 text-neutral-400 hover:text-white transition-colors backdrop-blur-sm",
                 isFavorite && "text-red-500 border-red-500/40 bg-red-500/10"
               )}
               title="Favorite"
@@ -124,7 +124,7 @@ const ItemModal = ({
 
             <button
               onClick={toggleFullscreen}
-              className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
+              className="p-2 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-neutral-800/50 text-neutral-400 hover:text-white transition-colors backdrop-blur-sm"
               title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
             >
               {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
@@ -132,7 +132,7 @@ const ItemModal = ({
 
             <button
               onClick={handleClose}
-              className="p-2 rounded-xl border border-white/10 bg-neutral-900 hover:bg-red-600 hover:text-white text-neutral-300 transition-colors ml-1"
+              className="p-2 rounded-xl border border-white/10 bg-neutral-900/50 hover:bg-red-600/80 hover:text-white text-neutral-300 transition-colors ml-1 backdrop-blur-sm"
               title="Close Game"
             >
               <X size={16} />
@@ -185,4 +185,3 @@ const ItemModal = ({
 };
 
 export default ItemModal;
-</invoke>
