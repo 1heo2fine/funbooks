@@ -1,3 +1,4 @@
 export function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(" ");
+  return inputs.filter(Boolean).join(" ")
 }
+</invoke>
