@@ -1,7 +1,7 @@
 import { MIRRORS } from './data/mirrors.js';
 
 const VOTES_KEY = "mirror_votes";
-const SEEDED_KEY = "mirror_votes_seeded_v5";
+const SEEDED_KEY = "mirror_votes_seeded_v6";
 let currentFilter = "all";
 let searchTerm = "";
 
@@ -100,38 +100,39 @@ function escapeHtml(s) {
 }
 
 function getFaviconEmoji(name) {
-  const emojiMap = {
-    "unblocked": "🎮", "coolmath": "🧮", "poki": "🎯", "crazygames": "🎲",
-    "kizi": "🎪", "gogy": "🎨", "github": "🐙", "gitlab": "🦊", "vercel": "▲",
-    "netlify": "🌐", "glitch": "🐛", "replit": "📦", "cloudflare": "☁️",
-    "surge": "⚡", "neocities": "🏙️", "firebase": "🔥", "aws": "☁️",
-    "azure": "☁️", "gcp": "☁️", "digitalocean": "🌊", "linode": "📦",
-    "vultr": "☁️", "scratch": "🐱", "pbs": "📺", "hooda": "📐",
-    "abcya": "🔤", "funbrain": "🧠", "mathplayground": "🧮", "prodigy": "🧙",
-    "classroom": "🏫", "tyrone": "🎮", "unblockedhub": "🔓", "kazwire": "⚡",
-    "cosmic": "🌌", "radon": "☢️", "3kh0": "🎯", "pyrus": "🔮",
-    "croxy": "🔐", "hidester": "🕵️", "proxysite": "🌐", "whoer": "🔍",
-    "bipass": "🚪", "paper": "📄", "minecraft": "⛏️", "retro": "🕹️",
-    "shell": "🥚", "krunker": "💥", "surviv": "⚔️", "smash": "🏎️",
-    "snake": "🐍", "state": "🌍", "people": "🧑", "among": "🛸",
-    "monopoly": "🎲", "paperio": "🖍️", "stickman": "🪝", "temple": "🗿",
-    "cut": "🍬", "subway": "🚇", "slope": "⛰️", "moto": "🏍️",
-    "drift": "🏎️", "death": "💀", "rooftop": "🎯", "bullet": "💥",
-    "drive": "🚗", "crossy": "🐔", "time": "⏱️", "getaway": "🏃",
-    "run": "🚀", "fireboy": "🔥", "geometry": "📐", "vex": "⚡",
-    "karlson": "🚀", "redball": "🔴", "ovo": "🏃", "happy": "♿",
-    "badice": "🍦", "2048": "🔢", "block": "🧩", "bloons": "🎈",
-    "chess": "♟️", "worlds": "💀", "retrobowl": "🏈", "basketball": "🏀",
-    "soccer": "⚽", "basketrandom": "🏀", "driftboss": "🚗", "snow": "🛷",
-    "polytrack": "🏎️", "cookie": "🍪", "eggy": "🥚", "tiny": "🎣",
-    "bitlife": "📱", "adventure": "💰", "1v1": "🔫"
+  // NO EMOJIS - using letter icons instead
+  const letterMap = {
+    "unblocked": "U", "coolmath": "CM", "poki": "P", "crazygames": "CG",
+    "kizi": "K", "gogy": "G", "github": "G", "gitlab": "GL", "vercel": "V",
+    "netlify": "N", "glitch": "G", "replit": "R", "cloudflare": "CF",
+    "surge": "S", "neocities": "NC", "firebase": "F", "aws": "A",
+    "azure": "AZ", "gcp": "G", "digitalocean": "DO", "linode": "L",
+    "vultr": "V", "scratch": "S", "pbs": "P", "hooda": "H",
+    "abcya": "A", "funbrain": "FB", "mathplayground": "MP", "prodigy": "P",
+    "classroom": "C", "tyrone": "T", "unblockedhub": "UH", "kazwire": "KW",
+    "cosmic": "C", "radon": "R", "3kh0": "3K", "pyrus": "Py",
+    "croxy": "Cx", "hidester": "H", "proxysite": "PS", "whoer": "W",
+    "bipass": "B", "paper": "P", "minecraft": "M", "retro": "R",
+    "shell": "S", "krunker": "K", "surviv": "S", "smash": "Sm",
+    "snake": "Sn", "state": "S", "people": "P", "among": "A",
+    "monopoly": "M", "paperio": "PI", "stickman": "S", "temple": "T",
+    "cut": "C", "subway": "S", "slope": "S", "moto": "M",
+    "drift": "D", "death": "D", "rooftop": "R", "bullet": "B",
+    "drive": "D", "crossy": "C", "time": "T", "getaway": "G",
+    "run": "R", "fireboy": "FB", "geometry": "G", "vex": "V",
+    "karlson": "K", "redball": "R", "ovo": "O", "happy": "H",
+    "badice": "I", "2048": "2048", "block": "B", "bloons": "B",
+    "chess": "C", "worlds": "W", "retrobowl": "RB", "basketball": "B",
+    "soccer": "S", "basketrandom": "BR", "driftboss": "DB", "snow": "S",
+    "polytrack": "P", "cookie": "C", "eggy": "E", "tiny": "T",
+    "bitlife": "B", "adventure": "A", "1v1": "1v1"
   };
 
   const lower = name.toLowerCase();
-  for (const [key, emoji] of Object.entries(emojiMap)) {
-    if (lower.includes(key)) return emoji;
+  for (const [key, letter] of Object.entries(letterMap)) {
+    if (lower.includes(key)) return letter;
   }
-  return "🔗";
+  return "L";
 }
 
 function renderLinkCard(mirror) {
@@ -139,6 +140,7 @@ function renderLinkCard(mirror) {
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
   const { likePct, dislikePct } = getPercentages(mirror.url);
+  // Use letter icon instead of emoji
   const favicon = getFaviconEmoji(mirror.name);
 
   return `
@@ -205,6 +207,7 @@ export function init() {
   try {
     const previousSeed = localStorage.getItem(SEEDED_KEY);
     if (!previousSeed) {
+      localStorage.removeItem("mirror_votes_seeded_v5");
       localStorage.removeItem("mirror_votes_seeded_v4");
       localStorage.removeItem("mirror_votes_seeded_v3");
       localStorage.removeItem(VOTES_KEY);
