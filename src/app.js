@@ -50,7 +50,7 @@ function seedRandomVotes() {
       down = n;
     } else {
       up = 100 + Math.floor(Math.random() * 900);
-      down = Math.floor(Math.random() * 50);
+      down = 20 + Math.floor(Math.random() * 90);  // Minimum 20 down votes
     }
     votes[m.url] = { up, down, userVote: null };
   });
@@ -112,12 +112,10 @@ function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
-  const icon = statusToIcon(status.kind);
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
       <div class="link-left">
-        ${icon ? `<div class="status-icon ${status.kind}">${icon}</div>` : `<div class="status-icon empty"></div>`}
         <div class="link-info">
           <span class="link-url">${escapeHtml(mirror.name)}</span>
           <div class="link-status-text">${status.label}</div>
