@@ -14,7 +14,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
       {/* Left Brand */}
       <div className="flex items-center gap-3 shrink-0">
         <div className="flex items-center gap-2 cursor-pointer select-none">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-neutral-700 via-zinc-800 to-black border border-white/10 flex items-center justify-center text-white shadow-lg">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-black via-neutral-900 to-black border border-white/10 flex items-center justify-center text-white shadow-lg">
             <span className="font-black text-sm tracking-tighter">f</span>
           </div>
           <span className="font-black text-base tracking-tight text-white">
@@ -35,7 +35,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             placeholder="Search titles and categories..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full h-10 pl-11 pr-4 rounded-full bg-[#111115] border border-white/[0.08] text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-[#16161c] transition-all"
+            className="w-full h-10 pl-11 pr-4 rounded-full bg-[#0a0a0a] border border-white/[0.08] text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-[#111111] transition-all"
           />
         </div>
       </div>

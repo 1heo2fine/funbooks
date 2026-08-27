@@ -63,7 +63,7 @@ const NewsCard = ({ news = DEFAULT_NEWS }: NewsCardProps) => {
             <div>
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 {item.tag && (
-                  <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-300 border border-white/10">
+                  <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-gray-200 text-gray-900 border border-gray-300/20">
                     {item.tag}
                   </span>
                 )}
@@ -87,4 +87,3 @@ const NewsCard = ({ news = DEFAULT_NEWS }: NewsCardProps) => {
 };
 
 export default NewsCard;
-</invoke>

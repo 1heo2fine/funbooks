@@ -75,12 +75,12 @@ const Sidebar = ({ selectedTab, onSelectTab }: SidebarProps) => {
               className={cn(
                 "flex items-center gap-3.5 px-2.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 w-full text-left relative",
                 isActive
-                  ? "bg-neutral-800 text-white font-bold ring-1 ring-white/10 shadow-inner"
-                  : "text-neutral-400 hover:text-white hover:bg-neutral-900"
+                  ? "bg-gray-700 text-white font-bold ring-1 ring-white/10 shadow-inner"
+                  : "text-gray-400 hover:text-white hover:bg-gray-800"
               )}
             >
               <div className="w-5 flex justify-center shrink-0">
-                <Icon size={18} className={cn(isActive ? "text-white" : "text-neutral-400")} />
+                <Icon size={18} className={cn(isActive ? "text-white" : "text-gray-400")} />
               </div>
               <span
                 className={cn(
@@ -118,12 +118,12 @@ const Sidebar = ({ selectedTab, onSelectTab }: SidebarProps) => {
               className={cn(
                 "flex items-center gap-3.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 w-full text-left",
                 isActive
-                  ? "bg-neutral-800 text-white font-bold ring-1 ring-white/10"
-                  : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900"
+                  ? "bg-gray-700 text-white font-bold ring-1 ring-white/10"
+                  : "text-gray-400 hover:text-white hover:bg-gray-800"
               )}
             >
               <div className="w-5 flex justify-center shrink-0">
-                <Icon size={17} className={cn(isActive ? "text-white" : "text-neutral-500")} />
+                <Icon size={17} className={cn(isActive ? "text-white" : "text-gray-400")} />
               </div>
               <span
                 className={cn(

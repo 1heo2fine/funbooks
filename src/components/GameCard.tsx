@@ -21,28 +21,28 @@ const GameCard = ({
   const getBadgeStyle = (badge?: string) => {
     switch (badge) {
       case "Top":
-        return "bg-amber-400 text-black font-extrabold shadow-sm";
+        return "bg-gray-100 text-gray-900 font-extrabold shadow-sm";
       case "Hot":
-        return "bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold shadow-sm";
+        return "bg-gray-200 text-gray-900 font-bold shadow-sm";
       case "Originals":
-        return "bg-indigo-600 text-white font-bold shadow-sm border border-indigo-400/40";
+        return "bg-gray-300 text-gray-900 font-bold shadow-sm border border-gray-400/40";
       case "New":
-        return "bg-emerald-500 text-black font-extrabold shadow-sm";
+        return "bg-gray-400 text-gray-900 font-extrabold shadow-sm";
       default:
-        return "bg-black/60 text-white";
+        return "bg-gray-800 text-gray-200";
     }
   };
 
   const getBadgeIcon = (badge?: string) => {
     switch (badge) {
       case "Top":
-        return <Star size={10} className="fill-black" />;
+        return <Star size={10} className="text-gray-900" />;
       case "Hot":
-        return <Flame size={10} className="fill-white" />;
+        return <Flame size={10} className="text-gray-900" />;
       case "Originals":
-        return <Sparkles size={10} />;
+        return <Sparkles size={10} className="text-gray-900" />;
       case "New":
-        return <Plus size={10} strokeWidth={3} />;
+        return <Plus size={10} strokeWidth={3} className="text-gray-900" />;
       default:
         return null;
     }
@@ -131,4 +131,3 @@ const GameCard = ({
 };
 
 export default GameCard;
-</invoke>

@@ -25,32 +25,32 @@ const CardItem = ({
       case "Top":
         return {
           label: "Top",
-          icon: <Star size={10} className="fill-black text-black" />,
-          classes: "bg-amber-300 text-black font-extrabold shadow",
+          icon: <Star size={10} className="text-gray-900" />,
+          classes: "bg-gray-100 text-gray-900 font-extrabold shadow",
         };
       case "Hot":
         return {
           label: "Hot",
-          icon: <Flame size={10} className="fill-white text-white" />,
-          classes: "bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold shadow",
+          icon: <Flame size={10} className="text-gray-900" />,
+          classes: "bg-gray-200 text-gray-900 font-bold shadow",
         };
       case "Updated":
         return {
           label: "Updated",
-          icon: <RotateCw size={10} className="text-white" />,
-          classes: "bg-neutral-800 text-neutral-200 border border-white/20 font-bold shadow",
+          icon: <RotateCw size={10} className="text-gray-900" />,
+          classes: "bg-gray-300 text-gray-900 border border-white/20 font-bold shadow",
         };
       case "Originals":
         return {
           label: "Originals",
-          icon: <Sparkles size={10} className="text-white" />,
-          classes: "bg-neutral-900 text-white font-bold shadow border border-white/30",
+          icon: <Sparkles size={10} className="text-gray-900" />,
+          classes: "bg-gray-400 text-gray-900 font-bold shadow border border-white/30",
         };
       case "New":
         return {
           label: "New",
-          icon: <Sparkles size={10} className="text-black" />,
-          classes: "bg-emerald-400 text-black font-extrabold shadow",
+          icon: <Sparkles size={10} className="text-gray-900" />,
+          classes: "bg-gray-500 text-gray-900 font-extrabold shadow",
         };
       default:
         return null;
@@ -147,4 +147,3 @@ const CardItem = ({
 };
 
 export default CardItem;
-</invoke>
