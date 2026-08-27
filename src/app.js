@@ -114,13 +114,18 @@ function escapeHtml(s) {
     ">": ">",
     '"': "&quot;",
     "'": "&#39;"
-  })[c]);
+  })[c];
 }
 
 function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
+  
+  // Calculate percentages
+  const total = v.up + v.down;
+  const upPercent = total === 0 ? 0 : Math.round((v.up / total) * 100);
+  const downPercent = total === 0 ? 0 : Math.round((v.down / total) * 100);
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
@@ -132,11 +137,11 @@ function renderLinkCard(mirror) {
       <div class="link-right">
         <button class="vote-btn up ${isUp ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'up', event)" title="Works at my school" aria-label="Upvote: works at my school">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-          <span class="vote-count">${v.up}</span>
+          <span class="vote-count">${upPercent}%</span>
         </button>
         <button class="vote-btn down ${isDown ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'down', event)" title="Blocked at my school" aria-label="Downvote: blocked at my school">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2-1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
-          <span class="vote-count">${v.down}</span>
+          <span class="vote-count">${downPercent}%</span>
         </button>
       </div>
     </div>
