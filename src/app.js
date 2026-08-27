@@ -1,7 +1,7 @@
 import { MIRRORS } from './data/mirrors.js';
 
 const VOTES_KEY = "mirror_votes";
-const SEEDED_KEY = "mirror_votes_seeded_v4";
+const SEEDED_KEY = "mirror_votes_seeded_v5";
 let currentFilter = "all";
 let searchTerm = "";
 
@@ -30,29 +30,14 @@ function seedRandomVotes() {
   while (blockedIndexes.size < 4) {
     blockedIndexes.add(Math.floor(Math.random() * total));
   }
-  // No more "50/50" group — every link will be clearly recommended or low rated.
-  // We assign votes so that up and down are never equal (with a comfortable margin).
-  const partialIndexes = new Set();
 
   MIRRORS.forEach((m, i) => {
     let up, down;
     if (blockedIndexes.has(i)) {
       down = 100 + Math.floor(Math.random() * 400);
       up = Math.floor(Math.random() * 80);
-    } else if (partialIndexes.has(i)) {
-      // Mid-range — lean toward up but never equal
-      const n = 100 + Math.floor(Math.random() * 200);
-      const margin = 15 + Math.floor(Math.random() * 60);
-      if (Math.random() < 0.5) {
-        up = n + margin;
-        down = n;
-      } else {
-        up = n;
-        down = n + margin;
-      }
     } else {
       up = 100 + Math.floor(Math.random() * 900);
-      // Ensure up is always strictly greater than down
       const maxDown = Math.max(20, up - 30 - Math.floor(Math.random() * 40));
       down = 20 + Math.floor(Math.random() * (maxDown - 20));
       if (down >= up) down = Math.max(0, up - 1);
@@ -92,7 +77,6 @@ function computeStatus(url) {
   if (total === 0) return { kind: "new", label: "Unverified" };
   if (v.up > v.down) return { kind: "recommended", label: "Recommended" };
   if (v.down > v.up) return { kind: "low", label: "Low rated" };
-  // Fallback: should not occur with seeded data, but keep a clear label
   return { kind: "recommended", label: "Recommended" };
 }
 
@@ -115,26 +99,65 @@ function escapeHtml(s) {
   })[c]);
 }
 
+function getFaviconEmoji(name) {
+  const emojiMap = {
+    "unblocked": "🎮", "coolmath": "🧮", "poki": "🎯", "crazygames": "🎲",
+    "kizi": "🎪", "gogy": "🎨", "github": "🐙", "gitlab": "🦊", "vercel": "▲",
+    "netlify": "🌐", "glitch": "🐛", "replit": "📦", "cloudflare": "☁️",
+    "surge": "⚡", "neocities": "🏙️", "firebase": "🔥", "aws": "☁️",
+    "azure": "☁️", "gcp": "☁️", "digitalocean": "🌊", "linode": "📦",
+    "vultr": "☁️", "scratch": "🐱", "pbs": "📺", "hooda": "📐",
+    "abcya": "🔤", "funbrain": "🧠", "mathplayground": "🧮", "prodigy": "🧙",
+    "classroom": "🏫", "tyrone": "🎮", "unblockedhub": "🔓", "kazwire": "⚡",
+    "cosmic": "🌌", "radon": "☢️", "3kh0": "🎯", "pyrus": "🔮",
+    "croxy": "🔐", "hidester": "🕵️", "proxysite": "🌐", "whoer": "🔍",
+    "bipass": "🚪", "paper": "📄", "minecraft": "⛏️", "retro": "🕹️",
+    "shell": "🥚", "krunker": "💥", "surviv": "⚔️", "smash": "🏎️",
+    "snake": "🐍", "state": "🌍", "people": "🧑", "among": "🛸",
+    "monopoly": "🎲", "paperio": "🖍️", "stickman": "🪝", "temple": "🗿",
+    "cut": "🍬", "subway": "🚇", "slope": "⛰️", "moto": "🏍️",
+    "drift": "🏎️", "death": "💀", "rooftop": "🎯", "bullet": "💥",
+    "drive": "🚗", "crossy": "🐔", "time": "⏱️", "getaway": "🏃",
+    "run": "🚀", "fireboy": "🔥", "geometry": "📐", "vex": "⚡",
+    "karlson": "🚀", "redball": "🔴", "ovo": "🏃", "happy": "♿",
+    "badice": "🍦", "2048": "🔢", "block": "🧩", "bloons": "🎈",
+    "chess": "♟️", "worlds": "💀", "retrobowl": "🏈", "basketball": "🏀",
+    "soccer": "⚽", "basketrandom": "🏀", "driftboss": "🚗", "snow": "🛷",
+    "polytrack": "🏎️", "cookie": "🍪", "eggy": "🥚", "tiny": "🎣",
+    "bitlife": "📱", "adventure": "💰", "1v1": "🔫"
+  };
+
+  const lower = name.toLowerCase();
+  for (const [key, emoji] of Object.entries(emojiMap)) {
+    if (lower.includes(key)) return emoji;
+  }
+  return "🔗";
+}
+
 function renderLinkCard(mirror) {
-  const status = computeStatus(mirror.url);
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
   const { likePct, dislikePct } = getPercentages(mirror.url);
-  // Hide status label when viewing recommended tab
-  const showStatus = currentFilter !== "recommended";
+  const favicon = getFaviconEmoji(mirror.name);
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
       <div class="link-left">
+        <div class="link-favicon" aria-hidden="true">${favicon}</div>
         <div class="link-info">
           <span class="link-url">${escapeHtml(mirror.name)}</span>
-          ${showStatus ? `<div class="link-status-text">${status.label}</div>` : ""}
         </div>
       </div>
       <div class="link-right">
-        <button class="vote-btn up ${isUp ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'up', event)" title="Works at my school">👍 <span class="vote-count">${likePct}%</span></button>
-        <button class="vote-btn down ${isDown ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'down', event)" title="Blocked at my school">👎 <span class="vote-count">${dislikePct}%</span></button>
+        <button class="vote-btn up ${isUp ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'up', event)" title="Works at my school" aria-label="Upvote: works at my school">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+          <span class="vote-count">${likePct}%</span>
+        </button>
+        <button class="vote-btn down ${isDown ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'down', event)" title="Blocked at my school" aria-label="Downvote: blocked at my school">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
+          <span class="vote-count">${dislikePct}%</span>
+        </button>
       </div>
     </div>
   `;
@@ -150,14 +173,11 @@ export function renderAll() {
     if (!matchesSearch) return false;
 
     if (currentFilter === "all") return true;
-    if (currentFilter === "hot") {
-      return true; // handled in sort below
-    }
+    if (currentFilter === "hot") return true;
     if (currentFilter === "new") return m.tag === "new";
     return computeStatus(m.url).kind === currentFilter;
   });
 
-  // For "hot" filter, sort by upvotes descending and take top 5
   if (currentFilter === "hot") {
     filtered = [...filtered].sort((a, b) => getVoteData(b.url).up - getVoteData(a.url).up).slice(0, 5);
   }
@@ -182,17 +202,17 @@ window.__setVote = setVote;
 window.__setFilter = setFilter;
 
 export function init() {
-  // If the user is upgrading from a previous seed that produced 50/50 results,
-  // clear out the old seed so the new randomized votes take effect.
   try {
     const previousSeed = localStorage.getItem(SEEDED_KEY);
     if (!previousSeed) {
+      localStorage.removeItem("mirror_votes_seeded_v4");
       localStorage.removeItem("mirror_votes_seeded_v3");
       localStorage.removeItem(VOTES_KEY);
     }
   } catch (e) {}
 
   seedRandomVotes();
+
   const searchInput = document.getElementById("search-input");
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
