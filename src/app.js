@@ -99,54 +99,15 @@ function escapeHtml(s) {
   })[c]);
 }
 
-function getFaviconEmoji(name) {
-  // NO EMOJIS - using letter icons instead
-  const letterMap = {
-    "unblocked": "U", "coolmath": "CM", "poki": "P", "crazygames": "CG",
-    "kizi": "K", "gogy": "G", "github": "G", "gitlab": "GL", "vercel": "V",
-    "netlify": "N", "glitch": "G", "replit": "R", "cloudflare": "CF",
-    "surge": "S", "neocities": "NC", "firebase": "F", "aws": "A",
-    "azure": "AZ", "gcp": "G", "digitalocean": "DO", "linode": "L",
-    "vultr": "V", "scratch": "S", "pbs": "P", "hooda": "H",
-    "abcya": "A", "funbrain": "FB", "mathplayground": "MP", "prodigy": "P",
-    "classroom": "C", "tyrone": "T", "unblockedhub": "UH", "kazwire": "KW",
-    "cosmic": "C", "radon": "R", "3kh0": "3K", "pyrus": "Py",
-    "croxy": "Cx", "hidester": "H", "proxysite": "PS", "whoer": "W",
-    "bipass": "B", "paper": "P", "minecraft": "M", "retro": "R",
-    "shell": "S", "krunker": "K", "surviv": "S", "smash": "Sm",
-    "snake": "Sn", "state": "S", "people": "P", "among": "A",
-    "monopoly": "M", "paperio": "PI", "stickman": "S", "temple": "T",
-    "cut": "C", "subway": "S", "slope": "S", "moto": "M",
-    "drift": "D", "death": "D", "rooftop": "R", "bullet": "B",
-    "drive": "D", "crossy": "C", "time": "T", "getaway": "G",
-    "run": "R", "fireboy": "FB", "geometry": "G", "vex": "V",
-    "karlson": "K", "redball": "R", "ovo": "O", "happy": "H",
-    "badice": "I", "2048": "2048", "block": "B", "bloons": "B",
-    "chess": "C", "worlds": "W", "retrobowl": "RB", "basketball": "B",
-    "soccer": "S", "basketrandom": "BR", "driftboss": "DB", "snow": "S",
-    "polytrack": "P", "cookie": "C", "eggy": "E", "tiny": "T",
-    "bitlife": "B", "adventure": "A", "1v1": "1v1"
-  };
-
-  const lower = name.toLowerCase();
-  for (const [key, letter] of Object.entries(letterMap)) {
-    if (lower.includes(key)) return letter;
-  }
-  return "L";
-}
-
 function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
   const { likePct, dislikePct } = getPercentages(mirror.url);
-  // Use letter icon instead of emoji
-  const favicon = getFaviconEmoji(mirror.name);
 
   return `
     <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
       <div class="link-left">
-        <div class="link-favicon" aria-hidden="true">${favicon}</div>
         <div class="link-info">
           <span class="link-url">${escapeHtml(mirror.name)}</span>
         </div>
@@ -157,7 +118,7 @@ function renderLinkCard(mirror) {
           <span class="vote-count">${likePct}%</span>
         </button>
         <button class="vote-btn down ${isDown ? "active" : ""}" onclick="window.__setVote('${escapeHtml(mirror.url)}', 'down', event)" title="Blocked at my school" aria-label="Downvote: blocked at my school">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2-1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
           <span class="vote-count">${dislikePct}%</span>
         </button>
       </div>
