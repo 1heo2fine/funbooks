@@ -36,12 +36,20 @@ const Index = () => {
     }).slice(0, 3);
   }, [favorites]);
 
+  // Build tabs dynamically from the categories present in the data, plus fixed tabs.
+  const categoryTabs = useMemo(() => {
+    const set = new Set<string>();
+    ITEMS_DATA.forEach((it) => set.add(it.category));
+    return Array.from(set);
+  }, []);
+
   const filteredItems = useMemo(() => {
     return ITEMS_DATA.filter((item) => {
       const matchesSearch =
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchQuery.toLowerCase());
+        item.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.url.toLowerCase().includes(searchQuery.toLowerCase());
 
       if (!matchesSearch) return false;
 
@@ -52,13 +60,11 @@ const Index = () => {
       if (selectedTab === "new") return item.badge === "New";
       if (selectedTab === "updated") return item.badge === "Updated";
       if (selectedTab === "originals") return item.badge === "Originals";
-      if (selectedTab === "multiplayer") return item.category === "Action" || item.category === "Driving";
       return item.category.toLowerCase() === selectedTab.toLowerCase();
     });
   }, [searchQuery, selectedTab, favorites, hotGames]);
 
-  // Tabs without "50/50"
-  const tabs = [
+  const fixedTabs = [
     { id: "home", label: "Home" },
     { id: "hot", label: "Hot" },
     { id: "popular", label: "Popular" },
@@ -66,17 +72,11 @@ const Index = () => {
     { id: "updated", label: "Updated" },
     { id: "originals", label: "Originals" },
     { id: "favorites", label: "Favorites" },
-    { id: "multiplayer", label: "Multiplayer" },
-    { id: "action", label: "Action" },
-    { id: "platformer", label: "Platformer" },
-    { id: "puzzle", label: "Puzzle" },
-    { id: "sports", label: "Sports" },
-    { id: "racing", label: "Racing" },
-    { id: "idle", label: "Idle" },
-    { id: "sandbox", label: "Sandbox" },
-    { id: "strategy", label: "Strategy" },
-    { id: "board", label: "Board" },
   ];
+
+  const dynamicTabs = categoryTabs.map((c) => ({ id: c.toLowerCase(), label: c }));
+
+  const tabs = [...fixedTabs, ...dynamicTabs];
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-neutral-800 selection:text-white">
@@ -86,7 +86,7 @@ const Index = () => {
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-4">funbooks.lol</h1>
-            <p className="text-neutral-400">Explore a curated collection of unblocked games.</p>
+            <p className="text-neutral-400">Explore a curated collection of unblocked games and links.</p>
           </div>
 
           {/* News & Updates */}
@@ -119,8 +119,8 @@ const Index = () => {
                 onClick={() => {}}
               >
                 {/* Gradient background */}
-                <div className="absolute inset-0 bg-gradient-to-br {item.gradient} opacity-30" />
-                
+                <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-30`} />
+
                 <div className="relative p-4 h-full flex flex-col">
                   {/* Top row: emoji + favorite + badge */}
                   <div className="flex items-start justify-between mb-3">

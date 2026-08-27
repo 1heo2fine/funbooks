@@ -10,629 +10,299 @@ export interface Item {
   players?: string;
 }
 
-export const ITEMS_DATA: Item[] = [
-  // Action Games
-  {
-    id: "tunnel-rush",
-    title: "Tunnel Rush",
-    category: "Action",
-    emoji: "🌀",
-    gradient: "from-purple-800 via-indigo-900 to-black",
-    badge: "Hot",
-    description: "Race through a neon tunnel at breakneck speeds, dodging obstacles.",
-    url: "https://tunnelrush.app",
-    players: "89.3k"
-  },
-  {
-    id: "slope",
-    title: "Slope",
-    category: "Action",
-    emoji: "⛰️",
-    gradient: "from-zinc-800 via-neutral-900 to-black",
-    badge: "Hot",
-    description: "Speed down 3D neon obstacle slopes at extreme speeds.",
-    url: "https://slope-game.org",
-    players: "160k"
-  },
-  {
-    id: "moto-x3m",
-    title: "Moto X3M",
-    category: "Action",
-    emoji: "🏍️",
-    gradient: "from-zinc-800 via-neutral-900 to-black",
-    badge: "Top",
-    description: "Perform crazy motorbike flips over hazardous tracks and exploding obstacles.",
-    url: "https://motox3m.io",
-    players: "130k"
-  },
-  {
-    id: "drift-hunters",
-    title: "Drift Hunters",
-    category: "Action",
-    emoji: "🏎️",
-    gradient: "from-zinc-800 via-stone-900 to-black",
-    badge: "Hot",
-    description: "Tune your cars, push your drift skills to the limit, and master high-speed tracks.",
-    url: "https://drifthunters.io",
-    players: "116k"
-  },
-  {
-    id: "death-run-3d",
-    title: "Death Run 3D",
-    category: "Action",
-    emoji: "💀",
-    gradient: "from-red-800 via-orange-900 to-black",
-    badge: "Hot",
-    description: "Survive the endless running through dangerous 3D obstacles.",
-    url: "https://deathrun3d.io",
-    players: "52.1k"
-  },
-  {
-    id: "rooftop-snipers",
-    title: "Rooftop Snipers",
-    category: "Action",
-    emoji: "🎯",
-    gradient: "from-stone-800 via-neutral-900 to-black",
-    badge: "Top",
-    description: "Jump and shoot your enemy off the rooftop in this sniper battle.",
-    url: "https://rooftopsnipers.io",
-    players: "98.7k"
-  },
-  {
-    id: "bullet-bros",
-    title: "Bullet Bros",
-    category: "Action",
-    emoji: "💥",
-    gradient: "from-stone-800 via-neutral-900 to-black",
-    badge: "Hot",
-    description: "Fast-paced shooting game with bullet hell mechanics.",
-    url: "https://bulletbros.io",
-    players: "54.2k"
-  },
-  {
-    id: "drive-mad",
-    title: "Drive Mad",
-    category: "Action",
-    emoji: "🚗",
-    gradient: "from-red-800 via-orange-900 to-black",
-    badge: "Hot",
-    description: "Race against opponents on crazy tracks with crazy stunts.",
-    url: "https://drivemad.io",
-    players: "76.2k"
-  },
-  {
-    id: "crossy-road",
-    title: "Crossy Road",
-    category: "Action",
-    emoji: "🐔",
-    gradient: "from-yellow-700 via-amber-800 to-black",
-    badge: "Top",
-    description: "Help the chicken cross busy roads, rivers, and railways.",
-    url: "https://crossyroad.io",
-    players: "89.2k"
-  },
-  {
-    id: "time-shooter-2",
-    title: "Time Shooter 2",
-    category: "Action",
-    emoji: "⏱️",
-    gradient: "from-red-900 via-stone-900 to-black",
-    badge: "Hot",
-    description: "Time only moves when you move in this first-person slow-motion shooter.",
-    url: "https://timeshooter2.com",
-    players: "94.1k"
-  },
-  {
-    id: "getaway-shootout",
-    title: "Getaway Shootout",
-    category: "Action",
-    emoji: "🏃‍♂️",
-    gradient: "from-amber-800 via-orange-900 to-black",
-    badge: "Hot",
-    description: "Jump and shoot your way to the getaway vehicle before opponents beat you to it.",
-    url: "https://getawayshootout.io",
-    players: "88.6k"
-  },
+// Helper to generate a stable id from a url
+const idFromUrl = (url: string): string => {
+  return url
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/[^a-z0-9]+/gi, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase()
+    .slice(0, 60);
+};
 
-  // Platformer Games
-  {
-    id: "run-3",
-    title: "Run 3",
-    category: "Platformer",
-    emoji: "🚀",
-    gradient: "from-neutral-700 via-stone-900 to-black",
-    badge: "Top",
-    description: "Sprint through endless space tunnels defying gravity in deep space.",
-    url: "https://run3.io",
-    players: "94.5k"
-  },
-  {
-    id: "fireboy-and-watergirl",
-    title: "Fireboy and Watergirl",
-    category: "Platformer",
-    emoji: "🔥💧",
-    gradient: "from-stone-800 via-zinc-900 to-black",
-    badge: "Top",
-    description: "Solve dual-character elemental puzzles to escape ancient temples.",
-    url: "https://fireboyandwatergirl.co",
-    players: "112k"
-  },
-  {
-    id: "geometry-dash",
-    title: "Geometry Dash",
-    category: "Platformer",
-    emoji: "📐",
-    gradient: "from-cyan-800 via-blue-900 to-black",
-    badge: "Top",
-    description: "Rhythm-based platformer with challenging levels and music.",
-    url: "https://geometrydash.io",
-    players: "178k"
-  },
-  {
-    id: "vex",
-    title: "Vex",
-    category: "Platformer",
-    emoji: "⚡",
-    gradient: "from-yellow-800 via-amber-900 to-black",
-    badge: "Hot",
-    description: "Parkour platformer with momentum-based movement and speedrunning.",
-    url: "https://vex.game",
-    players: "67.3k"
-  },
-  {
-    id: "karlson",
-    title: "Karlson",
-    category: "Platformer",
-    emoji: "🚀",
-    gradient: "from-blue-800 via-indigo-900 to-black",
-    badge: "Hot",
-    description: "Fast-paced 3D platformer with parkour and gunplay mechanics.",
-    url: "https://karlson.io",
-    players: "56.7k"
-  },
-  {
-    id: "redball-4",
-    title: "Redball 4",
-    category: "Platformer",
-    emoji: "🔴",
-    gradient: "from-red-700 via-orange-800 to-black",
-    badge: "Top",
-    description: "Help the red ball navigate through challenging platform levels.",
-    url: "https://redball4.io",
-    players: "87.3k"
-  },
-  {
-    id: "ovo",
-    title: "OvO",
-    category: "Platformer",
-    emoji: "🏃",
-    gradient: "from-stone-800 via-neutral-900 to-black",
-    badge: "Top",
-    description: "Fast-paced parkour platformer using jumps, dives, slides and wall-bounces.",
-    url: "https://ovo-game.io",
-    players: "98.4k"
-  },
-  {
-    id: "happy-wheels",
-    title: "Happy Wheels",
-    category: "Platformer",
-    emoji: "♿",
-    gradient: "from-rose-800 via-red-900 to-black",
-    badge: "Hot",
-    description: "Ragdoll physics platform game with tons of creative and hazardous obstacles.",
-    url: "https://happywheels.io",
-    players: "115k"
-  },
-  {
-    id: "bad-ice-cream",
-    title: "Bad Ice-Cream",
-    category: "Platformer",
-    emoji: "🍦",
-    gradient: "from-sky-800 via-cyan-900 to-black",
-    badge: "Hot",
-    description: "Collect delicious fruits and build ice barricades while avoiding icy monsters.",
-    url: "https://badicecream.io",
-    players: "73.4k"
-  },
-
-  // Puzzle Games
-  {
-    id: "2048",
-    title: "2048",
-    category: "Puzzle",
-    emoji: "🔢",
-    gradient: "from-amber-700 via-yellow-800 to-black",
-    badge: "Originals",
-    description: "Slide and merge numbered tiles to reach 2048.",
-    url: "https://play2048.co",
-    players: "78.5k"
-  },
-  {
-    id: "block-blast",
-    title: "Block Blast",
-    category: "Puzzle",
-    emoji: "🧩",
-    gradient: "from-indigo-800 via-purple-900 to-black",
-    badge: "Hot",
-    description: "Match blocks in this viral puzzle sensation.",
-    url: "https://blockblast.io",
-    players: "112k"
-  },
-  {
-    id: "bloons-td-5",
-    title: "Bloons TD 5",
-    category: "Puzzle",
-    emoji: "🎈",
-    gradient: "from-pink-800 via-red-900 to-black",
-    badge: "Top",
-    description: "Place towers and pop all the bloons in this classic strategy game.",
-    url: "https://bloonstd5.io",
-    players: "134k"
-  },
-  {
-    id: "chess",
-    title: "Chess",
-    category: "Puzzle",
-    emoji: "♟️",
-    gradient: "from-neutral-800 via-stone-900 to-black",
-    badge: "Top",
-    description: "Play chess against the computer or a friend.",
-    url: "https://chess.com/play/computer",
-    players: "45.6k"
-  },
-  {
-    id: "worlds-hardest-game-2",
-    title: "World's Hardest Game 2",
-    category: "Puzzle",
-    emoji: "💀",
-    gradient: "from-red-800 via-rose-900 to-black",
-    badge: "Top",
-    description: "The sequel to the notoriously difficult puzzle platformer.",
-    url: "https://worldshardestgame.io",
-    players: "72.3k"
-  },
-
-  // Sports Games
-  {
-    id: "retro-bowl",
-    title: "Retro Bowl",
-    category: "Sports",
-    emoji: "🏈",
-    gradient: "from-amber-700 via-orange-800 to-black",
-    badge: "Top",
-    description: "Lead your team to glory in this retro-style football management game.",
-    url: "https://retrobowl.io",
-    players: "145k"
-  },
-  {
-    id: "basketball-stars",
-    title: "Basketball Stars",
-    category: "Sports",
-    emoji: "🏀",
-    gradient: "from-orange-700 via-red-800 to-black",
-    badge: "Hot",
-    description: "Compete in 1v1 basketball matches with special moves and dunks.",
-    url: "https://basketballstars.io",
-    players: "112k"
-  },
-  {
-    id: "soccer-stars",
-    title: "Soccer Stars",
-    category: "Sports",
-    emoji: "⚽",
-    gradient: "from-green-700 via-emerald-800 to-black",
-    badge: "Hot",
-    description: "Score epic goals in this fun soccer game with crazy physics.",
-    url: "https://soccerstars.io",
-    players: "68.9k"
-  },
-  {
-    id: "basket-random",
-    title: "Basket Random",
-    category: "Sports",
-    emoji: "🏀",
-    gradient: "from-orange-700 via-red-800 to-black",
-    badge: "Hot",
-    description: "Crazy physics basketball game with random court layouts.",
-    url: "https://basketrandom.io",
-    players: "71.5k"
-  },
-
-  // Racing Games
-  {
-    id: "drift-boss",
-    title: "Drift Boss",
-    category: "Racing",
-    emoji: "🚗",
-    gradient: "from-neutral-800 via-stone-900 to-black",
-    badge: "Hot",
-    description: "One-button timing drift challenge along sharp sky highway cliffs.",
-    url: "https://driftboss.io",
-    players: "78.9k"
-  },
-  {
-    id: "snow-rider-3d",
-    title: "Snow Rider 3D",
-    category: "Racing",
-    emoji: "🛷",
-    gradient: "from-zinc-800 via-neutral-900 to-black",
-    badge: "Hot",
-    description: "Slide down snowy mountain slopes, avoid giant pine trees, and collect gifts!",
-    url: "https://snowrider.io",
-    players: "142k"
-  },
-  {
-    id: "polytrack",
-    title: "Polytrack",
-    category: "Racing",
-    emoji: "🏎️",
-    gradient: "from-neutral-800 via-stone-900 to-black",
-    badge: "Hot",
-    description: "Drift around corners in this minimalist 3D racing game.",
-    url: "https://polytrack.io",
-    players: "64.8k"
-  },
-  {
-    id: "drift-hunters-pro",
-    title: "Drift Hunters Pro",
-    category: "Racing",
-    emoji: "🚘",
-    gradient: "from-zinc-800 via-orange-950 to-black",
-    badge: "Hot",
-    description: "Upgraded engine physics and customizable racing tracks for ultimate drift styling.",
-    url: "https://drifthunters.org",
-    players: "91.2k"
-  },
-
-  // Idle/Simulation
-  {
-    id: "cookie-clicker",
-    title: "Cookie Clicker",
-    category: "Idle",
-    emoji: "🍪",
-    gradient: "from-yellow-700 via-amber-800 to-black",
-    badge: "Originals",
-    description: "Bake as many cookies as you can in this incremental classic.",
-    url: "https://cookieclicker.io",
-    players: "156k"
-  },
-  {
-    id: "eggy-car",
-    title: "Eggy Car",
-    category: "Idle",
-    emoji: "🥚",
-    gradient: "from-neutral-700 via-zinc-900 to-black",
-    badge: "Top",
-    description: "Carefully balance a loose egg on top of your car while driving over bumpy hills.",
-    url: "https://eggycar.io",
-    players: "89.2k"
-  },
-  {
-    id: "tiny-fishing",
-    title: "Tiny Fishing",
-    category: "Idle",
-    emoji: "🎣",
-    gradient: "from-cyan-800 via-blue-900 to-black",
-    badge: "Hot",
-    description: "Catch fish, upgrade your gear, and sell your catch for profit.",
-    url: "https://tinyfishing.io",
-    players: "62.4k"
-  },
-  {
-    id: "bitlife",
-    title: "Bitlife",
-    category: "Idle",
-    emoji: "📱",
-    gradient: "from-purple-800 via-violet-900 to-black",
-    badge: "Top",
-    description: "Text-based life simulator - live your virtual life from birth.",
-    url: "https://bitlife.io",
-    players: "123k"
-  },
-  {
-    id: "adventure-capitalist",
-    title: "Adventure Capitalist",
-    category: "Idle",
-    emoji: "💰",
-    gradient: "from-green-700 via-lime-800 to-black",
-    badge: "Originals",
-    description: "Start a business empire and become the richest person on Earth.",
-    url: "https://adventurecapitalist.io",
-    players: "89.1k"
-  },
-
-  // Multiplayer
-  {
-    id: "1v1-lol",
-    title: "1v1.LOL",
-    category: "Multiplayer",
-    emoji: "🔫",
-    gradient: "from-blue-700 via-cyan-800 to-black",
-    badge: "Top",
-    description: "Build and battle in this Fortnite-style 1v1 shooter.",
-    url: "https://1v1lol.com",
-    players: "156k"
-  },
-  {
-    id: "shell-shockers",
-    title: "Shell Shockers",
-    category: "Multiplayer",
-    emoji: "🥚",
-    gradient: "from-green-700 via-lime-800 to-black",
-    badge: "Hot",
-    description: "Multiplayer egg shooter with intense 3D combat and rankings.",
-    url: "https://shellshockers.io",
-    players: "134k"
-  },
-  {
-    id: "krunker-io",
-    title: "Krunker.io",
-    category: "Multiplayer",
-    emoji: "💥",
-    gradient: "from-red-800 via-pink-900 to-black",
-    badge: "Top",
-    description: "Fast-paced multiplayer FPS with pixelated graphics and classes.",
-    url: "https://krunker.io",
-    players: "145k"
-  },
-  {
-    id: "surviv-io",
-    title: "Surviv.io",
-    category: "Multiplayer",
-    emoji: "⚔️",
-    gradient: "from-stone-800 via-neutral-900 to-black",
-    badge: "Hot",
-    description: "2D battle royale - scavenge gear, avoid the storm, be the last one standing.",
-    url: "https://surviv.io",
-    players: "123k"
-  },
-  {
-    id: "smash-karts",
-    title: "Smash Karts",
-    category: "Multiplayer",
-    emoji: "🏎️",
-    gradient: "from-red-700 via-pink-800 to-black",
-    badge: "Hot",
-    description: "Multiplayer kart battle with power-ups and weapons.",
-    url: "https://smashkarts.io",
-    players: "134k"
-  },
-  {
-    id: "snake-io",
-    title: "Snake.io",
-    category: "Multiplayer",
-    emoji: "🐍",
-    gradient: "from-green-800 via-lime-900 to-black",
-    badge: "Hot",
-    description: "Multiplayer snake game - grow longer and don't crash into others.",
-    url: "https://snake.io",
-    players: "98.7k"
-  },
-
-  // Sandbox
-  {
-    id: "paper-minecraft",
-    title: "Paper Minecraft",
-    category: "Sandbox",
-    emoji: "📄",
-    gradient: "from-green-700 via-lime-800 to-black",
-    badge: "Originals",
-    description: "2D Minecraft-style sandbox with crafting, building, and survival.",
-    url: "https://paper-minecraft.io",
-    players: "98.2k"
-  },
-  {
-    id: "minecraft-classic",
-    title: "Minecraft Classic",
-    category: "Sandbox",
-    emoji: "⛏️",
-    gradient: "from-green-700 via-emerald-800 to-black",
-    badge: "Top",
-    description: "Browser-based Minecraft clone with survival and creative modes.",
-    url: "https://classic.minecraft.net",
-    players: "92.1k"
-  },
-
-  // Strategy
-  {
-    id: "state-io",
-    title: "State.io",
-    category: "Strategy",
-    emoji: "🌍",
-    gradient: "from-green-800 via-emerald-900 to-black",
-    badge: "Hot",
-    description: "Multiplayer territory conquest game - capture states and grow.",
-    url: "https://state.io",
-    players: "87.3k"
-  },
-  {
-    id: "people-playground",
-    title: "People Playground",
-    category: "Strategy",
-    emoji: "🧑",
-    gradient: "from-red-800 via-rose-900 to-black",
-    badge: "Hot",
-    description: "Create and experiment with people in this physics sandbox.",
-    url: "https://peopleplayground.io",
-    players: "98.2k"
-  },
-
-  // New Games
-  {
-    id: "subway-surfers",
-    title: "Subway Surfers",
-    category: "Action",
-    emoji: "🚇",
-    gradient: "from-blue-800 via-cyan-900 to-black",
-    badge: "New",
-    description: "Dodge trains and surf through the subway in this endless runner.",
-    url: "https://subwaysurfers.io",
-    players: "201k"
-  },
-  {
-    id: "among-us",
-    title: "Among Us",
-    category: "Multiplayer",
-    emoji: "🛸",
-    gradient: "from-red-800 via-pink-900 to-black",
-    badge: "New",
-    description: "Work with crewmates or sabotage as an impostor in space.",
-    url: "https://amongus.io",
-    players: "178k"
-  },
-  {
-    id: "monopoly-go",
-    title: "Monopoly Go",
-    category: "Board",
-    emoji: "🎲",
-    gradient: "from-green-700 via-emerald-800 to-black",
-    badge: "New",
-    description: "Roll the dice and build your property empire in this digital board game.",
-    url: "https://monopolygo.io",
-    players: "95.3k"
-  },
-  {
-    id: "paper-io-2",
-    title: "Paper.io 2",
-    category: "Multiplayer",
-    emoji: "🖍️",
-    gradient: "from-teal-800 via-emerald-900 to-black",
-    badge: "New",
-    description: "Conquer as much territory as possible and eliminate rivals by cutting their trail.",
-    url: "https://paper-io.com",
-    players: "162k"
-  },
-  {
-    id: "stickman-hook",
-    title: "Stickman Hook",
-    category: "Platformer",
-    emoji: "🪝",
-    gradient: "from-pink-800 via-purple-900 to-black",
-    badge: "New",
-    description: "Swing from hook to hook with momentum-based acrobatics across 100+ levels.",
-    url: "https://stickmanhook.io",
-    players: "148k"
-  },
-  {
-    id: "temple-run-2",
-    title: "Temple Run 2",
-    category: "Action",
-    emoji: "🗿",
-    gradient: "from-yellow-800 via-amber-900 to-black",
-    badge: "New",
-    description: "Navigate perilous cliffs, zip lines, mines, and forests as you escape with the idol.",
-    url: "https://templerun2.me",
-    players: "185k"
-  },
-  {
-    id: "cut-the-rope",
-    title: "Cut the Rope",
-    category: "Puzzle",
-    emoji: "🍬",
-    gradient: "from-lime-800 via-green-900 to-black",
-    badge: "New",
-    description: "Cut ropes, pop bubbles, and collect gold stars to feed delicious candy to Om Nom.",
-    url: "https://cuttherope.net",
-    players: "119k"
+// Helper to derive a display title from a url
+const titleFromUrl = (url: string): string => {
+  let host = url.replace(/^https?:\/\//, "").replace(/^www\./, "");
+  // For Google Sites subpaths, use a friendlier name
+  if (host.startsWith("sites.google.com/site/")) {
+    const sub = host.split("/")[2] || host;
+    return sub.replace(/unblockedgames/i, "Unblocked Games ").replace(/\d+/g, (n) => ` ${n}`);
   }
+  // For sub-paths, use the first path segment if it's a common brand
+  if (host.includes("/games")) {
+    host = host.split("/")[0];
+  }
+  // Take the main domain (drop TLD for friendlier display)
+  const parts = host.split("/")[0].split(".");
+  if (parts.length >= 2) {
+    const name = parts[parts.length - 2];
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+  return host;
+};
+
+// Auto-categorize urls
+const categorize = (url: string): string => {
+  const u = url.toLowerCase();
+  if (u.includes("proxy") || u.includes("whoer") || u.includes("hidester") || u.includes("croxy") || u.includes("bi-pass") || u.includes("pyrus") || u.includes("cosmicproxy")) return "Proxy";
+  if (u.includes("illuminating") || u.includes("goilluminating")) return "Illuminating";
+  if (u.includes("sites.google.com/site/unblockedgames")) return "Google Sites";
+  if (u.includes("unblockedgames") || u.includes("unblockedhub") || u.includes("theunblockedhub") || u.includes("tyronesgames") || u.includes("gamesthatarenotblocked") || u.includes("classroom6x")) return "Unblocked";
+  if (u.includes("3kh0") || u.includes("kazwire") || u.includes("radon.games") || u.includes("nebula.com") || u.includes("gfy.com") || u.includes("bl4ckout") || u.includes("crackedgames") || u.includes("degeneracy") || u.includes("doriangames") || u.includes("msgweb") || u.includes("onegamesites") || u.includes("p0xx") || u.includes("platformer.io") || u.includes("shadowgmes") || u.includes("system99") || u.includes("zatoga") || u.includes("hellgames") || u.includes("emeraldbed") || u.includes("prollgames") || u.includes("glaticgames") || u.includes("snorlaxscave") || u.includes("nettleweb") || u.includes("lunaar") || u.includes("macvg") || u.includes("55gms") || u.includes("polarisgames") || u.includes("dotgui") || u.includes("pegleg") || u.includes("smartkidweb")) return "Games Hub";
+  if (u.includes("math") || u.includes("coolmath") || u.includes("duckmath") || u.includes("quackprep") || u.includes("teacherease") || u.includes("schoolfacts") || u.includes("gn-math") || u.includes("multiplication") || u.includes("prodigy")) return "Educational";
+  if (u.includes("pbs") || u.includes("scratch") || u.includes("abcya") || u.includes("funbrain") || u.includes("playbrain") || u.includes("shawgames") || u.includes("turbowarp") || u.includes("bonk.io") || u.includes("gogy.com") || u.includes("roomrecess") || u.includes("turtlediary") || u.includes("primarygames") || u.includes("mathplayground")) return "Educational";
+  if (u.includes("poki") || u.includes("crazygames") || u.includes("kizi")) return "Games Hub";
+  if (u.includes("github") || u.includes("gitlab") || u.includes("bitbucket") || u.includes("codeberg") || u.includes("sourceforge") || u.includes("vercel") || u.includes("netlify") || u.includes("glitch") || u.includes("replit") || u.includes("heroku") || u.includes("render") || u.includes("cyclic") || u.includes("koyeb") || u.includes("fly.io") || u.includes("railway") || u.includes("deno") || u.includes("cloudflare") || u.includes("surge") || u.includes("neocities") || u.includes("supabase") || u.includes("firebase") || u.includes("aws") || u.includes("azure") || u.includes("gcp") || u.includes("digitalocean") || u.includes("linode") || u.includes("vultr") || u.includes("namecheap") || u.includes("godaddy")) return "Dev/Hosting";
+  if (u.includes("archlinux") || u.includes("debian") || u.includes("ubuntu") || u.includes("fedora") || u.includes("centos") || u.includes("redhat") || u.includes("suse") || u.includes("almalinux") || u.includes("rockylinux") || u.includes("nixos") || u.includes("voidlinux") || u.includes("gentoo") || u.includes("slackware") || u.includes("freebsd") || u.includes("openbsd") || u.includes("netbsd") || u.includes("illumos") || u.includes("openwrt") || u.includes("fosstodon")) return "Linux/OS";
+  if (u.includes("shsgames")) return "Games Hub";
+  if (u.includes("teletubbies")) return "Games Hub";
+  return "Web";
+};
+
+// Gradient rotation
+const gradients = [
+  "from-purple-800 via-indigo-900 to-black",
+  "from-zinc-800 via-neutral-900 to-black",
+  "from-stone-800 via-neutral-900 to-black",
+  "from-red-800 via-orange-900 to-black",
+  "from-amber-800 via-orange-900 to-black",
+  "from-cyan-800 via-blue-900 to-black",
+  "from-yellow-800 via-amber-900 to-black",
+  "from-blue-800 via-indigo-900 to-black",
+  "from-red-700 via-orange-800 to-black",
+  "from-rose-800 via-red-900 to-black",
+  "from-sky-800 via-cyan-900 to-black",
+  "from-pink-800 via-purple-900 to-black",
+  "from-green-700 via-emerald-800 to-black",
+  "from-lime-800 via-green-900 to-black",
+  "from-teal-800 via-emerald-900 to-black",
+  "from-neutral-800 via-stone-900 to-black",
+  "from-violet-800 via-purple-900 to-black",
+  "from-indigo-800 via-blue-900 to-black",
+  "from-emerald-800 via-teal-900 to-black",
+  "from-fuchsia-800 via-pink-900 to-black",
 ];
+
+const emojiForCategory = (category: string): string => {
+  switch (category) {
+    case "Proxy": return "🌐";
+    case "Illuminating": return "💡";
+    case "Google Sites": return "📄";
+    case "Unblocked": return "🚪";
+    case "Games Hub": return "🎮";
+    case "Educational": return "📚";
+    case "Dev/Hosting": return "💻";
+    case "Linux/OS": return "🐧";
+    case "Web": return "🔗";
+    default: return "🌟";
+  }
+};
+
+const descForCategory = (category: string, name: string): string => {
+  switch (category) {
+    case "Proxy": return `Use ${name} to access blocked content at your school.`;
+    case "Illuminating": return `Open ${name} to play unblocked games through the Illuminating network.`;
+    case "Google Sites": return `Open ${name} directly from Google Sites to bypass filters.`;
+    case "Unblocked": return `Visit ${name} to browse a curated collection of unblocked games.`;
+    case "Games Hub": return `Open ${name} for a library of school-friendly games.`;
+    case "Educational": return `Open ${name} for fun learning games and activities.`;
+    case "Dev/Hosting": return `Visit ${name} for development and hosting tools.`;
+    case "Linux/OS": return `Browse ${name} for information about this operating system.`;
+    default: return `Visit ${name}.`;
+  }
+};
+
+const rawUrls: string[] = [
+  "https://coolmathgames.com",
+  "https://hoodamath.com",
+  "https://pbskids.org/games",
+  "https://scratch.mit.edu",
+  "https://abcya.com",
+  "https://funbrain.com",
+  "https://playbrain.games",
+  "https://shawgames.com",
+  "https://poki.com",
+  "https://crazygames.com",
+  "https://classroom6x.com",
+  "https://kizi.com",
+  "https://nettleweb.com",
+  "https://lunaar.org",
+  "https://macvg.com",
+  "https://55gms.com",
+  "https://polarisgames.com",
+  "https://dotgui.com",
+  "https://pegleg.com",
+  "https://teletubbies.wtf",
+  "https://snorlaxscave.com",
+  "https://cosmicproxy.com",
+  "https://kazwire.com",
+  "https://pyrusproxy.com",
+  "https://3kh0.com",
+  "https://nebula.com",
+  "https://gfy.com",
+  "https://glaticgames.com",
+  "https://prollgames.com",
+  "https://emeraldbed.com",
+  "https://hellgames.com",
+  "https://unblockedgames66.com",
+  "https://unblockedgames77.com",
+  "https://unblockedgames911.com",
+  "https://tyronesgames.com",
+  "https://quackprep.org",
+  "https://duckmath.org",
+  "https://schoolfacts.xyz",
+  "https://teacherease.net",
+  "https://illuminating.pages.dev",
+  "https://illuminating.us",
+  "https://illuminating.netlify.app",
+  "https://illuminating.onrender.com",
+  "https://goilluminating.web.app",
+  "https://goilluminating.firebaseapp.com",
+  "https://illuminating.surge.sh",
+  "https://shsgames.github.io",
+  "https://gn-math.github.io",
+  "https://bl4ckout.com",
+  "https://crackedgames.com",
+  "https://degeneracy.com",
+  "https://doriangames.com",
+  "https://msgweb.com",
+  "https://onegamesites.com",
+  "https://p0xx.com",
+  "https://platformer.io",
+  "https://shadowgmes.com",
+  "https://smartkidweb.com",
+  "https://system99.com",
+  "https://zatoga.com",
+  "https://bi-pass.com",
+  "https://croxyproxy.com",
+  "https://hidester.com",
+  "https://proxysite.com",
+  "https://whoer.net",
+  "https://theunblockedhub.com",
+  "https://unblockedhub.com",
+  "https://radon.games",
+  "https://turbowarp.org",
+  "https://prodigygame.com",
+  "https://arcadeprehacks.com",
+  "https://bonk.io",
+  "https://gogy.com",
+  "https://mathplayground.com",
+  "https://multiplication.com",
+  "https://primarygames.com",
+  "https://roomrecess.com",
+  "https://turtlediary.com",
+  "https://gamesthatarenotblocked.com",
+  "https://unblockedgames.world",
+  "https://sites.google.com/site/unblockedgames77",
+  "https://sites.google.com/site/unblockedgames66",
+  "https://sites.google.com/site/unblockedgames911",
+  "https://sites.google.com/site/unblockedgames24h",
+  "https://sites.google.com/site/unblockedgames69",
+  "https://sites.google.com/site/unblockedgames33",
+  "https://sites.google.com/site/unblockedgames55",
+  "https://sites.google.com/site/unblockedgames88",
+  "https://sites.google.com/site/unblockedgames99",
+  "https://sites.google.com/site/unblockedgames100",
+  "https://sites.google.com/site/unblockedgames101",
+  "https://sites.google.com/site/unblockedgames102",
+  "https://sites.google.com/site/unblockedgames103",
+  "https://sites.google.com/site/unblockedgames104",
+  "https://sites.google.com/site/unblockedgames105",
+  "https://sites.google.com/site/unblockedgames106",
+  "https://sites.google.com/site/unblockedgames107",
+  "https://sites.google.com/site/unblockedgames108",
+  "https://sites.google.com/site/unblockedgames109",
+  "https://sites.google.com/site/unblockedgames110",
+  "https://www.google.com/sites",
+  "https://sites.google.com",
+  "https://github.com",
+  "https://vercel.com",
+  "https://netlify.app",
+  "https://pages.github.com",
+  "https://glitch.com",
+  "https://replit.com",
+  "https://heroku.com",
+  "https://render.com",
+  "https://cyclic.sh",
+  "https://koyeb.com",
+  "https://fly.io",
+  "https://railway.com",
+  "https://deno.dev",
+  "https://cloudflare.com",
+  "https://supabase.com",
+  "https://firebase.com",
+  "https://aws.amazon.com",
+  "https://azure.com",
+  "https://gcp.com",
+  "https://digitalocean.com",
+  "https://linode.com",
+  "https://vultr.com",
+  "https://namecheap.com",
+  "https://godaddy.com",
+  "https://cloudflarepages.com",
+  "https://surge.sh",
+  "https://neocities.org",
+  "https://gitlab.io",
+  "https://bitbucket.io",
+  "https://codeberg.org",
+  "https://sourceforge.net",
+  "https://fosstodon.org",
+  "https://openwrt.org",
+  "https://archlinux.org",
+  "https://debian.org",
+  "https://ubuntu.com",
+  "https://fedora.org",
+  "https://centos.org",
+  "https://redhat.com",
+  "https://suse.com",
+  "https://almalinux.org",
+  "https://rockylinux.org",
+  "https://nixos.org",
+  "https://voidlinux.org",
+  "https://gentoo.org",
+  "https://slackware.com",
+  "https://freebsd.org",
+  "https://openbsd.org",
+  "https://netbsd.org",
+  "https://illumos.org",
+];
+
+// Dedupe by normalized url (preserves first occurrence)
+const seen = new Set<string>();
+const uniqueUrls = rawUrls.filter((u) => {
+  const key = u.replace(/^https?:\/\//, "").replace(/^www\./, "").toLowerCase();
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return true;
+});
+
+const playersFor = (i: number): string => {
+  const base = 30 + ((i * 17) % 220);
+  return `${base}.${(i * 3) % 10}k`;
+};
+
+const badgeFor = (i: number, category: string): Item["badge"] | undefined => {
+  if (i % 23 === 0) return "Top";
+  if (i % 17 === 0) return "Hot";
+  if (i % 29 === 0) return "New";
+  if (i % 31 === 0) return "Originals";
+  if (i % 37 === 0) return "Updated";
+  return undefined;
+};
+
+export const ITEMS_DATA: Item[] = uniqueUrls.map((url, i) => {
+  const category = categorize(url);
+  const title = titleFromUrl(url);
+  return {
+    id: idFromUrl(url) || `item-${i}`,
+    title,
+    category,
+    emoji: emojiForCategory(category),
+    gradient: gradients[i % gradients.length],
+    badge: badgeFor(i, category),
+    description: descForCategory(category, title),
+    url,
+    players: playersFor(i),
+  };
+});
