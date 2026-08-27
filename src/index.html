@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🔗 Game Hub - Unblocked Redirects</title>
+  <title>fykk gamehub - Unblocked Redirects</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
     html, body {
       width: 100%;
       min-height: 100%;
-      background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #0a0a0a 100%);
       color: #f8fafc;
     }
 
@@ -38,7 +38,7 @@
     .page-title {
       font-size: 2.5rem;
       font-weight: 900;
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: -0.02em;
@@ -78,7 +78,7 @@
 
     .search-bar input:focus {
       background: rgba(255, 255, 255, 0.09);
-      border-color: #38bdf8;
+      border-color: #737373;
     }
 
     .search-bar .search-icon {
@@ -117,8 +117,8 @@
     }
 
     .filter-chip.active {
-      background: #0284c7;
-      border-color: #0284c7;
+      background: #404040;
+      border-color: #737373;
       color: #fff;
     }
 
@@ -145,7 +145,7 @@
 
     .link-card:hover {
       background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(56, 189, 248, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-1px);
     }
 
@@ -274,7 +274,7 @@
 </head>
 <body>
   <div class="page-header">
-    <h1 class="page-title">🔗 Game Hub</h1>
+    <h1 class="page-title">fykk gamehub</h1>
     <p class="page-subtitle">Click a link to open it. Vote on whether it works at your school.</p>
   </div>
 
@@ -472,18 +472,14 @@
       return votes[url] || { up: 0, down: 0, userVote: null };
     }
 
-    // Seed random vote counts ONCE so the page looks alive on first visit.
-    // Distribution: ~70% unblocked, ~25% partial, ~5% blocked
     function seedRandomVotes() {
       if (localStorage.getItem(SEEDED_KEY)) return;
       const votes = {};
       const total = MIRRORS.length;
-      // Pick exactly 4 to be "blocked" (down > up) to match the user's request.
       const blockedIndexes = new Set();
       while (blockedIndexes.size < 4) {
         blockedIndexes.add(Math.floor(Math.random() * total));
       }
-      // Pick ~25% to be "partial" (equal up/down)
       const partialCount = Math.max(1, Math.floor(total * 0.25));
       const partialIndexes = new Set();
       while (partialIndexes.size < partialCount) {
@@ -535,7 +531,6 @@
       renderAll();
     }
 
-    // Compute status purely from votes
     function computeStatus(url) {
       const v = getVoteData(url);
       const total = v.up + v.down;
@@ -554,8 +549,8 @@
 
     function escapeHtml(s) {
       return s.replace(/[&<>"']/g, c => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-      }[c]));
+        "&": "&", "<": "<", ">": ">", '"': "&quot;", "'": "&#39;"
+      })[c]);
     }
 
     function renderLinkCard(mirror) {
@@ -613,10 +608,8 @@
       renderAll();
     });
 
-    // Seed random vote counts for first-time visitors
-        seedRandomVotes();
-    
-        renderAll();
-      </script>
+    seedRandomVotes();
+    renderAll();
+  </script>
 </body>
 </html>
