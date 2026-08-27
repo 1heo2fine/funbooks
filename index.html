@@ -187,7 +187,7 @@
       color: var(--accent);
     }
 
-    /* Filter Bar - Glass Pills (no 50/50) */
+    /* Filter Bar - Glass Pills (NO 50/50) */
     .filter-bar {
       display: flex;
       gap: 6px;
@@ -265,7 +265,7 @@
       animation: fadeSlideUp 0.9s var(--transition) 0.2s both;
     }
 
-    /* Link Card - Liquid Glass (no letter icons) */
+    /* Link Card - Liquid Glass (NO LETTER ICONS) */
     .link-card {
       position: relative;
       display: flex;
@@ -344,7 +344,7 @@
       color: var(--accent);
     }
 
-    /* Custom Tiny Glass Vote Buttons - NO EMOJIS, NO LETTERS */
+    /* Custom Tiny Glass Vote Buttons - FIXED SPACING */
     .link-right {
       display: flex;
       align-items: center;
@@ -361,10 +361,10 @@
       background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: 6px;
-      padding: 6px 10px;
+      padding: 8px 12px; /* INCREASED PADDING TO FIX CUT OFF */
       cursor: pointer;
       color: var(--text-muted);
-      font-size: 0.55rem;
+      font-size: 0.6rem; /* SLIGHTLY LARGER FONT */
       font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
       transition: all var(--transition-fast);
@@ -379,16 +379,16 @@
     }
 
     .vote-btn svg {
-      width: 10px;
-      height: 10px;
+      width: 12px; /* SLIGHTLY LARGER ICONS */
+      height: 12px;
       stroke-width: 2;
       transition: all var(--transition-fast);
     }
 
     .vote-btn .vote-count {
-      min-width: 20px;
+      min-width: 24px; /* MORE SPACE FOR PERCENTAGES */
       text-align: center;
-      font-size: 0.48rem;
+      font-size: 0.55rem;
       font-variant-numeric: tabular-nums;
       transition: all var(--transition-fast);
     }
@@ -471,9 +471,9 @@
       .page-title { font-size: 1.8rem; }
       .link-card { padding: 12px 14px; }
       .link-url { font-size: 0.75rem; }
-      .vote-btn { padding: 4px 8px; font-size: 0.45rem; }
-      .vote-btn svg { width: 8px; height: 8px; }
-      .filter-chip { padding: 6px 12px; font-size: 0.55rem; }
+      .vote-btn { padding: 6px 10px; font-size: 0.5rem; }
+      .vote-btn svg { width: 10px; height: 10px; }
+      .filter-chip { padding: 8px 14px; font-size: 0.55rem; }
       .search-input { padding: 12px 12px 12px 36px; }
     }
   </style>
