@@ -111,6 +111,28 @@ export const ITEMS_DATA: Item[] = [
     url: "https://crossyroad.io",
     players: "89.2k"
   },
+  {
+    id: "time-shooter-2",
+    title: "Time Shooter 2",
+    category: "Action",
+    emoji: "⏱️",
+    gradient: "from-red-900 via-stone-900 to-black",
+    badge: "Hot",
+    description: "Time only moves when you move in this first-person slow-motion shooter.",
+    url: "https://timeshooter2.com",
+    players: "94.1k"
+  },
+  {
+    id: "getaway-shootout",
+    title: "Getaway Shootout",
+    category: "Action",
+    emoji: "🏃‍♂️",
+    gradient: "from-amber-800 via-orange-900 to-black",
+    badge: "Hot",
+    description: "Jump and shoot your way to the getaway vehicle before opponents beat you to it.",
+    url: "https://getawayshootout.io",
+    players: "88.6k"
+  },
 
   // Platformer Games
   {
@@ -189,6 +211,28 @@ export const ITEMS_DATA: Item[] = [
     description: "Fast-paced parkour platformer using jumps, dives, slides and wall-bounces.",
     url: "https://ovo-game.io",
     players: "98.4k"
+  },
+  {
+    id: "happy-wheels",
+    title: "Happy Wheels",
+    category: "Platformer",
+    emoji: "♿",
+    gradient: "from-rose-800 via-red-900 to-black",
+    badge: "Hot",
+    description: "Ragdoll physics platform game with tons of creative and hazardous obstacles.",
+    url: "https://happywheels.io",
+    players: "115k"
+  },
+  {
+    id: "bad-ice-cream",
+    title: "Bad Ice-Cream",
+    category: "Platformer",
+    emoji: "🍦",
+    gradient: "from-sky-800 via-cyan-900 to-black",
+    badge: "Hot",
+    description: "Collect delicious fruits and build ice barricades while avoiding icy monsters.",
+    url: "https://badicecream.io",
+    players: "73.4k"
   },
 
   // Puzzle Games
@@ -327,6 +371,17 @@ export const ITEMS_DATA: Item[] = [
     description: "Drift around corners in this minimalist 3D racing game.",
     url: "https://polytrack.io",
     players: "64.8k"
+  },
+  {
+    id: "drift-hunters-pro",
+    title: "Drift Hunters Pro",
+    category: "Racing",
+    emoji: "🚘",
+    gradient: "from-zinc-800 via-orange-950 to-black",
+    badge: "Hot",
+    description: "Upgraded engine physics and customizable racing tracks for ultimate drift styling.",
+    url: "https://drifthunters.org",
+    players: "91.2k"
   },
 
   // Idle/Simulation
@@ -502,7 +557,7 @@ export const ITEMS_DATA: Item[] = [
     players: "98.2k"
   },
 
-  // New Games Added
+  // New Games
   {
     id: "subway-surfers",
     title: "Subway Surfers",
@@ -535,5 +590,49 @@ export const ITEMS_DATA: Item[] = [
     description: "Roll the dice and build your property empire in this digital board game.",
     url: "https://monopolygo.io",
     players: "95.3k"
+  },
+  {
+    id: "paper-io-2",
+    title: "Paper.io 2",
+    category: "Multiplayer",
+    emoji: "🖍️",
+    gradient: "from-teal-800 via-emerald-900 to-black",
+    badge: "New",
+    description: "Conquer as much territory as possible and eliminate rivals by cutting their trail.",
+    url: "https://paper-io.com",
+    players: "162k"
+  },
+  {
+    id: "stickman-hook",
+    title: "Stickman Hook",
+    category: "Platformer",
+    emoji: "🪝",
+    gradient: "from-pink-800 via-purple-900 to-black",
+    badge: "New",
+    description: "Swing from hook to hook with momentum-based acrobatics across 100+ levels.",
+    url: "https://stickmanhook.io",
+    players: "148k"
+  },
+  {
+    id: "temple-run-2",
+    title: "Temple Run 2",
+    category: "Action",
+    emoji: "🗿",
+    gradient: "from-yellow-800 via-amber-900 to-black",
+    badge: "New",
+    description: "Navigate perilous cliffs, zip lines, mines, and forests as you escape with the idol.",
+    url: "https://templerun2.me",
+    players: "185k"
+  },
+  {
+    id: "cut-the-rope",
+    title: "Cut the Rope",
+    category: "Puzzle",
+    emoji: "🍬",
+    gradient: "from-lime-800 via-green-900 to-black",
+    badge: "New",
+    description: "Cut ropes, pop bubbles, and collect gold stars to feed delicious candy to Om Nom.",
+    url: "https://cuttherope.net",
+    players: "119k"
   }
 ];
