@@ -5,7 +5,6 @@ const SEEDED_KEY = "mirror_votes_seeded_v7";
 let currentFilter = "all";
 let searchTerm = "";
 
-const CATEGORY_FILTERS = ["unblocked", "proxy", "educational", "games", "illuminating"];
 
 function loadVotes() {
   try {
@@ -146,7 +145,6 @@ export function renderAll() {
     if (currentFilter === "hot") return m.tag === "hot";
     if (currentFilter === "new") return m.tag === "new";
     if (currentFilter === "recommended") return computeStatus(m.url).kind === "recommended";
-    if (CATEGORY_FILTERS.includes(currentFilter)) return (m.category || "") === currentFilter;
     return false;
   });
 
