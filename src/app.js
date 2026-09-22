@@ -221,3 +221,119 @@ export function init() {
 }
 
 init();
+initBrowser();
+
+function initBrowser() {
+  const overlay   = document.getElementById("proxy-browser-overlay");
+  const openBtn   = document.getElementById("open-browser");
+  const closeBtn  = document.getElementById("browser-close");
+  const urlInput  = document.getElementById("browser-url");
+  const goBtn     = document.getElementById("browser-go");
+  const frame     = document.getElementById("browser-frame");
+  const backBtn   = document.getElementById("browser-back");
+  const fwdBtn    = document.getElementById("browser-forward");
+  const refreshBtn = document.getElementById("browser-refresh");
+  const statusBar = document.getElementById("browser-status-bar");
+  const statusText = document.getElementById("browser-status-text");
+  const blockedMsg = document.getElementById("browser-blocked-msg");
+  const openTabBtn = document.getElementById("browser-open-tab");
+
+  if (!overlay || !frame) return;
+
+  const history = [];
+  let histIdx = -1;
+  let currentUrl = "";
+
+  function normalizeUrl(raw) {
+    raw = raw.trim();
+    if (!raw) return "";
+    if (/^https?:\/\//i.test(raw)) return raw;
+    if (/^localhost|^\d{1,3}\.\d{1,3}/.test(raw)) return "http://" + raw;
+    return "https://" + raw;
+  }
+
+  function setStatus(msg) {
+    if (!msg) { statusBar.style.display = "none"; return; }
+    statusBar.style.display = "block";
+    statusText.textContent = msg;
+  }
+
+  function updateNavBtns() {
+    backBtn.disabled = histIdx <= 0;
+    fwdBtn.disabled  = histIdx >= history.length - 1;
+  }
+
+  function navigate(url, pushHistory = true) {
+    if (!url) return;
+    blockedMsg.style.display = "none";
+    frame.style.display = "block";
+    currentUrl = url;
+    urlInput.value = url;
+    setStatus("Loading...");
+
+    if (pushHistory) {
+      history.splice(histIdx + 1);
+      history.push(url);
+      histIdx = history.length - 1;
+    }
+    updateNavBtns();
+
+    frame.src = url;
+    if (openTabBtn) openTabBtn.onclick = () => window.open(url, "_blank");
+  }
+
+  frame.addEventListener("load", () => {
+    setStatus("");
+    try {
+      const loc = frame.contentWindow.location.href;
+      if (loc && loc !== "about:blank") {
+        currentUrl = loc;
+        urlInput.value = loc;
+      }
+    } catch (_) {}
+  });
+
+  frame.addEventListener("error", () => {
+    setStatus("Failed to load page.");
+  });
+
+  // Detect X-Frame-Options / CSP blocks via a timeout heuristic
+  let loadTimer;
+  frame.addEventListener("load", () => { clearTimeout(loadTimer); });
+
+  function openOverlay() {
+    overlay.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    urlInput.focus();
+  }
+
+  function closeOverlay() {
+    overlay.style.display = "none";
+    document.body.style.overflow = "";
+  }
+
+  openBtn.addEventListener("click", openOverlay);
+  closeBtn.addEventListener("click", closeOverlay);
+
+  goBtn.addEventListener("click", () => navigate(normalizeUrl(urlInput.value)));
+
+  urlInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") navigate(normalizeUrl(urlInput.value));
+  });
+
+  backBtn.addEventListener("click", () => {
+    if (histIdx > 0) { histIdx--; navigate(history[histIdx], false); }
+  });
+
+  fwdBtn.addEventListener("click", () => {
+    if (histIdx < history.length - 1) { histIdx++; navigate(history[histIdx], false); }
+  });
+
+  refreshBtn.addEventListener("click", () => {
+    if (currentUrl) { setStatus("Refreshing..."); frame.src = currentUrl; }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.style.display !== "none") closeOverlay();
+  });
+}

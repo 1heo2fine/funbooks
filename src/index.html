@@ -476,6 +476,208 @@
       width: 100%;
     }
 
+    /* Proxy Browser FAB */
+    .browser-fab {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 50;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s var(--ease);
+      user-select: none;
+    }
+    .browser-fab:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-glass-hover);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    /* Proxy Browser Overlay */
+    .proxy-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      background: rgba(3, 3, 5, 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .proxy-chrome {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .proxy-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+    }
+
+    .proxy-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s var(--ease);
+      flex-shrink: 0;
+    }
+    .proxy-nav-btn:hover:not(:disabled) {
+      background: var(--surface-glass-hover);
+      border-color: var(--border-glass);
+      color: var(--text-main);
+    }
+    .proxy-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .proxy-url-input {
+      flex: 1;
+      height: 34px;
+      padding: 0 14px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: all 0.2s var(--ease);
+    }
+    .proxy-url-input:focus {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .proxy-url-input::placeholder {
+      color: var(--text-dim);
+      font-family: inherit;
+    }
+
+    .proxy-go-btn {
+      height: 34px;
+      padding: 0 16px;
+      border-radius: var(--radius-full);
+      background: #ffffff;
+      border: 1px solid #ffffff;
+      color: #030305;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s var(--ease);
+    }
+    .proxy-go-btn:hover {
+      background: #e0e0e8;
+      border-color: #e0e0e8;
+    }
+
+    .proxy-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s var(--ease);
+    }
+    .proxy-close-btn:hover {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: var(--accent-rose);
+    }
+
+    .proxy-status-bar {
+      padding: 4px 14px 6px;
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border-glass);
+    }
+
+    .proxy-frame-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .proxy-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #fff;
+    }
+
+    .proxy-blocked {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--bg);
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .proxy-blocked-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .proxy-blocked-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      max-width: 360px;
+      line-height: 1.5;
+    }
+    .proxy-open-tab-btn {
+      margin-top: 8px;
+      padding: 9px 20px;
+      border-radius: var(--radius-full);
+      background: #ffffff;
+      border: 1px solid #ffffff;
+      color: #030305;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s var(--ease);
+    }
+    .proxy-open-tab-btn:hover { background: #e0e0e8; border-color: #e0e0e8; }
+
     /* Custom Minimal Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -525,14 +727,14 @@
     <!-- Liquid Glass Filter Bar -->
     <div class="filter-scroll-wrap" id="filter-bar">
       <button class="filter-glass-pill active" data-filter="all">All sites</button>
-      <button class="filter-glass-pill" data-filter="hot">🔥 Hot</button>
-      <button class="filter-glass-pill" data-filter="new">✨ New</button>
-      <button class="filter-glass-pill" data-filter="recommended">⭐ Recommended</button>
-      <button class="filter-glass-pill" data-filter="unblocked">🚪 Unblocked</button>
-      <button class="filter-glass-pill" data-filter="games">🎮 Games</button>
-      <button class="filter-glass-pill" data-filter="educational">📚 Educational</button>
-      <button class="filter-glass-pill" data-filter="proxy">🌐 Proxy</button>
-      <button class="filter-glass-pill" data-filter="illuminating">💡 Illuminating</button>
+      <button class="filter-glass-pill" data-filter="hot">Hot</button>
+      <button class="filter-glass-pill" data-filter="new">New</button>
+      <button class="filter-glass-pill" data-filter="recommended">Recommended</button>
+      <button class="filter-glass-pill" data-filter="unblocked">Unblocked</button>
+      <button class="filter-glass-pill" data-filter="games">Games</button>
+      <button class="filter-glass-pill" data-filter="educational">Educational</button>
+      <button class="filter-glass-pill" data-filter="proxy">Proxy</button>
+      <button class="filter-glass-pill" data-filter="illuminating">Illuminating</button>
     </div>
 
     <!-- Results count -->
@@ -542,6 +744,49 @@
 
     <!-- Link Directory -->
     <div class="links-list" id="links-list"></div>
+  </div>
+
+  <!-- Proxy Browser Button -->
+  <button id="open-browser" class="browser-fab" title="Open proxy browser">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+    <span>Browser</span>
+  </button>
+
+  <!-- Proxy Browser Overlay -->
+  <div id="proxy-browser-overlay" class="proxy-overlay" style="display:none">
+    <div class="proxy-chrome">
+      <div class="proxy-bar">
+        <button class="proxy-nav-btn" id="browser-back" title="Back" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="proxy-nav-btn" id="browser-forward" title="Forward" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="proxy-nav-btn" id="browser-refresh" title="Refresh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+        <input id="browser-url" class="proxy-url-input" type="text" placeholder="Enter a URL — e.g. https://poki.com" autocomplete="off" spellcheck="false" />
+        <button class="proxy-go-btn" id="browser-go">Go</button>
+        <button class="proxy-close-btn" id="browser-close" title="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="browser-status-bar" class="proxy-status-bar" style="display:none">
+        <span id="browser-status-text"></span>
+      </div>
+    </div>
+    <div class="proxy-frame-wrap">
+      <iframe id="browser-frame" class="proxy-frame" src="about:blank" allowfullscreen></iframe>
+      <div id="browser-blocked-msg" class="proxy-blocked" style="display:none">
+        <p class="proxy-blocked-title">This site can't be embedded</p>
+        <p class="proxy-blocked-sub">The page blocked display in iframes. Try opening it directly instead.</p>
+        <button id="browser-open-tab" class="proxy-open-tab-btn">Open in new tab</button>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="./app.js"></script>
