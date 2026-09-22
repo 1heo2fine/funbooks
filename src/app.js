@@ -5,6 +5,8 @@ const SEEDED_KEY = "mirror_votes_seeded_v7";
 let currentFilter = "all";
 let searchTerm = "";
 
+const CATEGORY_FILTERS = ["unblocked", "proxy", "educational", "games", "illuminating"];
+
 function loadVotes() {
   try {
     return JSON.parse(localStorage.getItem(VOTES_KEY) || "{}");
@@ -137,26 +139,30 @@ export function renderAll() {
   const term = searchTerm.toLowerCase();
 
   let filtered = MIRRORS.filter((m) => {
-    const matchesSearch = !term || m.name.toLowerCase().includes(term) || m.url.toLowerCase().includes(term);
+    const matchesSearch = !term || m.name.toLowerCase().includes(term) || m.url.toLowerCase().includes(term) || (m.category || "").toLowerCase().includes(term);
     if (!matchesSearch) return false;
 
     if (currentFilter === "all") return true;
     if (currentFilter === "hot") return m.tag === "hot";
     if (currentFilter === "new") return m.tag === "new";
-    return computeStatus(m.url).kind === currentFilter;
+    if (currentFilter === "recommended") return computeStatus(m.url).kind === "recommended";
+    if (CATEGORY_FILTERS.includes(currentFilter)) return (m.category || "") === currentFilter;
+    return false;
   });
 
   if (currentFilter === "hot") {
     filtered = [...filtered].sort((a, b) => getVoteData(b.url).up - getVoteData(a.url).up);
   }
 
-  const statNodes = document.getElementById("stat-nodes");
-  if (statNodes) {
-    statNodes.innerText = `${MIRRORS.length}+`;
+  const countEl = document.getElementById("results-count");
+  if (countEl) {
+    countEl.textContent = filtered.length === MIRRORS.length
+      ? `${MIRRORS.length} sites`
+      : `${filtered.length} of ${MIRRORS.length} sites`;
   }
 
   if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty-state">No portals or proxy networks match "${escapeHtml(searchTerm)}".</div>`;
+    list.innerHTML = `<div class="empty-state">No results for "${escapeHtml(searchTerm || currentFilter)}".</div>`;
     return;
   }
 
@@ -178,9 +184,12 @@ export function init() {
   seedRandomVotes();
 
   const searchInput = document.getElementById("search-input");
+  const clearBtn = document.getElementById("search-clear");
+
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       searchTerm = e.target.value;
+      if (clearBtn) clearBtn.style.display = searchTerm ? "flex" : "none";
       renderAll();
     });
 
@@ -188,7 +197,17 @@ export function init() {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         searchInput.focus();
+        searchInput.select();
       }
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      searchTerm = "";
+      if (searchInput) { searchInput.value = ""; searchInput.focus(); }
+      clearBtn.style.display = "none";
+      renderAll();
     });
   }
 

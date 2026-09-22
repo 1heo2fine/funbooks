@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>schoolbooks.lol — Curated Unblocked Directory</title>
+  <title>funbooks.lol — Unblocked Games Directory</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -201,6 +201,27 @@
       font-weight: 400;
     }
 
+    .search-clear-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-right: 6px;
+      transition: all 0.15s var(--ease);
+    }
+
+    .search-clear-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-main);
+    }
+
     .search-badge-hint {
       font-size: 0.68rem;
       font-family: 'JetBrains Mono', monospace;
@@ -211,6 +232,15 @@
       padding: 4px 8px;
       flex-shrink: 0;
       user-select: none;
+    }
+
+    .results-meta {
+      width: 100%;
+      margin-bottom: 12px;
+      margin-top: -12px;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
     }
 
     /* Liquid Glass Filter Bar */
@@ -471,8 +501,8 @@
 
   <div class="app-container">
     <!-- Title & Subtitle -->
-    <h1 class="page-title">schoolbooks.lol</h1>
-    <p class="page-subtitle">made by 1heo new sites every day!</p>
+    <h1 class="page-title">funbooks.lol</h1>
+    <p class="page-subtitle">new sites every day · made by 1heo</p>
 
     <!-- Liquid Glass Search Bar -->
     <div class="search-container">
@@ -481,7 +511,13 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input id="search-input" class="search-input" type="text" placeholder="Search mirrors, proxy nodes, educational apps..." autocomplete="off" />
+        <input id="search-input" class="search-input" type="text" placeholder="Search games, proxies, educational sites..." autocomplete="off" />
+        <button id="search-clear" class="search-clear-btn" style="display:none" aria-label="Clear search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
         <span class="search-badge-hint">⌘K</span>
       </div>
     </div>
@@ -489,9 +525,19 @@
     <!-- Liquid Glass Filter Bar -->
     <div class="filter-scroll-wrap" id="filter-bar">
       <button class="filter-glass-pill active" data-filter="all">All sites</button>
-      <button class="filter-glass-pill" data-filter="hot">Hot</button>
-      <button class="filter-glass-pill" data-filter="new">New</button>
-      <button class="filter-glass-pill" data-filter="recommended">Recommended</button>
+      <button class="filter-glass-pill" data-filter="hot">🔥 Hot</button>
+      <button class="filter-glass-pill" data-filter="new">✨ New</button>
+      <button class="filter-glass-pill" data-filter="recommended">⭐ Recommended</button>
+      <button class="filter-glass-pill" data-filter="unblocked">🚪 Unblocked</button>
+      <button class="filter-glass-pill" data-filter="games">🎮 Games</button>
+      <button class="filter-glass-pill" data-filter="educational">📚 Educational</button>
+      <button class="filter-glass-pill" data-filter="proxy">🌐 Proxy</button>
+      <button class="filter-glass-pill" data-filter="illuminating">💡 Illuminating</button>
+    </div>
+
+    <!-- Results count -->
+    <div class="results-meta">
+      <span id="results-count"></span>
     </div>
 
     <!-- Link Directory -->
