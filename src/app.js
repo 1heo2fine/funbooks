@@ -684,46 +684,117 @@ function initScrollHide() {
 
 function initMusicPlayer() {
   const TRACKS = [
-    "3d0KltVlWeJtZVtkT4gyPb",
-    "4ZYlzwjjAJrflwWg4DJTlT",
-    "425nRSdx2ZNW43ki7uNKMR",
-    "4RMNWqkxIchzVmdRknOOOQ",
-    "5xyzb5BEgTq9sgxxnoNIqT"
+    { file: "track1.json", name: "Beyoncé – Morning Dew Donk" },
+    { file: "track2.json", name: "Wxoda – Vibin" },
+    { file: "track3.json", name: "LONOWN – addiction (Slowed)" },
+    { file: "track4.json", name: "Delinquent – My Destiny (Slowed)" },
   ];
-  const iframe = document.getElementById("music-iframe");
-  const counter = document.getElementById("music-counter");
-  const prevBtn = document.getElementById("music-prev");
-  const nextBtn = document.getElementById("music-next");
-  const playBtn = document.getElementById("music-play");
+
+  const audio    = document.getElementById("music-audio");
+  const counter  = document.getElementById("music-counter");
+  const trackEl  = document.getElementById("music-track-name");
+  const prevBtn  = document.getElementById("music-prev");
+  const nextBtn  = document.getElementById("music-next");
+  const playBtn  = document.getElementById("music-play");
   const playIcon = document.getElementById("music-play-icon");
-  if (!iframe) return;
+  const loadDot  = document.getElementById("music-loading");
+  const progFill = document.getElementById("music-progress-fill");
+  const progBar  = document.getElementById("music-progress-bar");
+  if (!audio) return;
 
   let idx = 0;
   let playing = false;
-
-  function loadTrack(i, play) {
-    idx = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
-    const autoplay = play ? "&autoplay=1" : "";
-    iframe.src = `https://open.spotify.com/embed/track/${TRACKS[idx]}?utm_source=generator&theme=0${autoplay}`;
-    if (counter) counter.textContent = `${idx + 1} / ${TRACKS.length}`;
-  }
+  let loading = false;
+  const cache = {};  // blob URL cache per track index
 
   function setPlayIcon(isPlaying) {
     if (!playIcon) return;
-    playIcon.setAttribute("fill", "currentColor");
-    playIcon.setAttribute("stroke", "none");
     playIcon.innerHTML = isPlaying
       ? '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>'
       : '<polygon points="5 3 19 12 5 21 5 3"/>';
   }
 
-  if (prevBtn) prevBtn.addEventListener("click", () => loadTrack(idx - 1, playing));
-  if (nextBtn) nextBtn.addEventListener("click", () => loadTrack(idx + 1, playing));
-  if (playBtn) playBtn.addEventListener("click", () => {
-    playing = !playing;
-    setPlayIcon(playing);
-    loadTrack(idx, playing);
+  function setLoading(on) {
+    loading = on;
+    if (loadDot) loadDot.style.display = on ? "block" : "none";
+    if (playBtn) playBtn.disabled = on;
+  }
+
+  function updateMeta() {
+    const t = TRACKS[idx];
+    if (counter) counter.textContent = `${idx + 1} / ${TRACKS.length}`;
+    if (trackEl) trackEl.textContent = t.name;
+  }
+
+  async function loadAndPlay(i) {
+    idx = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
+    updateMeta();
+    playing = true;
+    setPlayIcon(true);
+
+    if (cache[idx]) {
+      audio.src = cache[idx];
+      audio.play().catch(() => {});
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const resp = await fetch(TRACKS[idx].file);
+      const { data } = await resp.json();
+      const bin = atob(data);
+      const bytes = new Uint8Array(bin.length);
+      for (let j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
+      const blob = new Blob([bytes], { type: "audio/mpeg" });
+      cache[idx] = URL.createObjectURL(blob);
+      audio.src = cache[idx];
+      audio.play().catch(() => {});
+    } catch (e) {
+      console.error("music load failed", e);
+      playing = false;
+      setPlayIcon(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function togglePlay() {
+    if (loading) return;
+    if (!audio.src || audio.src === window.location.href) {
+      loadAndPlay(idx);
+      return;
+    }
+    if (playing) {
+      audio.pause();
+      playing = false;
+      setPlayIcon(false);
+    } else {
+      audio.play().catch(() => {});
+      playing = true;
+      setPlayIcon(true);
+    }
+  }
+
+  audio.addEventListener("ended", () => loadAndPlay(idx + 1));
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration || !progFill) return;
+    progFill.style.width = (audio.currentTime / audio.duration * 100) + "%";
   });
+
+  if (progBar) progBar.addEventListener("click", (e) => {
+    if (!audio.duration) return;
+    const r = progBar.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+  });
+
+  if (prevBtn) prevBtn.addEventListener("click", () => {
+    if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+    loadAndPlay(idx - 1);
+  });
+  if (nextBtn) nextBtn.addEventListener("click", () => loadAndPlay(idx + 1));
+  if (playBtn) playBtn.addEventListener("click", togglePlay);
+
+  updateMeta();
 }
 
 function initPlaneGame() {

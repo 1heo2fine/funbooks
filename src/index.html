@@ -944,66 +944,103 @@
       bottom: 20px;
       right: 16px;
       z-index: 60;
-      width: 240px;
+      width: 236px;
       border-radius: 18px;
-      background: rgba(3,18,45,0.92);
-      border: 1px solid rgba(56,189,248,0.22);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
+      background: rgba(6, 16, 36, 0.96);
+      border: 1px solid rgba(30,215,96,0.25);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
       overflow: hidden;
       transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+      padding-bottom: 2px;
     }
-    .music-player-header {
+    .music-player-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px 0;
+      padding: 10px 14px 6px;
     }
-    .music-player-label {
-      font-size: 0.6rem;
+    .music-spotify-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .music-spotify-logo svg { flex-shrink: 0; }
+    .music-spotify-wordmark {
+      font-size: 0.72rem;
       font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-cyan);
+      letter-spacing: -0.01em;
+      color: #1ed760;
     }
     .music-player-counter {
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       color: var(--text-dim);
       font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.03em;
+    }
+    .music-track-name {
+      padding: 0 14px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.01em;
+    }
+    .music-progress-wrap {
+      padding: 0 14px;
+      margin-bottom: 8px;
+    }
+    .music-progress-bar {
+      width: 100%;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.1);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .music-progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: #1ed760;
+      width: 0%;
+      transition: width 0.5s linear;
     }
     .music-player-controls {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 8px 14px;
+      padding: 0 14px 12px;
     }
     .music-ctrl-btn {
       display: flex; align-items: center; justify-content: center;
       width: 32px; height: 32px;
       border-radius: 50%;
       background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
       cursor: pointer;
       transition: all 0.18s;
       flex-shrink: 0;
     }
-    .music-ctrl-btn:hover { background: rgba(34,211,238,0.18); border-color: rgba(34,211,238,0.4); color: var(--accent-cyan); }
+    .music-ctrl-btn:hover { background: rgba(30,215,96,0.18); border-color: rgba(30,215,96,0.4); color: #1ed760; }
     .music-ctrl-btn.play-btn {
-      width: 38px; height: 38px;
-      background: rgba(34,211,238,0.15);
-      border-color: rgba(34,211,238,0.4);
-      color: var(--accent-cyan);
+      width: 40px; height: 40px;
+      background: #1ed760;
+      border-color: #1ed760;
+      color: #0a1520;
     }
-    .music-ctrl-btn.play-btn:hover { background: rgba(34,211,238,0.28); }
-    .music-iframe-wrap {
-      padding: 0 10px 10px;
+    .music-ctrl-btn.play-btn:hover { background: #22f56a; border-color: #22f56a; transform: scale(1.06); }
+    .music-loading-dot {
+      display: none;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #1ed760;
+      animation: musicPulse 0.8s ease-in-out infinite alternate;
+      margin: 0 auto;
     }
-    .music-iframe-wrap iframe {
-      border-radius: 10px;
-      overflow: hidden;
-      display: block;
-    }
+    @keyframes musicPulse { from { opacity: 0.3; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
 
     /* Hot Banner */
     .hot-banner {
@@ -2263,28 +2300,36 @@
 
   <!-- Music Mini-Player -->
   <div id="music-player" class="music-player">
-    <div class="music-player-header">
-      <span class="music-player-label">♪ Now Playing</span>
-      <span class="music-player-counter" id="music-counter">1 / 5</span>
+    <div class="music-player-top">
+      <div class="music-spotify-logo">
+        <!-- Spotify logo SVG -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#1ed760" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="12"/>
+          <path d="M17.1 16.2c-.2 0-.3-.1-.5-.2-1.5-.9-3.4-1.4-5.4-1.4-1.1 0-2.2.1-3.2.3-.2 0-.4 0-.5-.2-.2-.2-.1-.5.1-.6 1.1-.3 2.3-.4 3.6-.4 2.2 0 4.2.5 5.9 1.5.2.1.3.4.1.6-.1.2-.1.4-.1.4zm.9-2.4c-.2 0-.4-.1-.5-.2-1.8-1.1-4.5-1.7-6.6-1.7-1.3 0-2.5.2-3.4.4-.2.1-.5-.1-.5-.3-.1-.2.1-.5.3-.5 1-.3 2.3-.5 3.6-.5 2.3 0 5.2.6 7.2 1.8.2.1.3.4.2.6 0 .3-.1.4-.3.4zm1.1-2.6c-.2 0-.3 0-.5-.1-2.1-1.2-5.5-1.9-8-1.9-1.4 0-2.8.2-4 .5-.3.1-.5-.1-.6-.3-.1-.3.1-.5.3-.6 1.3-.3 2.7-.5 4.3-.5 2.7 0 6.2.7 8.5 2.1.2.1.3.4.2.7-.1.1-.2.1-.2.1z" fill="#000"/>
+        </svg>
+        <span class="music-spotify-wordmark">Spotify</span>
+      </div>
+      <span class="music-player-counter" id="music-counter">1 / 4</span>
+    </div>
+    <div class="music-track-name" id="music-track-name">Beyoncé – Morning Dew Donk</div>
+    <div class="music-progress-wrap">
+      <div class="music-progress-bar" id="music-progress-bar">
+        <div class="music-progress-fill" id="music-progress-fill"></div>
+      </div>
     </div>
     <div class="music-player-controls">
       <button class="music-ctrl-btn" id="music-prev" title="Previous">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
       </button>
       <button class="music-ctrl-btn play-btn" id="music-play" title="Play/Pause">
-        <svg id="music-play-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg id="music-play-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </button>
       <button class="music-ctrl-btn" id="music-next" title="Next">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
       </button>
     </div>
-    <div class="music-iframe-wrap" id="music-iframe-wrap">
-      <iframe id="music-iframe"
-        src="https://open.spotify.com/embed/track/3d0KltVlWeJtZVtkT4gyPb?utm_source=generator&theme=0"
-        width="220" height="80" frameborder="0"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy" style="border-radius:10px"></iframe>
-    </div>
+    <div class="music-loading-dot" id="music-loading"></div>
+    <audio id="music-audio"></audio>
   </div>
 
   <!-- Snake Game -->
