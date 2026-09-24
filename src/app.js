@@ -298,10 +298,12 @@ function initHotBanner() {
 
   picks.forEach((m, i) => {
     const cleanUrl = m.url.replace(/^https?:\/\//, "");
+    const domain = new URL(m.url).hostname;
     const slide = document.createElement("div");
     slide.className = "hot-slide";
     slide.onclick = () => window.open(m.url, "_blank");
     slide.innerHTML = `
+      <img class="hot-slide-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64" alt="" loading="lazy" onerror="this.style.display='none'">
       <div>
         <span class="hot-slide-name">${escapeHtml(m.name)}${m.star ? ' <span class="hot-slide-star">★</span>' : ''}</span>
         <span class="hot-slide-domain">${escapeHtml(cleanUrl)}</span>
