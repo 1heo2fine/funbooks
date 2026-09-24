@@ -278,6 +278,7 @@ safeInit(initTttGame);
 safeInit(initSpaceGame);
 safeInit(initSpeedTapGame);
 safeInit(initDuelGame);
+safeInit(initFishingGame);
 safeInit(initFabGameHide);
 
 function initFabGameHide() {
@@ -1825,4 +1826,390 @@ function initDuelGame() {
   }
   GAMES.duel = open;
   document.addEventListener("keydown",e=>{if(overlay.classList.contains("open")&&e.key==="Escape"){cleanup();overlay.classList.remove("open");document.body.style.overflow="";}});
+}
+
+// ─── Gone Fishing ─────────────────────────────────────────────────────────────
+function initFishingGame() {
+  const overlay = document.getElementById("fishing-overlay");
+  if (!overlay) return;
+
+  const RARITY = {
+    common:    {label:"Common",    color:"#94a3b8", glow:"rgba(148,163,184,0.3)",  weight:55},
+    uncommon:  {label:"Uncommon",  color:"#34d399", glow:"rgba(52,211,153,0.35)",  weight:25},
+    rare:      {label:"Rare",      color:"#60a5fa", glow:"rgba(96,165,250,0.45)",  weight:12},
+    epic:      {label:"Epic",      color:"#c084fc", glow:"rgba(192,132,252,0.5)",  weight:5},
+    legendary: {label:"Legendary", color:"#fbbf24", glow:"rgba(251,191,36,0.55)",  weight:2},
+    mythic:    {label:"Mythic",    color:"#f472b6", glow:"rgba(244,114,182,0.6)",  weight:0.8},
+    secret:    {label:"SECRET",    color:"#e2e8f0", glow:"rgba(255,255,255,0.65)", weight:0.2},
+  };
+
+  const FISH = [
+    // Common (15)
+    {id:"bluegill",  name:"Bluegill",              emoji:"🐟",rarity:"common",   wt:[0.1,0.4],  desc:"A feisty little panfish"},
+    {id:"bass",      name:"Largemouth Bass",        emoji:"🐟",rarity:"common",   wt:[0.5,1.8],  desc:"Classic sport fish"},
+    {id:"carp",      name:"Common Carp",            emoji:"🐠",rarity:"common",   wt:[0.8,4.0],  desc:"Muddy bottom dweller"},
+    {id:"perch",     name:"Yellow Perch",           emoji:"🐡",rarity:"common",   wt:[0.1,0.5],  desc:"Striped and spiny"},
+    {id:"catfish",   name:"Channel Catfish",        emoji:"🐟",rarity:"common",   wt:[0.6,5.0],  desc:"Whiskers in the deep"},
+    {id:"trout",     name:"Brown Trout",            emoji:"🐟",rarity:"common",   wt:[0.3,1.2],  desc:"Spotted beauty"},
+    {id:"sunfish",   name:"Pumpkinseed",            emoji:"🐠",rarity:"common",   wt:[0.05,0.3], desc:"Tiny but colorful"},
+    {id:"crappie",   name:"Black Crappie",          emoji:"🐡",rarity:"common",   wt:[0.2,0.8],  desc:"Paper mouth fighter"},
+    {id:"roach",     name:"Common Roach",           emoji:"🐟",rarity:"common",   wt:[0.1,0.3],  desc:"Silver flash in the shallows"},
+    {id:"chub",      name:"Creek Chub",             emoji:"🐟",rarity:"common",   wt:[0.1,0.5],  desc:"Round and spunky"},
+    {id:"bream",     name:"Bronze Bream",           emoji:"🐠",rarity:"common",   wt:[0.2,0.6],  desc:"Classic pond fish"},
+    {id:"dace",      name:"Longnose Dace",          emoji:"🐟",rarity:"common",   wt:[0.05,0.2], desc:"Fast river darter"},
+    {id:"rudd",      name:"Rudd",                   emoji:"🐠",rarity:"common",   wt:[0.1,0.4],  desc:"Golden-tinged scales"},
+    {id:"tench",     name:"Tench",                  emoji:"🐟",rarity:"common",   wt:[0.5,2.0],  desc:"The doctor fish"},
+    {id:"minnow",    name:"Fathead Minnow",         emoji:"🐟",rarity:"common",   wt:[0.01,0.05],desc:"Barely fills the hook"},
+    // Uncommon (12)
+    {id:"pike",      name:"Northern Pike",          emoji:"🐠",rarity:"uncommon", wt:[1.0,8.0],  desc:"Freshwater tiger"},
+    {id:"salmon",    name:"Atlantic Salmon",        emoji:"🐟",rarity:"uncommon", wt:[2.0,10.0], desc:"King of the river"},
+    {id:"rtrout",    name:"Rainbow Trout",          emoji:"🐟",rarity:"uncommon", wt:[0.5,4.0],  desc:"Iridescent leaper"},
+    {id:"barra",     name:"Barramundi",             emoji:"🐡",rarity:"uncommon", wt:[1.0,6.0],  desc:"Silver beast of the flats"},
+    {id:"snapper",   name:"Red Snapper",            emoji:"🐠",rarity:"uncommon", wt:[0.8,5.0],  desc:"Reef's finest"},
+    {id:"grouper",   name:"Red Grouper",            emoji:"🐡",rarity:"uncommon", wt:[2.0,12.0], desc:"Ambush predator"},
+    {id:"flounder",  name:"Summer Flounder",        emoji:"🐟",rarity:"uncommon", wt:[0.5,3.0],  desc:"Flat as a pancake"},
+    {id:"walleye",   name:"Walleye",                emoji:"🐟",rarity:"uncommon", wt:[0.5,3.5],  desc:"Glassy-eyed night hunter"},
+    {id:"drum",      name:"Black Drum",             emoji:"🐠",rarity:"uncommon", wt:[1.5,15.0], desc:"Makes the water vibrate"},
+    {id:"mullet",    name:"Striped Mullet",         emoji:"🐟",rarity:"uncommon", wt:[0.3,2.0],  desc:"Leaps for joy"},
+    {id:"whiting",   name:"Southern Whiting",       emoji:"🐡",rarity:"uncommon", wt:[0.2,1.0],  desc:"Clean white flesh"},
+    {id:"herring",   name:"Atlantic Herring",       emoji:"🐟",rarity:"uncommon", wt:[0.1,0.4],  desc:"Schools in silver waves"},
+    // Rare (9)
+    {id:"swordfish", name:"Swordfish",              emoji:"⚔️",rarity:"rare",     wt:[30,180],   desc:"Slices through the deep blue"},
+    {id:"mahimahi",  name:"Mahi-Mahi",              emoji:"🌈",rarity:"rare",     wt:[2.5,18],   desc:"Neon colors, acrobatic fighter"},
+    {id:"wahoo",     name:"Wahoo",                  emoji:"💨",rarity:"rare",     wt:[4.0,25],   desc:"Fastest fish in the sea"},
+    {id:"tuna",      name:"Yellowfin Tuna",         emoji:"🐟",rarity:"rare",     wt:[10,60],    desc:"Ocean sprinter"},
+    {id:"tarpon",    name:"Tarpon",                 emoji:"🪙",rarity:"rare",     wt:[15,80],    desc:"Silver king of the flats"},
+    {id:"barracuda", name:"Great Barracuda",        emoji:"⚡",rarity:"rare",     wt:[3,15],     desc:"Teeth like razors"},
+    {id:"bonefish",  name:"Bonefish",               emoji:"💫",rarity:"rare",     wt:[0.5,3.5],  desc:"The ghost of the flats"},
+    {id:"amberjack", name:"Greater Amberjack",      emoji:"🟡",rarity:"rare",     wt:[5,30],     desc:"Reef donkey — fights hard"},
+    {id:"striped",   name:"Striped Bass",           emoji:"🐠",rarity:"rare",     wt:[1.5,25],   desc:"Trophy of the Northeast"},
+    // Epic (6)
+    {id:"gtrevally", name:"Giant Trevally",         emoji:"💪",rarity:"epic",     wt:[5,40],     desc:"Apex hunter of the reef"},
+    {id:"ggrouper",  name:"Goliath Grouper",        emoji:"🏔️",rarity:"epic",    wt:[50,220],   desc:"Swallows boats (almost)"},
+    {id:"arapaima",  name:"Arapaima",               emoji:"🌿",rarity:"epic",     wt:[20,120],   desc:"Amazon giant — breathes air"},
+    {id:"alligar",   name:"Alligator Gar",          emoji:"🦷",rarity:"epic",     wt:[15,80],    desc:"Living fossil in scales"},
+    {id:"tigerfish", name:"Goliath Tiger Fish",     emoji:"🐯",rarity:"epic",     wt:[5,25],     desc:"Africa's most feared river fish"},
+    {id:"payara",    name:"Payara (Vampire Fish)",  emoji:"🧛",rarity:"epic",     wt:[3,12],     desc:"Fangs that pierce its own jaw"},
+    // Legendary (5)
+    {id:"bluemarlin",name:"Blue Marlin",            emoji:"🏆",rarity:"legendary",wt:[80,500],   desc:"The pinnacle of big-game fishing"},
+    {id:"gbluefin",  name:"Giant Bluefin Tuna",     emoji:"⭐",rarity:"legendary",wt:[150,680],  desc:"The most expensive fish alive"},
+    {id:"oarfish",   name:"Oarfish",                emoji:"🐉",rarity:"legendary",wt:[50,300],   desc:"30-foot sea serpent of myth"},
+    {id:"molamola",  name:"Ocean Sunfish",          emoji:"🌞",rarity:"legendary",wt:[200,2200], desc:"2-ton floating pancake from another dimension"},
+    {id:"coelacanth",name:"Coelacanth",             emoji:"💎",rarity:"legendary",wt:[10,80],    desc:"Extinct for 65 million years… or so they thought"},
+    // Mythic (4)
+    {id:"ghostkoi",  name:"Ghost Koi",              emoji:"👻",rarity:"mythic",   wt:[0.3,2.0],  desc:"Semi-transparent — vanishes in the hand"},
+    {id:"anglerfish",name:"Deep Sea Anglerfish",    emoji:"💀",rarity:"mythic",   wt:[1,5],      desc:"Lantern of nightmares from 3,000m down"},
+    {id:"aurorafish",name:"Aurora Salmon",          emoji:"🌈",rarity:"mythic",   wt:[3,12],     desc:"Scales shimmer every color at once"},
+    {id:"eelec",     name:"Electric Eel",           emoji:"⚡",rarity:"mythic",   wt:[5,20],     desc:"600 volts — you felt that one"},
+    // Secret (3)
+    {id:"leviathan", name:"Ancient Leviathan",      emoji:"🌊",rarity:"secret",   wt:[8000,32000],desc:"Biblical sea monster. CLASSIFIED."},
+    {id:"crystaldragon",name:"Crystal Dragon Fish", emoji:"🐲",rarity:"secret",   wt:[0.001,0.01],desc:"Looks like a fragment of the universe itself"},
+    {id:"thatone",   name:"The One That Got Away",  emoji:"❓",rarity:"secret",   wt:[null,null], desc:"You finally caught it. It's real."},
+  ];
+
+  function rollFish() {
+    const tot = Object.values(RARITY).reduce((s,r) => s+r.weight, 0);
+    let rand = Math.random()*tot, tier = "common";
+    for (const [t,r] of Object.entries(RARITY)) { rand -= r.weight; if (rand <= 0) { tier = t; break; } }
+    const pool = FISH.filter(f => f.rarity === tier);
+    const fish = pool[Math.floor(Math.random()*pool.length)];
+    const [lo, hi] = fish.wt;
+    const wStr = lo !== null ? (lo + Math.random()*(hi-lo)).toFixed(2) : null;
+    return { fish, wStr };
+  }
+
+  const COLL_KEY = "fishing_coll_v1";
+  function loadColl() { try { return JSON.parse(localStorage.getItem(COLL_KEY)||"{}"); } catch { return {}; } }
+  function recordCatch(fish, wStr) {
+    const c = loadColl();
+    if (!c[fish.id]) c[fish.id] = {n:0, best:0};
+    c[fish.id].n++;
+    const w = parseFloat(wStr||"0");
+    if (w > c[fish.id].best) c[fish.id].best = w;
+    try { localStorage.setItem(COLL_KEY, JSON.stringify(c)); } catch {}
+  }
+
+  const canvas = document.getElementById("fish-canvas");
+  const ctx = canvas.getContext("2d");
+  let raf = null, phase = 0;
+
+  function resize() {
+    const p = canvas.parentElement;
+    if (!p) return;
+    canvas.width = p.offsetWidth || 400;
+    canvas.height = p.offsetHeight || 500;
+  }
+
+  let state = "idle", stateStart = 0;
+  const CAST_DUR = 550, REEL_DUR = 650, MISS_DUR = 1200;
+  let bobTX = 200, nibbleActive = false, hookOpen = false;
+  let waitTimer = null, nibbleMissTimer = null, nibblePingTimer = null;
+
+  function enterState(s) { state = s; stateStart = Date.now(); }
+
+  function skyColors() {
+    const h = new Date().getHours();
+    if (h >= 6 && h < 8)  return ["#0d0820","#c04010","#183050"];
+    if (h >= 8 && h < 18) return ["#061428","#0a3060","#0c2e50"];
+    if (h >= 18 && h < 20) return ["#180028","#b03010","#0a1e3a"];
+    return ["#000408","#010614","#060c16"];
+  }
+
+  function drawFrame() {
+    const W = canvas.width, H = canvas.height;
+    const elapsed = Date.now() - stateStart;
+    const waterY = H * 0.40;
+    const rodTipX = W * 0.88, rodTipY = H * 0.15;
+    const baseBy = waterY + 5;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const [s0,s1,w0] = skyColors();
+    const sg = ctx.createLinearGradient(0,0,0,waterY);
+    sg.addColorStop(0,s0); sg.addColorStop(1,s1);
+    ctx.fillStyle = sg; ctx.fillRect(0,0,W,waterY);
+
+    const hr = new Date().getHours();
+    if (hr >= 20 || hr < 6) {
+      for (let i = 0; i < 44; i++) {
+        const sx=(i*73+17)%W, sy=(i*113+31)%(waterY-10);
+        ctx.globalAlpha = 0.25 + 0.75*Math.abs(Math.sin(phase*0.018+i));
+        ctx.fillStyle = "#fff"; ctx.fillRect(sx,sy,1.5,1.5);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    const wg = ctx.createLinearGradient(0,waterY,0,H);
+    wg.addColorStop(0,w0); wg.addColorStop(1,"#010608");
+    ctx.fillStyle = wg; ctx.fillRect(0,waterY,W,H-waterY);
+
+    for (const [amp,freq,spd,a] of [[3,0.010,0.55,0.07],[2,0.016,0.90,0.05],[1.5,0.024,1.4,0.04]]) {
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 2) {
+        const y = waterY + amp*Math.sin(x*freq + phase*spd*0.07);
+        x===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+      }
+      ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath();
+      ctx.fillStyle = `rgba(96,210,255,${a})`; ctx.fill();
+    }
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 2) {
+      const y = waterY-1+1.5*Math.sin(x*0.026+phase*0.11);
+      x===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle = "rgba(160,240,255,0.16)"; ctx.lineWidth = 1.5; ctx.stroke();
+
+    ctx.save(); ctx.lineCap = "round";
+    ctx.strokeStyle = "#9a5820"; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(W*0.99,H*0.45); ctx.lineTo(W*0.93,H*0.30); ctx.stroke();
+    ctx.strokeStyle = "#cc8c50"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(W*0.93,H*0.30); ctx.lineTo(rodTipX,rodTipY); ctx.stroke();
+    ctx.restore();
+
+    let bx=0, by=0, showLine=true;
+    if (state==="idle") {
+      showLine = false;
+    } else if (state==="casting") {
+      const t = Math.min(1, elapsed/CAST_DUR), e = 1-Math.pow(1-t,3);
+      bx = rodTipX + (bobTX-rodTipX)*e;
+      by = rodTipY + (baseBy-rodTipY)*e - Math.sin(e*Math.PI)*H*0.2;
+    } else if (state==="waiting") {
+      bx = bobTX; by = baseBy + Math.sin(phase*0.06)*3;
+    } else if (state==="nibble") {
+      bx = bobTX; by = baseBy + Math.sin(phase*0.09)*2 + (nibbleActive ? 10 : 0);
+    } else if (state==="missed") {
+      bx = bobTX; by = baseBy + 14;
+    } else if (state==="reeling") {
+      const t = Math.min(1, elapsed/REEL_DUR), e = t*t;
+      bx = bobTX + (rodTipX-bobTX)*e;
+      by = baseBy + (rodTipY-baseBy)*e;
+      if (t >= 0.98) showLine = false;
+    } else {
+      showLine = false;
+    }
+
+    if (showLine) {
+      ctx.beginPath(); ctx.moveTo(rodTipX,rodTipY); ctx.lineTo(bx,by-7);
+      ctx.strokeStyle = "rgba(255,255,255,0.4)"; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(bx,by,7,Math.PI,0); ctx.fillStyle = "#ef4444"; ctx.fill();
+      ctx.beginPath(); ctx.arc(bx,by,7,0,Math.PI); ctx.fillStyle = "#f8f8f8"; ctx.fill();
+      ctx.beginPath(); ctx.arc(bx,by,7,0,Math.PI*2);
+      ctx.strokeStyle = "rgba(0,0,0,0.25)"; ctx.lineWidth = 1; ctx.stroke();
+    }
+
+    if (state==="missed") {
+      const a = Math.max(0, 1 - elapsed/MISS_DUR);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = "#ff6060"; ctx.font = "800 1.2rem 'Syne',sans-serif";
+      ctx.textAlign = "center"; ctx.fillText("Too slow! 😔", W/2, H*0.28);
+      ctx.textAlign = "left"; ctx.globalAlpha = 1;
+    }
+  }
+
+  function loop() {
+    if (!overlay.classList.contains("open")) { raf = null; return; }
+    phase++;
+    drawFrame();
+    raf = requestAnimationFrame(loop);
+  }
+
+  const castBtn = document.getElementById("fish-cast-btn");
+  const hookBtn = document.getElementById("fish-hook-btn");
+  const revealEl = document.getElementById("fish-reveal");
+  const rnRarity = document.getElementById("fish-rn-rarity");
+  const rnEmoji  = document.getElementById("fish-rn-emoji");
+  const rnName   = document.getElementById("fish-rn-name");
+  const rnDesc   = document.getElementById("fish-rn-desc");
+  const rnWeight = document.getElementById("fish-rn-weight");
+  const rnNext   = document.getElementById("fish-rn-next");
+
+  function goToIdle() {
+    enterState("idle");
+    clearTimeout(waitTimer); clearTimeout(nibbleMissTimer); clearTimeout(nibblePingTimer);
+    hookOpen = false; nibbleActive = false;
+    if (castBtn) castBtn.style.display = "";
+    if (hookBtn) hookBtn.style.display = "none";
+    if (revealEl) { revealEl.style.display = "none"; revealEl.className = "fish-reveal"; }
+  }
+
+  function doCast() {
+    if (state !== "idle") return;
+    bobTX = canvas.width * (0.22 + Math.random()*0.38);
+    enterState("casting");
+    castBtn.style.display = "none";
+    waitTimer = setTimeout(() => {
+      if (state === "casting") {
+        enterState("waiting");
+        waitTimer = setTimeout(startNibble, 2000 + Math.random()*5000);
+      }
+    }, CAST_DUR);
+  }
+
+  function startNibble() {
+    if (state !== "waiting") return;
+    enterState("nibble");
+    hookOpen = true;
+    if (hookBtn) hookBtn.style.display = "";
+    let i = 0, total = 3 + Math.floor(Math.random()*4);
+    function ping() {
+      if (state !== "nibble" || !hookOpen) return;
+      nibbleActive = true;
+      nibblePingTimer = setTimeout(() => {
+        nibbleActive = false; i++;
+        if (i < total) nibblePingTimer = setTimeout(ping, 280 + Math.random()*180);
+      }, 200);
+    }
+    ping();
+    nibbleMissTimer = setTimeout(() => {
+      if (state !== "nibble") return;
+      hookOpen = false;
+      clearTimeout(nibblePingTimer); nibbleActive = false;
+      if (hookBtn) hookBtn.style.display = "none";
+      enterState("missed");
+      setTimeout(() => { if (state === "missed") goToIdle(); }, MISS_DUR);
+    }, 2000);
+  }
+
+  function doHook() {
+    if (state !== "nibble" || !hookOpen) return;
+    clearTimeout(nibbleMissTimer); clearTimeout(nibblePingTimer); clearTimeout(waitTimer);
+    hookOpen = false; nibbleActive = false;
+    if (hookBtn) hookBtn.style.display = "none";
+    enterState("reeling");
+    const {fish, wStr} = rollFish();
+    recordCatch(fish, wStr);
+    setTimeout(() => showReveal(fish, wStr), REEL_DUR + 80);
+  }
+
+  function showReveal(fish, wStr) {
+    enterState("reveal");
+    if (castBtn) castBtn.style.display = "none";
+    const r = RARITY[fish.rarity];
+    rnRarity.textContent = r.label; rnRarity.style.color = r.color;
+    rnEmoji.textContent = fish.emoji;
+    rnName.textContent = fish.name;
+    rnDesc.textContent = fish.desc;
+    rnWeight.textContent = wStr ? `${wStr} kg` : "?? kg";
+    const inner = revealEl.querySelector(".fish-rv-inner");
+    if (inner) { inner.style.setProperty("--rv-color", r.color); inner.style.setProperty("--rv-glow", r.glow); }
+    revealEl.style.display = "flex";
+    revealEl.className = "fish-reveal fish-rarity-" + fish.rarity;
+    void revealEl.offsetHeight;
+    revealEl.classList.add("fish-reveal-show");
+    updateCollBtn();
+  }
+
+  if (castBtn) castBtn.addEventListener("click", doCast);
+  if (hookBtn) hookBtn.addEventListener("click", doHook);
+  if (rnNext) rnNext.addEventListener("click", goToIdle);
+
+  const collTab = document.getElementById("fish-coll-tab");
+  const gameTab = document.getElementById("fish-game-tab");
+  const collGrid = document.getElementById("fish-coll-grid");
+  const collCountEl = document.getElementById("fish-coll-count");
+  const tabBtns = overlay.querySelectorAll(".fish-tab-btn");
+
+  function updateCollBtn() {
+    const n = Object.keys(loadColl()).length;
+    const btn = overlay.querySelector('[data-tab="collection"]');
+    if (btn) btn.textContent = `Collection (${n})`;
+  }
+
+  function renderCollection() {
+    const c = loadColl();
+    const caught = FISH.filter(f => c[f.id]);
+    if (collCountEl) collCountEl.textContent = `${caught.length} / ${FISH.length} discovered`;
+    if (!collGrid) return;
+    collGrid.innerHTML = "";
+    const order = ["secret","mythic","legendary","epic","rare","uncommon","common"];
+    const sorted = [
+      ...FISH.filter(f => c[f.id]).sort((a,b) => order.indexOf(a.rarity)-order.indexOf(b.rarity)),
+      ...FISH.filter(f => !c[f.id])
+    ];
+    for (const fish of sorted) {
+      const data = c[fish.id], r = RARITY[fish.rarity];
+      const div = document.createElement("div");
+      div.className = "fish-cc" + (data ? " fish-cc-found" : " fish-cc-unknown");
+      div.style.setProperty("--rc", r.color);
+      if (data) {
+        div.innerHTML = `<div class="fish-cc-em">${fish.emoji}</div><div class="fish-cc-nm">${fish.name}</div><div class="fish-cc-ti" style="color:${r.color}">${r.label}</div><div class="fish-cc-ct">×${data.n}</div>`;
+        div.title = `${fish.name} · ${fish.desc}\nBest: ${data.best} kg`;
+      } else {
+        div.innerHTML = `<div class="fish-cc-em fish-cc-unk">?</div><div class="fish-cc-nm fish-cc-unk">???</div><div class="fish-cc-ti" style="color:${r.color}">${r.label}</div>`;
+      }
+      collGrid.appendChild(div);
+    }
+  }
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach(b => b.classList.remove("active")); btn.classList.add("active");
+      const tab = btn.dataset.tab;
+      if (gameTab) gameTab.style.display = tab==="game" ? "" : "none";
+      if (collTab) { collTab.style.display = tab==="collection" ? "" : "none"; if (tab==="collection") renderCollection(); }
+    });
+  });
+
+  const ro = new ResizeObserver(resize);
+
+  function open() {
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    resize();
+    ro.observe(canvas.parentElement);
+    goToIdle();
+    updateCollBtn();
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+
+  GAMES.fishing = open;
+  document.addEventListener("keydown", e => {
+    if (overlay.classList.contains("open") && e.key === "Escape") {
+      overlay.classList.remove("open");
+      document.body.style.overflow = "";
+      ro.disconnect();
+      clearTimeout(waitTimer); clearTimeout(nibbleMissTimer); clearTimeout(nibblePingTimer);
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+    }
+  });
 }
