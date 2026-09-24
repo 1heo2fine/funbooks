@@ -646,6 +646,26 @@ function initSocialSidebar() {
   const exploreBtn = document.getElementById("explore-games-btn");
   if (exploreBtn) exploreBtn.addEventListener("click", () => { closeSidebar(); setTimeout(() => { if (window._openGamesHub) window._openGamesHub(); }, 120); });
 
+  const navHome = document.getElementById("sidebar-nav-home");
+  const navIo = document.getElementById("sidebar-nav-io");
+  const navUnblocked = document.getElementById("sidebar-nav-unblocked");
+
+  if (navHome) navHome.addEventListener("click", () => {
+    closeSidebar();
+    if (window.__setFilter) window.__setFilter("all");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  if (navIo) navIo.addEventListener("click", () => {
+    closeSidebar();
+    if (window.__setFilter) window.__setFilter("io");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  if (navUnblocked) navUnblocked.addEventListener("click", () => {
+    closeSidebar();
+    if (window.__setFilter) window.__setFilter("unblocked");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
   document.querySelectorAll(".app-overlay-close").forEach(btn => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.close;
