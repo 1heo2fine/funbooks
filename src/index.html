@@ -477,7 +477,7 @@
       width: 100%;
     }
 
-    /* Proxy Browser FAB + quick-hide hint wrapper */
+    /* Quick-hide hint */
     .browser-area {
       position: fixed;
       top: 16px;
@@ -485,7 +485,6 @@
       z-index: 50;
       display: flex;
       align-items: center;
-      gap: 10px;
     }
     .hide-hint-text {
       font-size: 0.68rem;
@@ -498,33 +497,6 @@
     }
     .hide-hint-text:hover { opacity: 1; }
 
-    .browser-fab {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 16px;
-      border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border-glass);
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      font-weight: 600;
-      font-family: inherit;
-      letter-spacing: -0.01em;
-      cursor: pointer;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 20px rgba(0, 0, 0, 0.4);
-      transition: all 0.2s var(--ease);
-      user-select: none;
-      flex-shrink: 0;
-    }
-    .browser-fab:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--border-glass-hover);
-      color: var(--text-main);
-      transform: translateY(-1px);
-    }
     .instagram-fab {
       position: fixed;
       top: 16px;
@@ -557,139 +529,92 @@
       transform: translateY(-1px);
     }
 
-    /* Proxy Browser Overlay */
-    .proxy-overlay {
+    /* Instagram Viewer Overlay */
+    .ig-overlay {
       position: fixed;
       inset: 0;
       z-index: 100;
       display: flex;
       flex-direction: column;
-      background: rgba(3, 3, 5, 0.96);
+      background: rgba(3, 3, 5, 0.97);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
     }
-
-    .proxy-chrome {
+    .ig-chrome {
       flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255,255,255,0.03);
       border-bottom: 1px solid var(--border-glass);
     }
-
-    .proxy-bar {
+    .ig-bar {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
+      justify-content: space-between;
+      padding: 10px 16px;
+      gap: 12px;
     }
-
-    .proxy-nav-btn {
+    .ig-wordmark {
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.15s var(--ease);
-      flex-shrink: 0;
-    }
-    .proxy-nav-btn:hover:not(:disabled) {
-      background: var(--surface-glass-hover);
-      border-color: var(--border-glass);
+      gap: 8px;
       color: var(--text-main);
-    }
-    .proxy-nav-btn:disabled {
-      opacity: 0.3;
-      cursor: default;
-    }
-
-    .proxy-url-input {
-      flex: 1;
-      height: 34px;
-      padding: 0 14px;
-      border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-glass);
-      color: var(--text-main);
-      font-size: 0.82rem;
-      font-family: 'JetBrains Mono', monospace;
-      outline: none;
-      transition: all 0.2s var(--ease);
-    }
-    .proxy-url-input:focus {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-    .proxy-url-input::placeholder {
-      color: var(--text-dim);
-      font-family: inherit;
-    }
-
-    .proxy-go-btn {
-      height: 34px;
-      padding: 0 16px;
-      border-radius: var(--radius-full);
-      background: #ffffff;
-      border: 1px solid #ffffff;
-      color: #030305;
-      font-size: 0.78rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: all 0.15s var(--ease);
+      letter-spacing: -0.015em;
+      user-select: none;
     }
-    .proxy-go-btn:hover {
-      background: #e0e0e8;
-      border-color: #e0e0e8;
+    .ig-lock-badge {
+      font-size: 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 5px;
+      padding: 2px 7px;
     }
-
-    .proxy-close-btn {
+    .ig-bar-right {
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: all 0.15s var(--ease);
+      gap: 10px;
     }
-    .proxy-close-btn:hover {
-      background: rgba(244, 63, 94, 0.12);
-      border-color: rgba(244, 63, 94, 0.3);
-      color: var(--accent-rose);
-    }
-
-    .proxy-status-bar {
-      padding: 4px 14px 6px;
+    .ig-status {
       font-size: 0.68rem;
       font-family: 'JetBrains Mono', monospace;
       color: var(--text-dim);
-      border-top: 1px solid var(--border-glass);
     }
-
-    .proxy-frame-wrap {
+    .ig-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s var(--ease);
+    }
+    .ig-close-btn:hover {
+      background: rgba(244,63,94,0.12);
+      border-color: rgba(244,63,94,0.3);
+      color: var(--accent-rose);
+    }
+    .ig-frame-wrap {
       flex: 1;
       position: relative;
       overflow: hidden;
     }
-
-    .proxy-frame {
+    .ig-frame {
       width: 100%;
       height: 100%;
       border: none;
       display: block;
-      background: #fff;
+      background: #fafafa;
     }
-
-    .proxy-blocked {
+    .ig-blocked {
       position: absolute;
       inset: 0;
       display: flex;
@@ -701,18 +626,18 @@
       padding: 40px 20px;
       text-align: center;
     }
-    .proxy-blocked-title {
+    .ig-blocked-title {
       font-size: 1rem;
       font-weight: 700;
       color: var(--text-main);
     }
-    .proxy-blocked-sub {
+    .ig-blocked-sub {
       font-size: 0.82rem;
       color: var(--text-muted);
       max-width: 360px;
       line-height: 1.5;
     }
-    .proxy-open-tab-btn {
+    .ig-open-tab-btn {
       margin-top: 8px;
       padding: 9px 20px;
       border-radius: var(--radius-full);
@@ -725,7 +650,7 @@
       cursor: pointer;
       transition: all 0.15s var(--ease);
     }
-    .proxy-open-tab-btn:hover { background: #e0e0e8; border-color: #e0e0e8; }
+    .ig-open-tab-btn:hover { background: #e0e0e8; border-color: #e0e0e8; }
 
     /* Hot Banner */
     .hot-banner {
@@ -965,57 +890,46 @@
   </div>
 
   <!-- Instagram Button -->
-  <a href="https://www.instagram.com/schoolbooks.lol?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="instagram-fab" title="Follow our Instagram">
+  <button id="ig-fab" class="instagram-fab" title="Open Instagram">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
     </svg>
-    <span>follow our instagram</span>
-  </a>
+    <span>instagram</span>
+  </button>
 
-  <!-- Proxy Browser Button + quick-hide hint -->
+  <!-- Quick-hide hint (no browser button) -->
   <div class="browser-area">
     <span id="hide-hint" class="hide-hint-text">press "Q" to hide screen or press this text</span>
-    <button id="open-browser" class="browser-fab" title="Open proxy browser">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="2" y1="12" x2="22" y2="12"></line>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-      </svg>
-      <span>DuckDuckGo</span>
-    </button>
   </div>
 
-  <!-- Proxy Browser Overlay -->
-  <div id="proxy-browser-overlay" class="proxy-overlay" style="display:none">
-    <div class="proxy-chrome">
-      <div class="proxy-bar">
-        <button class="proxy-nav-btn" id="browser-back" title="Back" disabled>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <button class="proxy-nav-btn" id="browser-forward" title="Forward" disabled>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-        <button class="proxy-nav-btn" id="browser-refresh" title="Refresh">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-        </button>
-        <input id="browser-url" class="proxy-url-input" type="text" placeholder="Search or enter a URL..." autocomplete="off" spellcheck="false" />
-        <button class="proxy-go-btn" id="browser-go">Go</button>
-        <button class="proxy-close-btn" id="browser-close" title="Close">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-      </div>
-      <div id="browser-status-bar" class="proxy-status-bar" style="display:none">
-        <span id="browser-status-text"></span>
+  <!-- Instagram Viewer Overlay -->
+  <div id="ig-overlay" class="ig-overlay" style="display:none">
+    <div class="ig-chrome">
+      <div class="ig-bar">
+        <div class="ig-wordmark">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          Instagram
+        </div>
+        <div class="ig-bar-right">
+          <span id="ig-status" class="ig-status"></span>
+          <button id="ig-close" class="ig-close-btn" title="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
       </div>
     </div>
-    <div class="proxy-frame-wrap">
-      <iframe id="browser-frame" class="proxy-frame" src="about:blank" allowfullscreen></iframe>
-      <div id="browser-blocked-msg" class="proxy-blocked" style="display:none">
-        <p class="proxy-blocked-title">This site can't be embedded</p>
-        <p class="proxy-blocked-sub">The page blocked display in iframes. Try opening it directly instead.</p>
-        <button id="browser-open-tab" class="proxy-open-tab-btn">Open in new tab</button>
+    <div class="ig-frame-wrap">
+      <iframe id="ig-frame" class="ig-frame" src="about:blank" allowfullscreen></iframe>
+      <div id="ig-blocked" class="ig-blocked" style="display:none">
+        <p class="ig-blocked-title">Instagram couldn't load here</p>
+        <p class="ig-blocked-sub">Instagram uses protections that prevent embedding. Open it directly instead.</p>
+        <button id="ig-open-tab" class="ig-open-tab-btn">Open Instagram ↗</button>
       </div>
     </div>
   </div>
