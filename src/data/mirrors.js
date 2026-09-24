@@ -1,4 +1,17 @@
 export const MIRRORS = [
+  // Featured / Recommended
+  { name: "StudySync", url: "https://studysync.co.uk", tag: "hot", featured: true, star: true },
+  { name: "Tutor", url: "https://tutor.wtf", featured: true },
+  { name: "Smart Studies", url: "https://smartstudies.cc", featured: true },
+  { name: "Classwork", url: "https://classwork.lol", featured: true },
+  { name: "学", url: "https://xn--r8j.icu", featured: true },
+  { name: "VGU", url: "https://xn--vgu.bond", featured: true },
+  { name: "Education Cat", url: "https://education.cat", featured: true },
+  { name: "Eduno", url: "https://eduno.study", featured: true, hint: "enter 8888" },
+  { name: "ClassLink", url: "https://classlink.online", featured: true, hint: "enter 0000" },
+  { name: "IXL", url: "https://ixl.ad", featured: true, hint: "enter 9999" },
+  { name: "Kahoot", url: "https://kahoot.si", featured: true, hint: "enter code 2222" },
+
   // Hot - top unblocked portals
   { name: "Unblocked 66", url: "https://unblockedgames66.com", tag: "hot" },
   { name: "Unblocked 77", url: "https://unblockedgames77.com", tag: "hot" },

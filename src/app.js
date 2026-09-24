@@ -1,8 +1,8 @@
 import { MIRRORS } from './data/mirrors.js';
 
 const VOTES_KEY = "mirror_votes";
-const SEEDED_KEY = "mirror_votes_seeded_v7";
-let currentFilter = "all";
+const SEEDED_KEY = "mirror_votes_seeded_v8";
+let currentFilter = "recommended";
 let searchTerm = "";
 
 
@@ -111,8 +111,9 @@ function renderLinkCard(mirror) {
       <div class="link-left">
         <div class="link-dot-status"></div>
         <div class="link-info">
-          <span class="link-url">${escapeHtml(mirror.name)}</span>
+          <span class="link-url">${escapeHtml(mirror.name)}${mirror.star ? ' <span class="link-star">★</span>' : ''}</span>
           <span class="link-sub-url">${escapeHtml(cleanUrl)}</span>
+          ${mirror.hint ? `<span class="link-hint">${escapeHtml(mirror.hint)}</span>` : ""}
         </div>
       </div>
       <div class="link-right">
@@ -144,7 +145,7 @@ export function renderAll() {
     if (currentFilter === "all") return true;
     if (currentFilter === "hot") return m.tag === "hot";
     if (currentFilter === "new") return m.tag === "new";
-    if (currentFilter === "recommended") return computeStatus(m.url).kind === "recommended";
+    if (currentFilter === "recommended") return m.featured || computeStatus(m.url).kind === "recommended";
     return false;
   });
 
@@ -219,7 +220,63 @@ export function init() {
 }
 
 init();
+initHotBanner();
 initBrowser();
+
+function initHotBanner() {
+  const track = document.getElementById("hot-track");
+  const dotsEl = document.getElementById("hot-dots");
+  if (!track || !dotsEl) return;
+
+  const daySeed = Math.floor(Date.now() / 86400000);
+  function seededRand(seed) {
+    let s = seed;
+    return function() {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      return (s >>> 0) / 0xffffffff;
+    };
+  }
+  const rand = seededRand(daySeed);
+
+  const studysync = MIRRORS.find(m => m.url === "https://studysync.co.uk");
+  const pool = MIRRORS.filter(m => m.url !== "https://studysync.co.uk");
+  const shuffled = [...pool];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const picks = [studysync, ...shuffled.slice(0, 3)].filter(Boolean);
+
+  picks.forEach((m, i) => {
+    const cleanUrl = m.url.replace(/^https?:\/\//, "");
+    const slide = document.createElement("div");
+    slide.className = "hot-slide";
+    slide.onclick = () => window.open(m.url, "_blank");
+    slide.innerHTML = `
+      <div>
+        <span class="hot-slide-name">${escapeHtml(m.name)}${m.star ? ' <span class="hot-slide-star">★</span>' : ''}</span>
+        <span class="hot-slide-domain">${escapeHtml(cleanUrl)}</span>
+      </div>
+      <span class="hot-slide-arrow">↗</span>
+    `;
+    track.appendChild(slide);
+
+    const dot = document.createElement("div");
+    dot.className = "hot-dot" + (i === 0 ? " active" : "");
+    dotsEl.appendChild(dot);
+  });
+
+  let current = 0;
+  const dots = () => dotsEl.querySelectorAll(".hot-dot");
+
+  function goTo(idx) {
+    current = ((idx % picks.length) + picks.length) % picks.length;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dots().forEach((d, i) => d.classList.toggle("active", i === current));
+  }
+
+  setInterval(() => goTo(current + 1), 3000);
+}
 
 function initBrowser() {
   const overlay    = document.getElementById("proxy-browser-overlay");
