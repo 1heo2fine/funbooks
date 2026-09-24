@@ -547,43 +547,30 @@ function initInstagram() {
 }
 
 function initPlaneGame() {
-  const planeFab    = document.getElementById("plane-fab");
-  const planeOver   = document.getElementById("plane-overlay");
-  const closeBtn    = document.getElementById("plane-close");
-  const canvas      = document.getElementById("plane-canvas");
-  const canvasWrap  = document.getElementById("plane-canvas-wrap");
-  const homeScreen  = document.getElementById("plane-home");
-  const startBtn    = document.getElementById("plane-start-btn");
-  const hsVal       = document.getElementById("plane-hs-val");
-  const lvlDescEl   = document.getElementById("plane-lvl-desc");
-  const goScreen    = document.getElementById("plane-gameover");
-  const goScoreEl   = document.getElementById("plane-go-score");
-  const goBestEl    = document.getElementById("plane-go-best");
-  const goNewBest   = document.getElementById("plane-go-newbest");
-  const goHomeBtn   = document.getElementById("plane-go-home");
-  const goRetryBtn  = document.getElementById("plane-go-retry");
+  const planeFab   = document.getElementById("plane-fab");
+  const planeOver  = document.getElementById("plane-overlay");
+  const closeBtn   = document.getElementById("plane-close");
+  const canvas     = document.getElementById("plane-canvas");
+  const canvasWrap = document.getElementById("plane-canvas-wrap");
+  const goScreen   = document.getElementById("plane-gameover");
+  const goScoreEl  = document.getElementById("plane-go-score");
+  const goBestEl   = document.getElementById("plane-go-best");
+  const goNewBest  = document.getElementById("plane-go-newbest");
+  const goRetryBtn = document.getElementById("plane-go-retry");
   if (!planeFab || !planeOver || !canvas) return;
 
   const ctx = canvas.getContext("2d");
   const W = canvas.width;
   const H = canvas.height;
   const HS_KEY = "plane_high_score";
-
-  const LEVELS = [
-    { label: "Level 1", desc: "Gentle speed · Wide gaps",       scoreNeeded: 0,  speed: 2.8, gap: 200, spawnInterval: 115 },
-    { label: "Level 2", desc: "Easy · Medium gaps",              scoreNeeded: 5,  speed: 3.5, gap: 185, spawnInterval: 105 },
-    { label: "Level 3", desc: "Medium speed · Standard gaps",    scoreNeeded: 12, speed: 4.3, gap: 165, spawnInterval: 95  },
-    { label: "Level 4", desc: "Fast · Tight gaps",               scoreNeeded: 22, speed: 5.2, gap: 148, spawnInterval: 88  },
-    { label: "Level 5", desc: "Expert · Very tight gaps",        scoreNeeded: 35, speed: 6.2, gap: 132, spawnInterval: 80  },
-  ];
-
-  const SKY_TOP = "#0d1117", SKY_BOT = "#1a2233", GROUND_COL = "#1c2333", GROUND_H = 48;
+  const GROUND_H = 48;
+  const SKY_TOP = "#0d1117", SKY_BOT = "#1a2233", GROUND_COL = "#1c2333";
 
   let highScore = 0;
   try { highScore = parseInt(localStorage.getItem(HS_KEY) || "0") || 0; } catch (_) {}
 
-  let state = "home"; // "home" | "playing" | "dead"
-  let score, startLevelIdx = 0, levelIdx, frame, raf;
+  let state = "ready"; // "ready" | "playing" | "dead"
+  let score, frame, raf;
   let plane, buildings, groundX, frameCount, scored;
 
   function saveHS(n) {
@@ -591,7 +578,14 @@ function initPlaneGame() {
     try { localStorage.setItem(HS_KEY, String(n)); } catch (_) {}
   }
 
-  function currentLevel() { return LEVELS[levelIdx]; }
+  function getDifficulty() {
+    const tier = Math.floor(score / 10);
+    return {
+      speed: Math.min(2.8 + tier * 0.55, 8.5),
+      gap: Math.max(200 - tier * 13, 108),
+      spawnInterval: Math.max(115 - tier * 6, 65),
+    };
+  }
 
   function makeWindows(bw, bh) {
     const wins = [];
@@ -602,20 +596,21 @@ function initPlaneGame() {
     return wins;
   }
 
-  function initRound(lvl) {
-    state = "playing";
+  function initRound() {
+    state = "ready";
     score = 0; frame = 0; frameCount = 0; groundX = 0;
-    levelIdx = lvl;
     plane = { x: 100, y: H / 2 - 20, vy: 0, w: 38, h: 20, tilt: 0 };
     buildings = []; scored = new Set();
+    goScreen.style.display = "none";
   }
 
   function flap() {
+    if (state === "ready") { state = "playing"; plane.vy = -7.2; return; }
     if (state === "playing") plane.vy = -7.2;
   }
 
   function spawnBuilding() {
-    const lv = currentLevel(), gap = lv.gap;
+    const d = getDifficulty(), gap = d.gap;
     const minTop = 60, maxTop = H - GROUND_H - gap - 60;
     const topH = minTop + Math.random() * (maxTop - minTop);
     const botY = topH + gap, botH = H - GROUND_H - botY;
@@ -625,26 +620,21 @@ function initPlaneGame() {
   }
 
   function update() {
-    if (state !== "playing") return;
+    if (state === "ready" || state !== "playing") return;
     frame++; frameCount++;
-    const lv = currentLevel();
+    const d = getDifficulty();
     plane.vy += 0.45; plane.y += plane.vy;
     plane.tilt = Math.max(-25, Math.min(45, plane.vy * 3));
     if (plane.y + plane.h >= H - GROUND_H || plane.y <= 0) { die(); return; }
-    if (frameCount % lv.spawnInterval === 0) spawnBuilding();
-    const speed = lv.speed;
+    if (frameCount % d.spawnInterval === 0) spawnBuilding();
     for (const b of buildings) {
-      b.x -= speed;
-      if (!scored.has(b.id) && b.x + b.w < plane.x) {
-        scored.add(b.id); score++;
-        for (let i = LEVELS.length - 1; i >= 0; i--)
-          if (score >= LEVELS[i].scoreNeeded) { levelIdx = i; break; }
-      }
+      b.x -= d.speed;
+      if (!scored.has(b.id) && b.x + b.w < plane.x) { scored.add(b.id); score++; }
       const px = plane.x + 4, py = plane.y + 4, pw = plane.w - 8, ph = plane.h - 6;
       if (px < b.x + b.w && px + pw > b.x && (py < b.topH || py + ph > b.botY)) { die(); return; }
     }
     buildings = buildings.filter(b => b.x + b.w > -10);
-    groundX = (groundX - speed) % 48;
+    groundX = (groundX - d.speed) % 48;
   }
 
   function die() {
@@ -716,16 +706,24 @@ function initPlaneGame() {
   }
 
   function drawHUD() {
-    // Score (center top)
     ctx.fillStyle = "#fff"; ctx.font = "bold 28px 'JetBrains Mono', monospace"; ctx.textAlign = "center";
     ctx.shadowColor = "rgba(0,0,0,0.7)"; ctx.shadowBlur = 6;
     ctx.fillText(score, W / 2, 52); ctx.shadowBlur = 0;
-    // High score (left)
     ctx.font = "bold 11px 'JetBrains Mono', monospace"; ctx.fillStyle = "rgba(255,220,80,0.7)"; ctx.textAlign = "left";
     ctx.fillText("BEST " + highScore, 10, 20);
-    // Level (right)
-    ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.textAlign = "right";
-    ctx.fillText(currentLevel().label.toUpperCase(), W - 10, 20);
+    const tier = Math.floor(score / 10);
+    if (tier > 0) {
+      ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.textAlign = "right";
+      ctx.fillText("LVL " + (tier + 1), W - 10, 20);
+    }
+    if (state === "ready") {
+      ctx.textAlign = "center";
+      ctx.font = "bold 15px 'JetBrains Mono', monospace";
+      ctx.fillStyle = "rgba(255,255,255,0.92)";
+      ctx.shadowColor = "rgba(0,0,0,0.9)"; ctx.shadowBlur = 10;
+      ctx.fillText("TAP OR CLICK TO FLY", W / 2, H / 2 + 64);
+      ctx.shadowBlur = 0;
+    }
   }
 
   function gameLoop() {
@@ -738,27 +736,11 @@ function initPlaneGame() {
     raf = requestAnimationFrame(gameLoop);
   }
 
-  // ── Screen transitions ────────────────────────────────────────────
-  function showHome() {
-    state = "home";
-    hsVal.textContent = highScore;
-    homeScreen.style.display  = "flex";
-    canvasWrap.style.display  = "none";
-    goScreen.style.display    = "none";
-  }
-
-  function startGame() {
-    homeScreen.style.display = "none";
-    canvasWrap.style.display  = "flex";
-    goScreen.style.display    = "none";
-    initRound(startLevelIdx);
-    if (!raf) raf = requestAnimationFrame(gameLoop);
-  }
-
   function openGame() {
     planeOver.classList.add("visible");
     document.body.style.overflow = "hidden";
-    showHome();
+    canvasWrap.style.display = "flex";
+    initRound();
     if (!raf) raf = requestAnimationFrame(gameLoop);
   }
 
@@ -766,25 +748,11 @@ function initPlaneGame() {
     planeOver.classList.remove("visible");
     document.body.style.overflow = "";
     if (raf) { cancelAnimationFrame(raf); raf = null; }
-    state = "home";
   }
 
-  // ── Level selector ────────────────────────────────────────────────
-  document.querySelectorAll(".plane-lvl-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".plane-lvl-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      startLevelIdx = parseInt(btn.dataset.lvl);
-      if (lvlDescEl) lvlDescEl.textContent = LEVELS[startLevelIdx].desc;
-    });
-  });
-
-  // ── Button wiring ─────────────────────────────────────────────────
   planeFab.addEventListener("click", openGame);
   closeBtn.addEventListener("click", closeGame);
-  startBtn.addEventListener("click", startGame);
-  goHomeBtn.addEventListener("click", showHome);
-  goRetryBtn.addEventListener("click", () => { goScreen.style.display = "none"; initRound(startLevelIdx); });
+  goRetryBtn.addEventListener("click", () => initRound());
 
   canvas.addEventListener("click", flap);
   canvas.addEventListener("touchstart", (e) => { e.preventDefault(); flap(); }, { passive: false });
@@ -793,6 +761,5 @@ function initPlaneGame() {
     if (!planeOver.classList.contains("visible")) return;
     if (e.key === "Escape") { closeGame(); return; }
     if (e.key === " " || e.key === "ArrowUp") { e.preventDefault(); flap(); }
-    if (e.key === "Enter" && state === "home") startGame();
   });
 }
