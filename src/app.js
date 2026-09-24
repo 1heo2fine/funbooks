@@ -148,8 +148,8 @@ function renderLinkCard(mirror) {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2-1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
           <span>${downPercent}%</span>
         </button>
-        <button class="glass-btn-cta" onclick="event.stopPropagation(); window.open('${escapeHtml(mirror.url)}', '_blank')">
-          Launch ↗
+        <button class="glass-btn-cta" onclick="event.stopPropagation(); window._openSiteBrowser ? window._openSiteBrowser('${escapeHtml(mirror.url)}') : window.open('${escapeHtml(mirror.url)}','_blank')">
+          Launch
         </button>
       </div>
     </div>
@@ -266,6 +266,7 @@ safeInit(upgradeAvatars);
 safeInit(initInstagram);
 safeInit(initGamesHub);
 safeInit(initSocialSidebar);
+safeInit(initSiteBrowser);
 safeInit(initScrollHide);
 safeInit(initMusicPlayer);
 safeInit(initQuickHide);
@@ -660,6 +661,55 @@ function initSocialSidebar() {
       closeSidebar();
       document.querySelectorAll(".app-overlay").forEach(ol => { if (ol.style.display !== "none") { ol.style.display = "none"; document.body.style.overflow = ""; } });
     }
+  });
+}
+
+function initSiteBrowser() {
+  const browser  = document.getElementById("site-browser");
+  const frame    = document.getElementById("sb-frame");
+  const closeBtn = document.getElementById("sb-close");
+  const urlInput = document.getElementById("sb-url-input");
+  const urlForm  = document.getElementById("sb-url-form");
+  const fsBtn    = document.getElementById("sb-fullscreen");
+  if (!browser || !frame) return;
+
+  function open(url) {
+    frame.src = url;
+    urlInput.value = url;
+    browser.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
+
+  function close() {
+    browser.style.display = "none";
+    document.body.style.overflow = "";
+    frame.src = "about:blank";
+  }
+
+  window._openSiteBrowser = open;
+
+  if (closeBtn) closeBtn.addEventListener("click", close);
+
+  if (urlForm) urlForm.addEventListener("submit", e => {
+    e.preventDefault();
+    let val = urlInput.value.trim();
+    if (!val) return;
+    if (!/^https?:\/\//i.test(val)) {
+      val = /^[a-z0-9-]+\.[a-z]{2,}/i.test(val)
+        ? "https://" + val
+        : "https://www.google.com/search?q=" + encodeURIComponent(val);
+    }
+    frame.src = val;
+    urlInput.value = val;
+  });
+
+  if (fsBtn) fsBtn.addEventListener("click", () => {
+    if (frame.requestFullscreen) frame.requestFullscreen();
+    else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && browser.style.display !== "none") close();
   });
 }
 

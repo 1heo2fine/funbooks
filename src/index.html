@@ -742,7 +742,7 @@
       position: fixed;
       top: 16px;
       left: 16px;
-      z-index: 50;
+      z-index: 9200;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -771,7 +771,7 @@
     .social-sidebar-bd {
       position: fixed;
       inset: 0;
-      z-index: 7900;
+      z-index: 9300;
       background: rgba(0,0,0,0.55);
       opacity: 0;
       pointer-events: none;
@@ -784,7 +784,7 @@
       position: fixed;
       top: 0; bottom: 0; left: 0;
       width: 280px;
-      z-index: 8000;
+      z-index: 9400;
       background: rgba(3, 18, 45, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -937,6 +937,65 @@
       box-shadow: 0 4px 16px rgba(56,189,248,0.3);
     }
     .app-overlay-open-btn:hover { background: linear-gradient(135deg, rgba(14,165,233,1), rgba(6,182,212,1)); }
+
+    /* ── Site Browser Overlay ── */
+    .site-browser {
+      position: fixed;
+      inset: 0;
+      z-index: 9150;
+      flex-direction: column;
+      background: #070910;
+    }
+    .sb-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(3,12,30,0.98);
+      border-bottom: 1px solid rgba(34,211,238,0.1);
+      flex-shrink: 0;
+    }
+    .sb-close {
+      display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .sb-close:hover { background: rgba(255,80,80,0.2); border-color: rgba(255,80,80,0.35); color: #fff; }
+    .sb-url-form { flex: 1; }
+    .sb-url-input {
+      width: 100%;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(34,211,238,0.2);
+      background: rgba(255,255,255,0.06);
+      color: #e2e8f0;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .sb-url-input:focus { border-color: rgba(34,211,238,0.5); background: rgba(255,255,255,0.09); }
+    .sb-fs-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .sb-fs-btn:hover { background: rgba(34,211,238,0.12); border-color: rgba(34,211,238,0.3); color: #22d3ee; }
+    .sb-frame { flex: 1; border: none; width: 100%; }
 
     /* ── Music Mini-Player ── */
     .music-player {
@@ -1639,7 +1698,7 @@
     .games-sidebar-bd {
       position: fixed;
       inset: 0;
-      z-index: 7900;
+      z-index: 9300;
       background: rgba(0,0,0,0.55);
       opacity: 0;
       pointer-events: none;
@@ -1650,7 +1709,7 @@
       position: fixed;
       top: 0; bottom: 0; left: 0;
       width: 300px;
-      z-index: 8000;
+      z-index: 9400;
       background: rgba(3, 18, 45, 0.92);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -2335,6 +2394,22 @@
         <div class="game-card-name">1v1 Duel</div>
       </button>
     </div>
+  </div>
+
+  <!-- Site Browser Overlay -->
+  <div id="site-browser" class="site-browser" style="display:none">
+    <div class="sb-bar">
+      <button class="sb-close" id="sb-close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <form class="sb-url-form" id="sb-url-form">
+        <input class="sb-url-input" id="sb-url-input" type="text" spellcheck="false" autocomplete="off" placeholder="Search or enter URL">
+      </form>
+      <button class="sb-fs-btn" id="sb-fullscreen" title="Fullscreen">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+    </div>
+    <iframe id="sb-frame" class="sb-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" allowfullscreen></iframe>
   </div>
 
   <!-- Music Mini-Player -->
