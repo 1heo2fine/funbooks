@@ -202,8 +202,8 @@
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-full);
       padding: 6px 10px 6px 20px;
-      backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-      -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
       box-shadow:
         inset 0 1px 0 rgba(186, 230, 253, 0.18),
         inset 0 -1px 0 rgba(0, 20, 60, 0.4),
@@ -1296,8 +1296,8 @@
       width: 300px;
       z-index: 8000;
       background: rgba(3, 18, 45, 0.92);
-      backdrop-filter: blur(48px) saturate(180%);
-      -webkit-backdrop-filter: blur(48px) saturate(180%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-right: 1px solid rgba(56, 189, 248, 0.18);
       display: flex;
       flex-direction: column;
@@ -2293,80 +2293,102 @@
   (function() {
     var canvas = document.getElementById('ocean-bg');
     if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var W, H, particles = [], time = 0;
+    var ctx = canvas.getContext('2d', { alpha: false });
+    var W, H, particles = [], time = 0, last = 0;
+    var STEP = 16; // ~60fps cap via 16ms throttle
+    // Render at half resolution for perf, CSS scales it up
+    var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
     var WAVE_LAYERS = [
-      { speed: 0.0006, amp: 38, freq: 0.012, y: 0.62, alpha: 0.10, color: '14,165,233' },
-      { speed: 0.0009, amp: 26, freq: 0.018, y: 0.70, alpha: 0.08, color: '34,211,238' },
-      { speed: 0.0014, amp: 16, freq: 0.028, y: 0.78, alpha: 0.06, color: '6,182,212' },
-      { speed: 0.0020, amp:  9, freq: 0.044, y: 0.86, alpha: 0.05, color: '56,189,248' },
+      { speed: 0.55, amp: 36, freq: 0.011, y: 0.62, alpha: 0.10, color: '14,165,233' },
+      { speed: 0.80, amp: 22, freq: 0.017, y: 0.72, alpha: 0.08, color: '34,211,238' },
+      { speed: 1.20, amp: 13, freq: 0.027, y: 0.82, alpha: 0.06, color: '56,189,248' },
     ];
+    // Pre-cache gradient per layer (rebuilt on resize)
+    var waveGrads = [];
     function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
+      W = canvas.width = Math.round(window.innerWidth * DPR);
+      H = canvas.height = Math.round(window.innerHeight * DPR);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(DPR, DPR);
+      waveGrads = [];
     }
     function spawnParticle() {
       return {
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 2.2 + 0.5,
-        vy: -(Math.random() * 0.28 + 0.06),
-        vx: (Math.random() - 0.5) * 0.12,
-        alpha: Math.random() * 0.45 + 0.08,
+        x: Math.random() * (W / DPR),
+        y: (H / DPR) + 5,
+        r: Math.random() * 1.8 + 0.4,
+        vy: -(Math.random() * 0.22 + 0.05),
+        vx: (Math.random() - 0.5) * 0.09,
+        alpha: Math.random() * 0.38 + 0.07,
         life: 0,
-        maxLife: Math.random() * 420 + 180,
-        color: Math.random() > 0.4 ? '56,189,248' : '34,211,238',
+        maxLife: Math.random() * 380 + 160,
+        color: Math.random() > 0.5 ? '56,189,248' : '34,211,238',
       };
     }
-    for (var i = 0; i < 90; i++) particles.push(spawnParticle());
+    var MAX_P = 30;
+    for (var i = 0; i < MAX_P; i++) { var p = spawnParticle(); p.y = Math.random() * (H / DPR); particles.push(p); }
+    var VW, VH; // viewport dims (CSS px)
     function drawFrame(t) {
+      requestAnimationFrame(drawFrame);
+      if (t - last < STEP) return;
+      last = t;
       time = t * 0.001;
-      ctx.clearRect(0, 0, W, H);
-      // Deep ocean gradient
-      var grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, '#020910');
-      grad.addColorStop(0.45, '#031528');
-      grad.addColorStop(0.75, '#041d38');
-      grad.addColorStop(1, '#020c20');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, H);
-      // Wave layers
+      VW = W / DPR; VH = H / DPR;
+      // Background
+      ctx.fillStyle = '#020910';
+      ctx.fillRect(0, 0, VW, VH);
+      // Subtle depth gradient overlay (cheap, static-ish)
+      if (!drawFrame._depthGrad || drawFrame._depthH !== VH) {
+        drawFrame._depthGrad = ctx.createLinearGradient(0, 0, 0, VH);
+        drawFrame._depthGrad.addColorStop(0,    'rgba(3,21,52,0)');
+        drawFrame._depthGrad.addColorStop(0.55, 'rgba(4,29,60,0.45)');
+        drawFrame._depthGrad.addColorStop(1,    'rgba(2,12,32,0.7)');
+        drawFrame._depthH = VH;
+      }
+      ctx.fillStyle = drawFrame._depthGrad;
+      ctx.fillRect(0, 0, VW, VH);
+      // Wave layers — drawn every 8px for speed
       for (var li = 0; li < WAVE_LAYERS.length; li++) {
         var lyr = WAVE_LAYERS[li];
-        var baseY = H * lyr.y;
+        var baseY = VH * lyr.y;
+        if (!waveGrads[li] || waveGrads[li]._h !== VH) {
+          var wg = ctx.createLinearGradient(0, baseY - lyr.amp - 10, 0, VH);
+          wg.addColorStop(0, 'rgba(' + lyr.color + ',' + lyr.alpha + ')');
+          wg.addColorStop(1, 'rgba(' + lyr.color + ',0.01)');
+          wg._h = VH;
+          waveGrads[li] = wg;
+        }
         ctx.beginPath();
-        ctx.moveTo(0, H);
-        for (var x = 0; x <= W; x += 3) {
-          var y = baseY + Math.sin(x * lyr.freq + time * lyr.speed * 1000) * lyr.amp
-                        + Math.sin(x * lyr.freq * 1.7 + time * lyr.speed * 700 + 1.2) * lyr.amp * 0.4;
+        ctx.moveTo(0, VH);
+        for (var x = 0; x <= VW; x += 8) {
+          var y = baseY + Math.sin(x * lyr.freq + time * lyr.speed) * lyr.amp
+                        + Math.sin(x * lyr.freq * 1.6 + time * lyr.speed * 0.7 + 1.1) * lyr.amp * 0.35;
           ctx.lineTo(x, y);
         }
-        ctx.lineTo(W, H);
+        ctx.lineTo(VW, VH);
         ctx.closePath();
-        var wg = ctx.createLinearGradient(0, baseY - lyr.amp, 0, H);
-        wg.addColorStop(0, 'rgba(' + lyr.color + ',' + lyr.alpha + ')');
-        wg.addColorStop(1, 'rgba(' + lyr.color + ',0)');
-        ctx.fillStyle = wg;
+        ctx.fillStyle = waveGrads[li];
         ctx.fill();
       }
-      // Bioluminescent particles
+      // Particles — no shadowBlur (expensive), use larger alpha instead
       for (var pi = 0; pi < particles.length; pi++) {
         var p = particles[pi];
         p.x += p.vx; p.y += p.vy; p.life++;
-        var fade = p.life < 40 ? p.life / 40 : p.life > p.maxLife - 40 ? (p.maxLife - p.life) / 40 : 1;
+        var fade = p.life < 30 ? p.life / 30 : p.life > p.maxLife - 30 ? (p.maxLife - p.life) / 30 : 1;
         var a = p.alpha * fade;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.r, 0, 6.2832);
         ctx.fillStyle = 'rgba(' + p.color + ',' + a + ')';
-        ctx.shadowBlur = p.r * 6;
-        ctx.shadowColor = 'rgba(' + p.color + ',0.6)';
         ctx.fill();
-        ctx.shadowBlur = 0;
-        if (p.life >= p.maxLife || p.y < -10) { particles[pi] = spawnParticle(); particles[pi].y = H + 5; }
+        if (p.life >= p.maxLife || p.y < -10) particles[pi] = spawnParticle();
       }
-      requestAnimationFrame(drawFrame);
     }
-    window.addEventListener('resize', resize);
+    var rTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(rTimer);
+      rTimer = setTimeout(function() { ctx.setTransform(1,0,0,1,0,0); resize(); }, 150);
+    });
     resize();
     requestAnimationFrame(drawFrame);
   })();
