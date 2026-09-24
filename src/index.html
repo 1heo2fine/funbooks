@@ -943,12 +943,224 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      position: relative;
     }
     #plane-canvas {
       display: block;
       max-width: 100%;
       max-height: 100%;
       image-rendering: pixelated;
+    }
+
+    /* ── Game screens ── */
+    .plane-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 20px;
+      gap: 24px;
+    }
+
+    .plane-home-screen {
+      background: linear-gradient(180deg, #0a0c14 0%, #111827 100%);
+    }
+
+    .plane-game-title {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-shadow: 0 0 32px rgba(56,189,248,0.9), 0 0 8px rgba(56,189,248,0.5);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .plane-hs-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 14px;
+      padding: 14px 36px;
+    }
+    .plane-hs-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: rgba(56,189,248,0.7);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .plane-hs-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .plane-level-sel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+    .plane-level-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.4);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .plane-level-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .plane-lvl-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.5);
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .plane-lvl-btn:hover {
+      background: rgba(56,189,248,0.12);
+      border-color: rgba(56,189,248,0.45);
+      color: #fff;
+    }
+    .plane-lvl-btn.active {
+      background: rgba(56,189,248,0.22);
+      border-color: rgba(56,189,248,0.8);
+      color: #38bdf8;
+      box-shadow: 0 0 16px rgba(56,189,248,0.35);
+    }
+    .plane-lvl-desc {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.38);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 1.2em;
+    }
+
+    .plane-start-btn {
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      border: none;
+      border-radius: 14px;
+      padding: 14px 52px;
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 28px rgba(56,189,248,0.45);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .plane-start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 36px rgba(56,189,248,0.6);
+    }
+    .plane-start-btn:active { transform: scale(0.97); }
+
+    .plane-start-hint {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.25);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: -12px;
+    }
+
+    /* ── Game-over overlay ── */
+    .plane-go-screen {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px;
+    }
+    .plane-go-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ff6b6b;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.06em;
+      text-shadow: 0 0 24px rgba(255,60,60,0.8);
+    }
+    .plane-go-score-row {
+      display: flex;
+      gap: 24px;
+    }
+    .plane-go-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 28px;
+      min-width: 100px;
+    }
+    .plane-go-stat-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.45);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .plane-go-stat-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .plane-go-newbest {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffd700;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 14px rgba(255,215,0,0.7);
+    }
+    .plane-go-btns {
+      display: flex;
+      gap: 10px;
+    }
+    .plane-go-btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      border: none;
+    }
+    .plane-go-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+    .plane-go-home-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2) !important;
+      color: rgba(255,255,255,0.8);
+    }
+    .plane-go-play-btn {
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      color: #fff;
     }
 
     /* Custom Minimal Scrollbar */
@@ -1116,8 +1328,55 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
-    <div class="plane-canvas-wrap">
+
+    <!-- Home screen -->
+    <div id="plane-home" class="plane-screen plane-home-screen">
+      <div class="plane-game-title">✈ FLAPPY PLANE</div>
+
+      <div class="plane-hs-display">
+        <span class="plane-hs-label">HIGH SCORE</span>
+        <span id="plane-hs-val" class="plane-hs-val">0</span>
+      </div>
+
+      <div class="plane-level-sel">
+        <div class="plane-level-label">STARTING LEVEL</div>
+        <div class="plane-level-btns">
+          <button class="plane-lvl-btn active" data-lvl="0">1</button>
+          <button class="plane-lvl-btn" data-lvl="1">2</button>
+          <button class="plane-lvl-btn" data-lvl="2">3</button>
+          <button class="plane-lvl-btn" data-lvl="3">4</button>
+          <button class="plane-lvl-btn" data-lvl="4">5</button>
+        </div>
+        <div id="plane-lvl-desc" class="plane-lvl-desc">Gentle speed · Wide gaps</div>
+      </div>
+
+      <button id="plane-start-btn" class="plane-start-btn">PLAY</button>
+      <p class="plane-start-hint">Tap · Click · Space to flap</p>
+    </div>
+
+    <!-- Canvas wrap (shown while playing) -->
+    <div class="plane-canvas-wrap" id="plane-canvas-wrap" style="display:none">
       <canvas id="plane-canvas" width="480" height="640"></canvas>
+
+      <!-- Game-over screen overlaid on canvas -->
+      <div id="plane-gameover" class="plane-go-screen" style="display:none">
+        <div class="plane-go-title">GAME OVER</div>
+        <div class="plane-go-score-row">
+          <div class="plane-go-stat">
+            <span class="plane-go-stat-label">SCORE</span>
+            <span id="plane-go-score" class="plane-go-stat-val">0</span>
+          </div>
+          <div class="plane-go-stat">
+            <span class="plane-go-stat-label">BEST</span>
+            <span id="plane-go-best" class="plane-go-stat-val">0</span>
+          </div>
+        </div>
+        <div id="plane-go-newbest" class="plane-go-newbest" style="display:none">★ NEW HIGH SCORE ★</div>
+        <div class="plane-go-btns">
+          <button id="plane-go-home" class="plane-go-btn plane-go-home-btn">⌂ Home</button>
+          <button id="plane-go-retry" class="plane-go-btn plane-go-play-btn">↺ Play Again</button>
+        </div>
+      </div>
     </div>
   </div>
 
