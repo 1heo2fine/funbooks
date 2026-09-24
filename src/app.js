@@ -222,31 +222,40 @@ init();
 initBrowser();
 
 function initBrowser() {
-  const overlay   = document.getElementById("proxy-browser-overlay");
-  const openBtn   = document.getElementById("open-browser");
-  const closeBtn  = document.getElementById("browser-close");
-  const urlInput  = document.getElementById("browser-url");
-  const goBtn     = document.getElementById("browser-go");
-  const frame     = document.getElementById("browser-frame");
-  const backBtn   = document.getElementById("browser-back");
-  const fwdBtn    = document.getElementById("browser-forward");
+  const overlay    = document.getElementById("proxy-browser-overlay");
+  const openBtn    = document.getElementById("open-browser");
+  const closeBtn   = document.getElementById("browser-close");
+  const urlInput   = document.getElementById("browser-url");
+  const goBtn      = document.getElementById("browser-go");
+  const frame      = document.getElementById("browser-frame");
+  const backBtn    = document.getElementById("browser-back");
+  const fwdBtn     = document.getElementById("browser-forward");
   const refreshBtn = document.getElementById("browser-refresh");
-  const statusBar = document.getElementById("browser-status-bar");
+  const statusBar  = document.getElementById("browser-status-bar");
   const statusText = document.getElementById("browser-status-text");
   const blockedMsg = document.getElementById("browser-blocked-msg");
   const openTabBtn = document.getElementById("browser-open-tab");
 
   if (!overlay || !frame) return;
 
-  const history = [];
+  // Proxy endpoint – fetches any URL server-side, strips X-Frame-Options / CSP headers
+  const PROXY = "https://api.allorigins.win/raw?url=";
+
+  const hist = [];
   let histIdx = -1;
   let currentUrl = "";
+  let prevBlobUrl = null;
+  let busy = false;
 
   function normalizeUrl(raw) {
     raw = raw.trim();
     if (!raw) return "";
     if (/^https?:\/\//i.test(raw)) return raw;
     if (/^localhost|^\d{1,3}\.\d{1,3}/.test(raw)) return "http://" + raw;
+    // Treat as search query if it contains spaces or has no dot
+    if (raw.includes(" ") || !raw.includes(".")) {
+      return "https://duckduckgo.com/?q=" + encodeURIComponent(raw);
+    }
     return "https://" + raw;
   }
 
@@ -258,46 +267,84 @@ function initBrowser() {
 
   function updateNavBtns() {
     backBtn.disabled = histIdx <= 0;
-    fwdBtn.disabled  = histIdx >= history.length - 1;
+    fwdBtn.disabled  = histIdx >= hist.length - 1;
   }
 
-  function navigate(url, pushHistory = true) {
-    if (!url) return;
+  // Rewrite HTML so relative links resolve correctly and clicks are intercepted
+  function injectProxy(html, pageUrl) {
+    let basePath = pageUrl;
+    try {
+      const u = new URL(pageUrl);
+      basePath = u.origin + u.pathname.replace(/[^/]*$/, "");
+    } catch (_) {}
+
+    // Interceptor is injected into the fetched page – it sends clicked hrefs back via postMessage
+    const interceptor = `<script>(function(){
+      document.addEventListener('click',function(e){
+        var a=e.target;while(a&&a.tagName!=='A')a=a.parentElement;
+        if(a&&a.href&&!/^(javascript:|blob:|#)/.test(a.getAttribute('href')||'')){
+          e.preventDefault();e.stopPropagation();
+          window.parent.postMessage({__pb:a.href},'*');
+        }
+      },true);
+      document.addEventListener('submit',function(e){e.preventDefault();},true);
+    })();<` + `/script>`;
+
+    const baseTag = `<base href="${basePath}">`;
+    const inject  = baseTag + interceptor;
+
+    if (/<head[\s>]/i.test(html)) return html.replace(/<head([\s>][^>]*)?>/i, m => m + inject);
+    return inject + html;
+  }
+
+  async function navigate(url, pushHistory = true) {
+    if (!url || busy) return;
+    busy = true;
+
     blockedMsg.style.display = "none";
     frame.style.display = "block";
     currentUrl = url;
     urlInput.value = url;
-    setStatus("Loading...");
+    setStatus("Proxying…");
 
     if (pushHistory) {
-      history.splice(histIdx + 1);
-      history.push(url);
-      histIdx = history.length - 1;
+      hist.splice(histIdx + 1);
+      hist.push(url);
+      histIdx = hist.length - 1;
     }
     updateNavBtns();
-
-    frame.src = url;
     if (openTabBtn) openTabBtn.onclick = () => window.open(url, "_blank");
+
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 15000);
+
+    try {
+      const res = await fetch(PROXY + encodeURIComponent(url), { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      const html = await res.text();
+      const blob = new Blob([injectProxy(html, url)], { type: "text/html; charset=utf-8" });
+      if (prevBlobUrl) URL.revokeObjectURL(prevBlobUrl);
+      prevBlobUrl = URL.createObjectURL(blob);
+      frame.src = prevBlobUrl;
+      setStatus("");
+    } catch (_) {
+      clearTimeout(timer);
+      setStatus("");
+      frame.style.display = "none";
+      blockedMsg.style.display = "flex";
+    } finally {
+      busy = false;
+    }
   }
 
-  frame.addEventListener("load", () => {
-    setStatus("");
-    try {
-      const loc = frame.contentWindow.location.href;
-      if (loc && loc !== "about:blank") {
-        currentUrl = loc;
-        urlInput.value = loc;
-      }
-    } catch (_) {}
+  // Navigation messages from inside the proxied page
+  window.addEventListener("message", (e) => {
+    if (e.data && e.data.__pb) navigate(e.data.__pb);
   });
 
-  frame.addEventListener("error", () => {
-    setStatus("Failed to load page.");
-  });
-
-  // Detect X-Frame-Options / CSP blocks via a timeout heuristic
-  let loadTimer;
-  frame.addEventListener("load", () => { clearTimeout(loadTimer); });
+  frame.addEventListener("load", () => setStatus(""));
 
   function openOverlay() {
     overlay.style.display = "flex";
@@ -313,25 +360,19 @@ function initBrowser() {
 
   openBtn.addEventListener("click", openOverlay);
   closeBtn.addEventListener("click", closeOverlay);
-
   goBtn.addEventListener("click", () => navigate(normalizeUrl(urlInput.value)));
-
   urlInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") navigate(normalizeUrl(urlInput.value));
   });
-
   backBtn.addEventListener("click", () => {
-    if (histIdx > 0) { histIdx--; navigate(history[histIdx], false); }
+    if (histIdx > 0) { histIdx--; navigate(hist[histIdx], false); }
   });
-
   fwdBtn.addEventListener("click", () => {
-    if (histIdx < history.length - 1) { histIdx++; navigate(history[histIdx], false); }
+    if (histIdx < hist.length - 1) { histIdx++; navigate(hist[histIdx], false); }
   });
-
   refreshBtn.addEventListener("click", () => {
-    if (currentUrl) { setStatus("Refreshing..."); frame.src = currentUrl; }
+    if (currentUrl) navigate(currentUrl, false);
   });
-
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && overlay.style.display !== "none") closeOverlay();
   });
