@@ -117,16 +117,19 @@ function renderLinkCard(mirror) {
   const cleanUrl = mirror.url.replace(/^https?:\/\//, "");
 
   const isHot = mirror.tag === "hot";
+  const isIo = mirror.tag === "io";
   const domain = (() => { try { return new URL(mirror.url).hostname; } catch { return ""; } })();
-  const thumbHtml = isHot ? `
-    <img class="link-card-thumb"
+  const thumbHtml = (isHot || isIo) ? `
+    <img class="link-card-thumb${isIo ? " link-card-thumb-io" : ""}"
       src="${siteAvatar(mirror.name, 56)}"
-      data-real="https://logo.clearbit.com/${encodeURIComponent(domain)}"
+      data-real="${isIo
+        ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`
+        : `https://logo.clearbit.com/${encodeURIComponent(domain)}`}"
       alt=""
       loading="lazy">` : "";
 
   return `
-    <div class="link-card${isHot ? " link-card-hot" : ""}" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
+    <div class="link-card${(isHot || isIo) ? " link-card-hot" : ""}" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
       ${thumbHtml}
       <div class="link-left">
         <div class="link-dot-status"></div>
@@ -165,6 +168,7 @@ export function renderAll() {
     if (currentFilter === "all") return true;
     if (currentFilter === "hot") return m.tag === "hot";
     if (currentFilter === "new") return m.tag === "new";
+    if (currentFilter === "io") return m.tag === "io";
     if (currentFilter === "recommended") return m.featured || computeStatus(m.url).kind === "recommended";
     return false;
   });
