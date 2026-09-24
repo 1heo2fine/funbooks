@@ -59,7 +59,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23030305'/%3E%3Cpath d='M16 22.5C13 20.5 8 20.5 5.5 21.5L5.5 9.5C8 8.5 13 8.5 16 10.5Z' fill='rgba(255,255,255,0.15)' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M16 22.5C19 20.5 24 20.5 26.5 21.5L26.5 9.5C24 8.5 19 8.5 16 10.5Z' fill='rgba(255,255,255,0.15)' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cline x1='16' y1='10.5' x2='16' y2='22.5' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -68,27 +68,29 @@
     }
 
     :root {
-      --bg: #030305;
-      --surface-glass: rgba(255, 255, 255, 0.035);
-      --surface-glass-hover: rgba(255, 255, 255, 0.07);
-      --surface-glass-active: rgba(255, 255, 255, 0.12);
-      --border-glass: rgba(255, 255, 255, 0.08);
-      --border-glass-hover: rgba(255, 255, 255, 0.22);
-      --border-specular: rgba(255, 255, 255, 0.16);
-      
-      --text-main: #f4f4f7;
-      --text-muted: #8b8d99;
-      --text-dim: #545663;
-      
-      --accent-white: #ffffff;
-      --accent-emerald: #22c55e;
+      --bg: #020910;
+      --surface-glass: rgba(6, 30, 68, 0.32);
+      --surface-glass-hover: rgba(8, 42, 95, 0.5);
+      --surface-glass-active: rgba(10, 55, 120, 0.65);
+      --border-glass: rgba(56, 189, 248, 0.18);
+      --border-glass-hover: rgba(125, 211, 252, 0.45);
+      --border-specular: rgba(186, 230, 253, 0.22);
+
+      --text-main: #dff2ff;
+      --text-muted: #6bb8d4;
+      --text-dim: #2d5e78;
+
+      --accent-white: #bae6fd;
+      --accent-emerald: #06d6a0;
       --accent-rose: #f43f5e;
-      
+      --accent-aqua: #22d3ee;
+      --accent-teal: #0ea5e9;
+
       --radius-full: 9999px;
       --radius-lg: 20px;
       --radius-md: 14px;
       --radius-sm: 10px;
-      
+
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -103,6 +105,34 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
+    /* Ocean Canvas Background */
+    #ocean-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .ocean-surface-glow {
+      position: fixed;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(14, 165, 233, 0.09) 0%, rgba(56, 189, 248, 0.04) 45%, transparent 75%);
+      border-radius: 50%;
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 0;
+      animation: surfacePulse 8s ease-in-out infinite;
+    }
+    @keyframes surfacePulse {
+      0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+    }
+
     body {
       display: flex;
       flex-direction: column;
@@ -111,42 +141,11 @@
       position: relative;
     }
 
-    /* Ambient Orb Lighting Background */
-    .bg-sphere {
-      position: fixed;
-      top: -120px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 820px;
-      height: 520px;
-      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 45%, transparent 75%);
-      border-radius: 50%;
-      filter: blur(40px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .bg-ring {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90vw;
-      max-width: 1200px;
-      height: 700px;
-      border: 1px solid rgba(255, 255, 255, 0.025);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .bg-grid {
+    /* Ocean depth vignette */
+    .ocean-depth-vignette {
       position: fixed;
       inset: 0;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-      background-size: 36px 36px;
-      mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
-      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+      background: radial-gradient(ellipse 80% 70% at 50% 110%, rgba(2, 20, 50, 0.6) 0%, transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
@@ -162,26 +161,28 @@
     }
 
     .page-title {
-      font-size: clamp(2.4rem, 6.5vw, 4.2rem);
+      font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(2.4rem, 6.5vw, 4.4rem);
       font-weight: 800;
-      letter-spacing: -0.045em;
+      letter-spacing: -0.03em;
       line-height: 1.05;
       text-align: center;
-      background: linear-gradient(180deg, #ffffff 0%, #d6d7e0 55%, #76788a 100%);
+      background: linear-gradient(170deg, #e8f8ff 0%, #7dd3fc 38%, #22d3ee 65%, #0ea5e9 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 12px;
+      filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.25));
     }
 
     .page-subtitle {
       color: var(--text-muted);
-      font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+      font-size: clamp(0.88rem, 1.8vw, 1rem);
       font-weight: 400;
       text-align: center;
       max-width: 540px;
       line-height: 1.55;
-      letter-spacing: -0.01em;
+      letter-spacing: 0.01em;
       margin-bottom: 30px;
     }
 
@@ -197,31 +198,32 @@
       display: flex;
       align-items: center;
       width: 100%;
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(6, 32, 72, 0.45);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-full);
       padding: 6px 10px 6px 20px;
-      backdrop-filter: blur(36px) saturate(190%);
-      -webkit-backdrop-filter: blur(36px) saturate(190%);
-      box-shadow: 
-        inset 0 1px 2px rgba(255, 255, 255, 0.15),
-        inset 0 -1px 2px rgba(0, 0, 0, 0.3),
-        0 20px 45px rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+      -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+      box-shadow:
+        inset 0 1px 0 rgba(186, 230, 253, 0.18),
+        inset 0 -1px 0 rgba(0, 20, 60, 0.4),
+        0 8px 32px rgba(0, 15, 50, 0.7),
+        0 0 0 0 rgba(56, 189, 248, 0);
       transition: all 0.3s var(--ease);
     }
 
     .search-glass-shell:hover {
       border-color: var(--border-glass-hover);
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(8, 40, 90, 0.55);
     }
 
     .search-glass-shell:focus-within {
-      background: rgba(255, 255, 255, 0.075);
-      border-color: rgba(255, 255, 255, 0.35);
-      box-shadow: 
-        inset 0 1px 2px rgba(255, 255, 255, 0.25),
-        0 0 0 3px rgba(255, 255, 255, 0.06),
-        0 24px 50px rgba(0, 0, 0, 0.75);
+      background: rgba(10, 46, 102, 0.6);
+      border-color: rgba(125, 211, 252, 0.55);
+      box-shadow:
+        inset 0 1px 0 rgba(186, 230, 253, 0.25),
+        0 0 0 3px rgba(56, 189, 248, 0.1),
+        0 12px 40px rgba(0, 20, 70, 0.8);
     }
 
     .search-icon-svg {
@@ -335,11 +337,11 @@
     }
 
     .filter-glass-pill.active {
-      background: #ffffff;
-      border-color: #ffffff;
-      color: #030305;
+      background: rgba(14, 165, 233, 0.22);
+      border-color: rgba(125, 211, 252, 0.6);
+      color: #bae6fd;
       font-weight: 700;
-      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 24px rgba(56, 189, 248, 0.2), inset 0 1px 0 rgba(186, 230, 253, 0.3);
     }
 
     /* Liquid Glass List Cards */
@@ -511,22 +513,22 @@
     }
 
     .glass-btn-cta {
-      background: #ffffff;
-      border: 1px solid #ffffff;
-      color: #030305;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.9), rgba(6, 182, 212, 0.9));
+      border: 1px solid rgba(125, 211, 252, 0.6);
+      color: #e8f8ff;
       padding: 7px 14px;
       font-weight: 700;
       border-radius: var(--radius-sm);
       font-family: inherit;
       font-size: 0.78rem;
       letter-spacing: -0.01em;
-      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
     }
 
     .glass-btn-cta:hover {
-      background: #e8e8ee;
-      border-color: #e8e8ee;
-      color: #000000;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 1), rgba(6, 182, 212, 1));
+      border-color: rgba(186, 230, 253, 0.7);
+      color: #ffffff;
     }
 
     .empty-state {
@@ -705,16 +707,17 @@
       margin-top: 8px;
       padding: 9px 20px;
       border-radius: var(--radius-full);
-      background: #ffffff;
-      border: 1px solid #ffffff;
-      color: #030305;
+      background: linear-gradient(135deg, rgba(14,165,233,0.85), rgba(6,182,212,0.85));
+      border: 1px solid rgba(125,211,252,0.5);
+      color: #e8f8ff;
       font-size: 0.82rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
       transition: all 0.15s var(--ease);
+      box-shadow: 0 4px 16px rgba(56,189,248,0.3);
     }
-    .ig-open-tab-btn:hover { background: #e0e0e8; border-color: #e0e0e8; }
+    .ig-open-tab-btn:hover { background: linear-gradient(135deg, rgba(14,165,233,1), rgba(6,182,212,1)); box-shadow: 0 6px 24px rgba(56,189,248,0.45); }
 
     /* Hot Banner */
     .hot-banner {
@@ -768,7 +771,7 @@
       color: var(--text-main);
       letter-spacing: -0.015em;
     }
-    .hot-slide-star { color: #f59e0b; }
+    .hot-slide-star { color: #22d3ee; }
     .hot-slide-domain {
       display: block;
       font-size: 0.68rem;
@@ -798,7 +801,7 @@
     }
     .hot-dot.active {
       width: 18px;
-      background: rgba(255,255,255,0.55);
+      background: rgba(34, 211, 238, 0.7);
     }
 
     /* Link hint and star */
@@ -1187,8 +1190,8 @@
     /* Custom Minimal Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 99px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(34, 211, 238, 0.18); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(34, 211, 238, 0.38); }
 
     @media (max-width: 640px) {
       /* More top room so content clears the fixed FABs */
@@ -1292,8 +1295,10 @@
       top: 0; bottom: 0; left: 0;
       width: 300px;
       z-index: 8000;
-      background: #0b0d14;
-      border-right: 1px solid rgba(255,255,255,0.07);
+      background: rgba(3, 18, 45, 0.92);
+      backdrop-filter: blur(48px) saturate(180%);
+      -webkit-backdrop-filter: blur(48px) saturate(180%);
+      border-right: 1px solid rgba(56, 189, 248, 0.18);
       display: flex;
       flex-direction: column;
       transform: translateX(-100%);
@@ -1308,9 +1313,9 @@
       align-items: center;
       justify-content: space-between;
       padding: 14px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
       flex-shrink: 0;
-      background: rgba(255,255,255,0.025);
+      background: rgba(6, 32, 72, 0.6);
     }
     .games-sidebar-hd-title {
       font-size: 0.75rem;
@@ -1340,8 +1345,8 @@
     }
     .game-card {
       position: relative;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(6, 28, 66, 0.5);
+      border: 1px solid rgba(56, 189, 248, 0.14);
       border-radius: 16px;
       padding: 18px 8px 14px;
       display: flex;
@@ -1349,13 +1354,15 @@
       align-items: center;
       gap: 9px;
       cursor: pointer;
-      transition: background 0.18s, border-color 0.18s, transform 0.14s;
+      transition: background 0.18s, border-color 0.18s, transform 0.14s, box-shadow 0.18s;
       font-family: inherit;
       color: var(--text-main);
+      box-shadow: inset 0 1px 0 rgba(186,230,253,0.08);
     }
     .game-card:hover {
-      background: rgba(255,255,255,0.09);
-      border-color: rgba(255,255,255,0.22);
+      background: rgba(10, 45, 100, 0.7);
+      border-color: rgba(125, 211, 252, 0.4);
+      box-shadow: 0 0 18px rgba(34,211,238,0.12), inset 0 1px 0 rgba(186,230,253,0.15);
       transform: translateY(-2px);
     }
     .game-card:active { transform: scale(0.96); }
@@ -1697,9 +1704,9 @@
 </head>
 <body>
   <!-- Ambient Orbs & Geometric Rings matching reference -->
-  <div class="bg-sphere"></div>
-  <div class="bg-ring"></div>
-  <div class="bg-grid"></div>
+  <canvas id="ocean-bg"></canvas>
+  <div class="ocean-surface-glow"></div>
+  <div class="ocean-depth-vignette"></div>
 
   <div class="app-container">
     <!-- Title & Subtitle -->
@@ -2282,5 +2289,87 @@
   </div>
 
   <script type="module" src="./app.js"></script>
+  <script>
+  (function() {
+    var canvas = document.getElementById('ocean-bg');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W, H, particles = [], time = 0;
+    var WAVE_LAYERS = [
+      { speed: 0.0006, amp: 38, freq: 0.012, y: 0.62, alpha: 0.10, color: '14,165,233' },
+      { speed: 0.0009, amp: 26, freq: 0.018, y: 0.70, alpha: 0.08, color: '34,211,238' },
+      { speed: 0.0014, amp: 16, freq: 0.028, y: 0.78, alpha: 0.06, color: '6,182,212' },
+      { speed: 0.0020, amp:  9, freq: 0.044, y: 0.86, alpha: 0.05, color: '56,189,248' },
+    ];
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    function spawnParticle() {
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 2.2 + 0.5,
+        vy: -(Math.random() * 0.28 + 0.06),
+        vx: (Math.random() - 0.5) * 0.12,
+        alpha: Math.random() * 0.45 + 0.08,
+        life: 0,
+        maxLife: Math.random() * 420 + 180,
+        color: Math.random() > 0.4 ? '56,189,248' : '34,211,238',
+      };
+    }
+    for (var i = 0; i < 90; i++) particles.push(spawnParticle());
+    function drawFrame(t) {
+      time = t * 0.001;
+      ctx.clearRect(0, 0, W, H);
+      // Deep ocean gradient
+      var grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, '#020910');
+      grad.addColorStop(0.45, '#031528');
+      grad.addColorStop(0.75, '#041d38');
+      grad.addColorStop(1, '#020c20');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+      // Wave layers
+      for (var li = 0; li < WAVE_LAYERS.length; li++) {
+        var lyr = WAVE_LAYERS[li];
+        var baseY = H * lyr.y;
+        ctx.beginPath();
+        ctx.moveTo(0, H);
+        for (var x = 0; x <= W; x += 3) {
+          var y = baseY + Math.sin(x * lyr.freq + time * lyr.speed * 1000) * lyr.amp
+                        + Math.sin(x * lyr.freq * 1.7 + time * lyr.speed * 700 + 1.2) * lyr.amp * 0.4;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(W, H);
+        ctx.closePath();
+        var wg = ctx.createLinearGradient(0, baseY - lyr.amp, 0, H);
+        wg.addColorStop(0, 'rgba(' + lyr.color + ',' + lyr.alpha + ')');
+        wg.addColorStop(1, 'rgba(' + lyr.color + ',0)');
+        ctx.fillStyle = wg;
+        ctx.fill();
+      }
+      // Bioluminescent particles
+      for (var pi = 0; pi < particles.length; pi++) {
+        var p = particles[pi];
+        p.x += p.vx; p.y += p.vy; p.life++;
+        var fade = p.life < 40 ? p.life / 40 : p.life > p.maxLife - 40 ? (p.maxLife - p.life) / 40 : 1;
+        var a = p.alpha * fade;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.color + ',' + a + ')';
+        ctx.shadowBlur = p.r * 6;
+        ctx.shadowColor = 'rgba(' + p.color + ',0.6)';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        if (p.life >= p.maxLife || p.y < -10) { particles[pi] = spawnParticle(); particles[pi].y = H + 5; }
+      }
+      requestAnimationFrame(drawFrame);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(drawFrame);
+  })();
+  </script>
 </body>
 </html>
