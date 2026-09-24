@@ -96,6 +96,16 @@ function escapeHtml(s) {
   })[c]);
 }
 
+const AVATAR_COLORS = ['#6366f1','#8b5cf6','#ec4899','#ef4444','#f59e0b','#10b981','#3b82f6','#06b6d4','#84cc16','#f97316'];
+
+function siteAvatar(name, size = 56) {
+  const col = AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length];
+  const initial = (name[0] || '?').toUpperCase();
+  const fs = Math.round(size * 0.48);
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'><rect width='${size}' height='${size}' rx='${Math.round(size*0.2)}' fill='${col}'/><text x='${size/2}' y='${size*0.7}' font-family='system-ui,sans-serif' font-size='${fs}' font-weight='800' text-anchor='middle' fill='white'>${initial}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
 function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
@@ -108,10 +118,10 @@ function renderLinkCard(mirror) {
 
   const isHot = mirror.tag === "hot";
   const domain = (() => { try { return new URL(mirror.url).hostname; } catch { return ""; } })();
-  const thumbHtml = isHot && domain ? `
+  const thumbHtml = isHot ? `
     <img class="link-card-thumb"
-      src="https://logo.clearbit.com/${encodeURIComponent(domain)}"
-      onerror="this.src='https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128';this.onerror=null"
+      src="${siteAvatar(mirror.name, 56)}"
+      data-real="https://logo.clearbit.com/${encodeURIComponent(domain)}"
       alt=""
       loading="lazy">` : "";
 
@@ -176,6 +186,7 @@ export function renderAll() {
   }
 
   list.innerHTML = filtered.map(renderLinkCard).join("");
+  upgradeAvatars(list);
 }
 
 export function setFilter(filter) {
@@ -229,8 +240,19 @@ export function init() {
   renderAll();
 }
 
+function upgradeAvatars(root = document) {
+  root.querySelectorAll('img[data-real]').forEach(img => {
+    const url = img.dataset.real;
+    if (!url) return;
+    const probe = new Image();
+    probe.onload = () => { img.src = url; delete img.dataset.real; };
+    probe.src = url;
+  });
+}
+
 init();
 initHotBanner();
+upgradeAvatars();
 initInstagram();
 initQuickHide();
 initPlaneGame();
@@ -313,7 +335,7 @@ function initHotBanner() {
     slide.className = "hot-slide";
     slide.onclick = () => window.open(m.url, "_blank");
     slide.innerHTML = `
-      <img class="hot-slide-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64" alt="" loading="lazy" onerror="this.style.display='none'">
+      <img class="hot-slide-favicon" src="${siteAvatar(m.name, 32)}" data-real="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64" alt="" loading="lazy">
       <div>
         <span class="hot-slide-name">${escapeHtml(m.name)}${m.star ? ' <span class="hot-slide-star">★</span>' : ''}</span>
         <span class="hot-slide-domain">${escapeHtml(cleanUrl)}</span>
