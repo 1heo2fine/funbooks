@@ -794,6 +794,18 @@ function initMusicPlayer() {
   if (nextBtn) nextBtn.addEventListener("click", () => loadAndPlay(idx + 1));
   if (playBtn) playBtn.addEventListener("click", togglePlay);
 
+  const player       = document.getElementById("music-player");
+  const minimizeBtn  = document.getElementById("music-minimize");
+  const closeBtn     = document.getElementById("music-close");
+
+  if (minimizeBtn) minimizeBtn.addEventListener("click", () => {
+    player && player.classList.toggle("minimized");
+  });
+  if (closeBtn) closeBtn.addEventListener("click", () => {
+    if (player) player.style.display = "none";
+    if (audio) { audio.pause(); playing = false; setPlayIcon(false); }
+  });
+
   updateMeta();
 }
 

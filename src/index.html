@@ -971,6 +971,37 @@
       letter-spacing: -0.01em;
       color: #1ed760;
     }
+    .music-player-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .music-wm-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.12);
+      color: var(--text-dim);
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .music-wm-btn:hover { background: rgba(255,255,255,0.25); color: var(--text); }
+    .music-close-btn { background: rgba(255,70,70,0.25); color: #ff7070; }
+    .music-close-btn:hover { background: rgba(255,70,70,0.55); color: #fff; }
+    .music-player-body {
+      overflow: hidden;
+      max-height: 120px;
+      transition: max-height 0.28s ease, opacity 0.22s ease;
+      opacity: 1;
+    }
+    .music-player.minimized .music-player-body {
+      max-height: 0;
+      opacity: 0;
+    }
     .music-player-counter {
       font-size: 0.58rem;
       color: var(--text-dim);
@@ -2309,26 +2340,32 @@
         </svg>
         <span class="music-spotify-wordmark">Spotify</span>
       </div>
-      <span class="music-player-counter" id="music-counter">1 / 4</span>
-    </div>
-    <div class="music-track-name" id="music-track-name">Beyoncé – Morning Dew Donk</div>
-    <div class="music-progress-wrap">
-      <div class="music-progress-bar" id="music-progress-bar">
-        <div class="music-progress-fill" id="music-progress-fill"></div>
+      <div class="music-player-actions">
+        <span class="music-player-counter" id="music-counter">1 / 4</span>
+        <button class="music-wm-btn" id="music-minimize" title="Minimize">−</button>
+        <button class="music-wm-btn music-close-btn" id="music-close" title="Close">×</button>
       </div>
     </div>
-    <div class="music-player-controls">
-      <button class="music-ctrl-btn" id="music-prev" title="Previous">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
-      </button>
-      <button class="music-ctrl-btn play-btn" id="music-play" title="Play/Pause">
-        <svg id="music-play-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      </button>
-      <button class="music-ctrl-btn" id="music-next" title="Next">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
-      </button>
+    <div class="music-player-body">
+      <div class="music-track-name" id="music-track-name">Beyoncé – Morning Dew Donk</div>
+      <div class="music-progress-wrap">
+        <div class="music-progress-bar" id="music-progress-bar">
+          <div class="music-progress-fill" id="music-progress-fill"></div>
+        </div>
+      </div>
+      <div class="music-player-controls">
+        <button class="music-ctrl-btn" id="music-prev" title="Previous">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+        </button>
+        <button class="music-ctrl-btn play-btn" id="music-play" title="Play/Pause">
+          <svg id="music-play-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="music-ctrl-btn" id="music-next" title="Next">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+        </button>
+      </div>
+      <div class="music-loading-dot" id="music-loading"></div>
     </div>
-    <div class="music-loading-dot" id="music-loading"></div>
     <audio id="music-audio"></audio>
   </div>
 
