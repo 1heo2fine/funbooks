@@ -100,14 +100,24 @@ function renderLinkCard(mirror) {
   const v = getVoteData(mirror.url);
   const isUp = v.userVote === "up";
   const isDown = v.userVote === "down";
-  
+
   const total = v.up + v.down;
   const upPercent = total === 0 ? 95 : Math.round((v.up / total) * 100);
   const downPercent = total === 0 ? 5 : Math.round((v.down / total) * 100);
   const cleanUrl = mirror.url.replace(/^https?:\/\//, "");
 
+  const isHot = mirror.tag === "hot";
+  const domain = (() => { try { return new URL(mirror.url).hostname; } catch { return ""; } })();
+  const thumbHtml = isHot && domain ? `
+    <img class="link-card-thumb"
+      src="https://logo.clearbit.com/${encodeURIComponent(domain)}"
+      onerror="this.src='https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128';this.onerror=null"
+      alt=""
+      loading="lazy">` : "";
+
   return `
-    <div class="link-card" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
+    <div class="link-card${isHot ? " link-card-hot" : ""}" onclick="window.open('${escapeHtml(mirror.url)}', '_blank')">
+      ${thumbHtml}
       <div class="link-left">
         <div class="link-dot-status"></div>
         <div class="link-info">
