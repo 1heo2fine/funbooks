@@ -319,7 +319,7 @@ function initGamesHub() {
   const sidebar = document.getElementById("games-sidebar");
   const bd = document.getElementById("games-sidebar-bd");
   const closeX = document.getElementById("games-sidebar-x");
-  if (!fab || !sidebar) return;
+  if (!fab || !sidebar || !bd || !closeX) return;
 
   function open() { sidebar.classList.add("open"); bd.classList.add("open"); document.body.style.overflow = "hidden"; }
   function close() { sidebar.classList.remove("open"); bd.classList.remove("open"); document.body.style.overflow = ""; }
@@ -599,7 +599,7 @@ function initPlaneGame() {
   const goBestEl   = document.getElementById("plane-go-best");
   const goNewBest  = document.getElementById("plane-go-newbest");
   const goRetryBtn = document.getElementById("plane-go-retry");
-  if (!planeFab || !planeOver || !canvas) return;
+  if (!planeOver || !canvas) return;
 
   const ctx = canvas.getContext("2d");
   const W = canvas.width;
