@@ -252,20 +252,24 @@ function upgradeAvatars(root = document) {
 
 const GAMES = {};
 
-init();
-initHotBanner();
-upgradeAvatars();
-initInstagram();
-initQuickHide();
-initGamesHub();
-initPlaneGame();
-initSnakeGame();
-initBrickGame();
-initMemoryGame();
-initTttGame();
-initSpaceGame();
-initSpeedTapGame();
-initDuelGame();
+function safeInit(fn) {
+  try { fn(); } catch (e) { console.error("[init error]", fn.name, e); }
+}
+
+safeInit(init);
+safeInit(initHotBanner);
+safeInit(upgradeAvatars);
+safeInit(initInstagram);
+safeInit(initQuickHide);
+safeInit(initGamesHub);
+safeInit(initPlaneGame);
+safeInit(initSnakeGame);
+safeInit(initBrickGame);
+safeInit(initMemoryGame);
+safeInit(initTttGame);
+safeInit(initSpaceGame);
+safeInit(initSpeedTapGame);
+safeInit(initDuelGame);
 
 function initQuickHide() {
   const overlay = document.getElementById("book-overlay");
