@@ -223,6 +223,7 @@ init();
 initHotBanner();
 initInstagram();
 initQuickHide();
+initPlaneGame();
 
 function initQuickHide() {
   const overlay = document.getElementById("book-overlay");
@@ -508,5 +509,378 @@ function initInstagram() {
   closeBtn.addEventListener("click", closeOverlay);
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && overlay.style.display !== "none") closeOverlay();
+  });
+}
+
+function initPlaneGame() {
+  const planeFab   = document.getElementById("plane-fab");
+  const planeOver  = document.getElementById("plane-overlay");
+  const closeBtn   = document.getElementById("plane-close");
+  const canvas     = document.getElementById("plane-canvas");
+  if (!planeFab || !planeOver || !canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width;   // 480
+  const H = canvas.height;  // 640
+
+  // ── Level configs ──────────────────────────────────────────────────
+  const LEVELS = [
+    { label: "Level 1", scoreNeeded: 0,  speed: 2.8, gap: 200, spawnInterval: 115 },
+    { label: "Level 2", scoreNeeded: 5,  speed: 3.5, gap: 185, spawnInterval: 105 },
+    { label: "Level 3", scoreNeeded: 12, speed: 4.3, gap: 165, spawnInterval: 95  },
+    { label: "Level 4", scoreNeeded: 22, speed: 5.2, gap: 148, spawnInterval: 88  },
+    { label: "Level 5", scoreNeeded: 35, speed: 6.2, gap: 132, spawnInterval: 80  },
+  ];
+
+  // ── Palette ────────────────────────────────────────────────────────
+  const SKY_TOP    = "#0d1117";
+  const SKY_BOT    = "#1a2233";
+  const GROUND_COL = "#1c2333";
+  const GROUND_H   = 48;
+
+  // Building windows pre-computed per building (reuse per lane)
+  function makeWindows(bw, bh) {
+    const wins = [];
+    const cols = Math.floor(bw / 18);
+    const rows = Math.floor(bh / 20);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (Math.random() < 0.55) {
+          wins.push({ x: 6 + c * 18, y: 8 + r * 20, lit: Math.random() < 0.6 });
+        }
+      }
+    }
+    return wins;
+  }
+
+  // ── Game state ────────────────────────────────────────────────────
+  let state;   // "start" | "playing" | "dead"
+  let score, bestScore = 0, levelIdx, frame, raf;
+  let plane, buildings, groundX, frameCount, scored;
+
+  function currentLevel() { return LEVELS[levelIdx]; }
+
+  function resetGame() {
+    state      = "start";
+    score      = 0;
+    levelIdx   = 0;
+    frame      = 0;
+    frameCount = 0;
+    groundX    = 0;
+    plane      = { x: 100, y: H / 2 - 20, vy: 0, w: 38, h: 20, tilt: 0 };
+    buildings  = [];
+    scored     = new Set();
+  }
+
+  function flap() {
+    if (state === "dead") { resetGame(); state = "playing"; return; }
+    if (state === "start") { state = "playing"; }
+    plane.vy = -7.2;
+  }
+
+  // ── Physics / update ──────────────────────────────────────────────
+  function spawnBuilding() {
+    const lv   = currentLevel();
+    const gap  = lv.gap;
+    const minTop  = 60;
+    const maxTop  = H - GROUND_H - gap - 60;
+    const topH    = minTop + Math.random() * (maxTop - minTop);
+    const botY    = topH + gap;
+    const botH    = H - GROUND_H - botY;
+    const bw      = 64 + Math.floor(Math.random() * 24);
+    buildings.push({
+      x: W + 10,
+      w: bw,
+      topH,
+      botY,
+      botH,
+      wins_top: makeWindows(bw, topH),
+      wins_bot: makeWindows(bw, botH),
+      id: frame,
+    });
+  }
+
+  function update() {
+    if (state !== "playing") return;
+    frame++;
+    frameCount++;
+    const lv = currentLevel();
+
+    // Gravity
+    plane.vy += 0.45;
+    plane.y  += plane.vy;
+    plane.tilt = Math.max(-25, Math.min(45, plane.vy * 3));
+
+    // Ground / ceiling
+    if (plane.y + plane.h >= H - GROUND_H || plane.y <= 0) { die(); return; }
+
+    // Spawn
+    if (frameCount % lv.spawnInterval === 0) spawnBuilding();
+
+    // Move + score + collide buildings
+    const speed = lv.speed;
+    for (const b of buildings) {
+      b.x -= speed;
+
+      // Score when plane passes center of building
+      if (!scored.has(b.id) && b.x + b.w < plane.x) {
+        scored.add(b.id);
+        score++;
+        // Level up
+        for (let i = LEVELS.length - 1; i >= 0; i--) {
+          if (score >= LEVELS[i].scoreNeeded) { levelIdx = i; break; }
+        }
+      }
+
+      // Collision (AABB)
+      const px = plane.x + 4, py = plane.y + 4, pw = plane.w - 8, ph = plane.h - 6;
+      const bRight = b.x + b.w;
+      const inX = px < bRight && px + pw > b.x;
+      if (inX) {
+        if (py < b.topH || py + ph > b.botY) { die(); return; }
+      }
+    }
+
+    // Prune off-screen
+    buildings = buildings.filter(b => b.x + b.w > -10);
+
+    // Ground scroll
+    groundX = (groundX - speed) % 48;
+  }
+
+  function die() {
+    state = "dead";
+    if (score > bestScore) bestScore = score;
+    plane.vy = 0;
+  }
+
+  // ── Drawing ───────────────────────────────────────────────────────
+  function drawSky() {
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, SKY_TOP);
+    g.addColorStop(1, SKY_BOT);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // Stars (static seed)
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    const stars = [[23,30],[87,15],[155,55],[260,20],[380,40],[430,10],[70,90],[310,70],[200,100],[450,80]];
+    for (const [sx, sy] of stars) { ctx.fillRect(sx, sy, 1, 1); }
+  }
+
+  function drawBuilding(b) {
+    // Top building (hanging down from top)
+    ctx.fillStyle = "#1e2d45";
+    ctx.fillRect(b.x, 0, b.w, b.topH);
+    // Outline
+    ctx.strokeStyle = "#2a3d5a";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(b.x + 0.5, 0, b.w - 1, b.topH);
+    // Windows top
+    for (const w of b.wins_top) {
+      ctx.fillStyle = w.lit ? "rgba(255,240,140,0.85)" : "rgba(40,60,90,0.8)";
+      ctx.fillRect(b.x + w.x, w.y, 10, 8);
+    }
+
+    // Bottom building (rising from bottom)
+    ctx.fillStyle = "#1e2d45";
+    ctx.fillRect(b.x, b.botY, b.w, b.botH);
+    ctx.strokeStyle = "#2a3d5a";
+    ctx.strokeRect(b.x + 0.5, b.botY, b.w - 1, b.botH);
+    for (const w of b.wins_bot) {
+      ctx.fillStyle = w.lit ? "rgba(255,240,140,0.85)" : "rgba(40,60,90,0.8)";
+      ctx.fillRect(b.x + w.x, b.botY + w.y, 10, 8);
+    }
+
+    // Rooftop edges / ledges
+    ctx.fillStyle = "#2e4060";
+    ctx.fillRect(b.x - 2, b.topH - 6, b.w + 4, 6);
+    ctx.fillRect(b.x - 2, b.botY, b.w + 4, 6);
+  }
+
+  function drawGround() {
+    ctx.fillStyle = GROUND_COL;
+    ctx.fillRect(0, H - GROUND_H, W, GROUND_H);
+    // Dashed line pattern
+    ctx.fillStyle = "#263040";
+    for (let x = groundX; x < W; x += 48) {
+      ctx.fillRect(x, H - GROUND_H, 24, 4);
+    }
+    // Ground top highlight
+    ctx.fillStyle = "#2e3d50";
+    ctx.fillRect(0, H - GROUND_H, W, 2);
+  }
+
+  function drawPlane() {
+    ctx.save();
+    ctx.translate(plane.x + plane.w / 2, plane.y + plane.h / 2);
+    ctx.rotate((plane.tilt * Math.PI) / 180);
+
+    const pw = plane.w, ph = plane.h;
+    const hx = -pw / 2, hy = -ph / 2;
+
+    // Fuselage
+    ctx.fillStyle = "#e8eef6";
+    ctx.beginPath();
+    ctx.ellipse(hx + pw * 0.5, hy + ph * 0.5, pw * 0.5, ph * 0.28, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Nose
+    ctx.fillStyle = "#cdd6e8";
+    ctx.beginPath();
+    ctx.moveTo(hx + pw * 0.9, hy + ph * 0.5);
+    ctx.lineTo(hx + pw * 1.05, hy + ph * 0.5);
+    ctx.lineTo(hx + pw * 0.9, hy + ph * 0.38);
+    ctx.closePath();
+    ctx.fill();
+
+    // Wing
+    ctx.fillStyle = "#a0b8d8";
+    ctx.beginPath();
+    ctx.moveTo(hx + pw * 0.45, hy + ph * 0.5);
+    ctx.lineTo(hx + pw * 0.55, hy + ph * 0.5);
+    ctx.lineTo(hx + pw * 0.35, hy + ph * 1.2);
+    ctx.lineTo(hx + pw * 0.15, hy + ph * 1.15);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tail fin
+    ctx.fillStyle = "#a0b8d8";
+    ctx.beginPath();
+    ctx.moveTo(hx + pw * 0.08, hy + ph * 0.35);
+    ctx.lineTo(hx + pw * 0.08, hy - ph * 0.1);
+    ctx.lineTo(hx + pw * 0.22, hy + ph * 0.35);
+    ctx.closePath();
+    ctx.fill();
+
+    // Window
+    ctx.fillStyle = "#7ecbff";
+    ctx.beginPath();
+    ctx.ellipse(hx + pw * 0.72, hy + ph * 0.42, 5, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawHUD() {
+    // Score
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 28px 'JetBrains Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "rgba(0,0,0,0.7)";
+    ctx.shadowBlur = 6;
+    ctx.fillText(score, W / 2, 52);
+    ctx.shadowBlur = 0;
+
+    // Level badge
+    const lv = currentLevel();
+    ctx.font = "bold 11px 'JetBrains Mono', monospace";
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.textAlign = "right";
+    ctx.fillText(lv.label.toUpperCase(), W - 12, 20);
+  }
+
+  function drawStartScreen() {
+    drawSky();
+    for (const b of buildings) drawBuilding(b);
+    drawGround();
+    drawPlane();
+
+    ctx.fillStyle = "rgba(0,0,0,0.45)";
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 36px 'JetBrains Mono', monospace";
+    ctx.shadowColor = "rgba(56,189,248,0.8)";
+    ctx.shadowBlur = 18;
+    ctx.fillText("FLAPPY PLANE", W / 2, H / 2 - 50);
+    ctx.shadowBlur = 0;
+
+    ctx.font = "14px 'JetBrains Mono', monospace";
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.fillText("Tap, Click or Space to fly", W / 2, H / 2 + 2);
+    ctx.fillText("5 levels · avoid the buildings", W / 2, H / 2 + 26);
+
+    if (bestScore > 0) {
+      ctx.fillStyle = "rgba(255,220,80,0.85)";
+      ctx.font = "bold 13px 'JetBrains Mono', monospace";
+      ctx.fillText("Best: " + bestScore, W / 2, H / 2 + 60);
+    }
+  }
+
+  function drawDeadScreen() {
+    ctx.fillStyle = "rgba(0,0,0,0.55)";
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ff6b6b";
+    ctx.font = "bold 34px 'JetBrains Mono', monospace";
+    ctx.shadowColor = "rgba(255,60,60,0.7)";
+    ctx.shadowBlur = 14;
+    ctx.fillText("GAME OVER", W / 2, H / 2 - 52);
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 22px 'JetBrains Mono', monospace";
+    ctx.fillText("Score: " + score, W / 2, H / 2 - 8);
+
+    if (score >= bestScore && score > 0) {
+      ctx.fillStyle = "rgba(255,220,80,0.9)";
+      ctx.font = "bold 13px 'JetBrains Mono', monospace";
+      ctx.fillText("★ New Best! ★", W / 2, H / 2 + 20);
+    } else if (bestScore > 0) {
+      ctx.fillStyle = "rgba(255,255,255,0.5)";
+      ctx.font = "13px 'JetBrains Mono', monospace";
+      ctx.fillText("Best: " + bestScore, W / 2, H / 2 + 20);
+    }
+
+    ctx.fillStyle = "rgba(255,255,255,0.65)";
+    ctx.font = "13px 'JetBrains Mono', monospace";
+    ctx.fillText("Tap, Click or Space to retry", W / 2, H / 2 + 52);
+  }
+
+  function gameLoop() {
+    update();
+
+    if (state === "start") {
+      drawStartScreen();
+    } else {
+      drawSky();
+      for (const b of buildings) drawBuilding(b);
+      drawGround();
+      drawPlane();
+      drawHUD();
+      if (state === "dead") drawDeadScreen();
+    }
+
+    raf = requestAnimationFrame(gameLoop);
+  }
+
+  // ── Open / close ──────────────────────────────────────────────────
+  function openGame() {
+    planeOver.classList.add("visible");
+    document.body.style.overflow = "hidden";
+    resetGame();
+    if (!raf) raf = requestAnimationFrame(gameLoop);
+  }
+
+  function closeGame() {
+    planeOver.classList.remove("visible");
+    document.body.style.overflow = "";
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+  }
+
+  // ── Input ─────────────────────────────────────────────────────────
+  planeFab.addEventListener("click", openGame);
+  closeBtn.addEventListener("click", closeGame);
+
+  canvas.addEventListener("click", flap);
+  canvas.addEventListener("touchstart", (e) => { e.preventDefault(); flap(); }, { passive: false });
+
+  document.addEventListener("keydown", (e) => {
+    if (!planeOver.classList.contains("visible")) return;
+    if (e.key === "Escape") { closeGame(); return; }
+    if (e.key === " " || e.key === "ArrowUp") { e.preventDefault(); flap(); }
   });
 }

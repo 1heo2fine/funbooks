@@ -882,6 +882,65 @@
       .book-title { font-size: 1.35rem; }
     }
 
+    /* ── Plane pill button ── */
+    .plane-pill {
+      background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(99,102,241,0.18));
+      border-color: rgba(56,189,248,0.4);
+      color: var(--text-muted);
+    }
+    .plane-pill:hover { border-color: rgba(56,189,248,0.7); color: #fff; }
+
+    /* ── Flappy Plane Overlay ── */
+    .plane-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: #0a0c14;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .plane-overlay.visible { display: flex; }
+    .plane-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .plane-bar-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.8);
+      text-transform: uppercase;
+    }
+    .plane-close-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      border-radius: 4px;
+    }
+    .plane-close-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .plane-canvas-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #plane-canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      image-rendering: pixelated;
+    }
+
     /* Custom Minimal Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -981,6 +1040,7 @@
       <button class="filter-glass-pill" data-filter="hot">Hot</button>
       <button class="filter-glass-pill" data-filter="new">New</button>
       <button class="filter-glass-pill active" data-filter="recommended">Recommended</button>
+      <button id="plane-fab" class="filter-glass-pill plane-pill" title="Play Flappy Plane">✈ Fly</button>
     </div>
 
     <!-- Results count -->
@@ -1034,6 +1094,19 @@
         <p class="ig-blocked-sub">Instagram uses protections that prevent embedding. Open it directly instead.</p>
         <button id="ig-open-tab" class="ig-open-tab-btn">Open Instagram ↗</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Flappy Plane Game Overlay -->
+  <div id="plane-overlay" class="plane-overlay">
+    <div class="plane-bar">
+      <span class="plane-bar-title">✈ Flappy Plane</span>
+      <button id="plane-close" class="plane-close-btn" title="Close (Esc)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="plane-canvas-wrap">
+      <canvas id="plane-canvas" width="480" height="640"></canvas>
     </div>
   </div>
 
