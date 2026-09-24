@@ -660,7 +660,22 @@ function initSocialSidebar() {
   });
 
   const exploreBtn = document.getElementById("explore-games-btn");
-  if (exploreBtn) exploreBtn.addEventListener("click", () => { closeSidebar(); setTimeout(() => { if (window._openGamesHub) window._openGamesHub(); }, 120); });
+  if (exploreBtn) exploreBtn.addEventListener("click", () => {
+    closeSidebar();
+    setTimeout(() => {
+      const overlay = document.createElement("div");
+      overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px";
+      const box = document.createElement("div");
+      box.style.cssText = "background:#1e1e2e;color:#e2e8f0;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1)";
+      box.innerHTML = `<div style="font-size:2rem;margin-bottom:12px">🎮</div><p style="margin:0 0 16px;font-size:1rem;line-height:1.5">Hey! all of these games were ai generated if u want to play real legit games go to <strong style="color:#a5b4fc">'Unblocked games'</strong></p><button id="_egOk" style="background:#6366f1;color:#fff;border:none;border-radius:8px;padding:10px 28px;font-size:0.95rem;cursor:pointer;font-weight:600">Got it</button>`;
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+      const dismiss = () => overlay.remove();
+      overlay.addEventListener("click", e => { if (e.target === overlay) dismiss(); });
+      box.querySelector("#_egOk").addEventListener("click", dismiss);
+      setTimeout(() => { if (window._openGamesHub) window._openGamesHub(); }, 200);
+    }, 120);
+  });
 
   const navHome = document.getElementById("sidebar-nav-home");
   const navIo = document.getElementById("sidebar-nav-io");
@@ -776,115 +791,196 @@ function initScrollHide() {
 
 function initMusicPlayer() {
   const TRACKS = [
-    { file: "track1.json", name: "Beyoncé – Morning Dew Donk" },
-    { file: "track2.json", name: "Wxoda – Vibin" },
-    { file: "track3.json", name: "LONOWN – addiction (Slowed)" },
-    { file: "track4.json", name: "Delinquent – My Destiny (Slowed)" },
+    { name: "Lo-Fi Chill",   bpm: 80,  root: 220  },
+    { name: "Study Beats",   bpm: 92,  root: 196  },
+    { name: "Ambient Flow",  bpm: 70,  root: 246.9},
+    { name: "Focus Mode",    bpm: 86,  root: 207.7},
   ];
 
-  const audio    = document.getElementById("music-audio");
   const counter  = document.getElementById("music-counter");
   const trackEl  = document.getElementById("music-track-name");
   const prevBtn  = document.getElementById("music-prev");
   const nextBtn  = document.getElementById("music-next");
   const playBtn  = document.getElementById("music-play");
   const playIcon = document.getElementById("music-play-icon");
-  const loadDot  = document.getElementById("music-loading");
   const progFill = document.getElementById("music-progress-fill");
   const progBar  = document.getElementById("music-progress-bar");
-  if (!audio) return;
 
   let idx = 0;
   let playing = false;
-  let loading = false;
-  const cache = {};  // blob URL cache per track index
+  let actx = null;
+  let masterGain = null;
+  let startTime = 0;
+  let elapsed = 0;
+  let rafId = null;
+  let schedId = null;
+  let nextNoteTime = 0;
+  let beat = 0;
+  const LOOK_AHEAD = 0.1;
+  const SCHED_MS = 25;
+  const TRACK_DUR = 180;
 
-  function setPlayIcon(isPlaying) {
+  function actxGet() {
+    if (!actx) {
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = actx.createGain();
+      masterGain.gain.value = 0.55;
+      masterGain.connect(actx.destination);
+    }
+    if (actx.state === "suspended") actx.resume();
+    return actx;
+  }
+
+  function setPlayIcon(on) {
     if (!playIcon) return;
-    playIcon.innerHTML = isPlaying
+    playIcon.innerHTML = on
       ? '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>'
       : '<polygon points="5 3 19 12 5 21 5 3"/>';
   }
 
-  function setLoading(on) {
-    loading = on;
-    if (loadDot) loadDot.style.display = on ? "block" : "none";
-    if (playBtn) playBtn.disabled = on;
-  }
-
   function updateMeta() {
-    const t = TRACKS[idx];
     if (counter) counter.textContent = `${idx + 1} / ${TRACKS.length}`;
-    if (trackEl) trackEl.textContent = t.name;
+    if (trackEl) trackEl.textContent = TRACKS[idx].name;
   }
 
-  async function loadAndPlay(i) {
+  function kick(t) {
+    const ctx = actx;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(masterGain);
+    o.frequency.setValueAtTime(160, t);
+    o.frequency.exponentialRampToValueAtTime(0.01, t + 0.35);
+    g.gain.setValueAtTime(0.9, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    o.start(t); o.stop(t + 0.35);
+  }
+
+  function hat(t, loud) {
+    const ctx = actx;
+    const sz = Math.floor(ctx.sampleRate * 0.06);
+    const buf = ctx.createBuffer(1, sz, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < sz; i++) d[i] = (Math.random() * 2 - 1);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 7000;
+    const g = ctx.createGain();
+    src.connect(hp); hp.connect(g); g.connect(masterGain);
+    g.gain.setValueAtTime(loud ? 0.35 : 0.18, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    src.start(t); src.stop(t + 0.06);
+  }
+
+  function bass(t, freq, dur) {
+    const ctx = actx;
+    const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
+    o.type = "sawtooth"; o.frequency.value = freq;
+    lp.type = "lowpass"; lp.frequency.value = 380;
+    o.connect(lp); lp.connect(g); g.connect(masterGain);
+    g.gain.setValueAtTime(0.32, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.85);
+    o.start(t); o.stop(t + dur);
+  }
+
+  function pad(t, freqs, dur) {
+    freqs.forEach(f => {
+      const ctx = actx;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      o.connect(g); g.connect(masterGain);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.045, t + 0.25);
+      g.gain.setValueAtTime(0.045, t + dur - 0.4);
+      g.gain.linearRampToValueAtTime(0, t + dur);
+      o.start(t); o.stop(t + dur);
+    });
+  }
+
+  function scheduleOne(t) {
+    const tr = TRACKS[idx];
+    const bd = 60 / tr.bpm;
+    const b16 = beat % 16;
+    const r = tr.root;
+    if (b16 === 0 || b16 === 8) kick(t);
+    if (b16 % 2 === 0) hat(t, b16 === 0 || b16 === 8);
+    const bassSeq = [r / 2, r * 0.75 / 2, r * 0.889 / 2, r / 2];
+    if (b16 % 4 === 0) bass(t, bassSeq[b16 / 4], bd * 3.5);
+    if (b16 % 4 === 0) {
+      const chords = [
+        [r, r * 1.25, r * 1.5],
+        [r * 0.889, r * 1.111, r * 1.333],
+        [r * 0.75, r * 0.944, r * 1.125],
+        [r * 1.0, r * 1.185, r * 1.5],
+      ];
+      pad(t, chords[b16 / 4], bd * 4);
+    }
+    beat++;
+    return bd;
+  }
+
+  function scheduler() {
+    const ctx = actxGet();
+    while (nextNoteTime < ctx.currentTime + LOOK_AHEAD) {
+      const d = scheduleOne(nextNoteTime);
+      nextNoteTime += d;
+    }
+  }
+
+  function updateProg() {
+    if (!playing) return;
+    const e = actx.currentTime - startTime + elapsed;
+    const pct = Math.min(e / TRACK_DUR, 1) * 100;
+    if (progFill) progFill.style.width = pct + "%";
+    if (pct >= 100) { stopPlay(); loadAndPlay((idx + 1) % TRACKS.length); return; }
+    rafId = requestAnimationFrame(updateProg);
+  }
+
+  function stopPlay() {
+    clearInterval(schedId); schedId = null;
+    cancelAnimationFrame(rafId); rafId = null;
+    if (actx) { elapsed += actx.currentTime - startTime; actx.suspend(); }
+    playing = false;
+    setPlayIcon(false);
+  }
+
+  function loadAndPlay(i) {
+    if (schedId) clearInterval(schedId);
+    if (rafId) cancelAnimationFrame(rafId);
     idx = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
+    beat = 0; elapsed = 0;
     updateMeta();
+    const ctx = actxGet();
+    startTime = ctx.currentTime;
+    nextNoteTime = ctx.currentTime;
     playing = true;
     setPlayIcon(true);
-
-    if (cache[idx]) {
-      audio.src = cache[idx];
-      audio.play().catch(() => {});
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const resp = await fetch(TRACKS[idx].file);
-      const { data } = await resp.json();
-      const bin = atob(data);
-      const bytes = new Uint8Array(bin.length);
-      for (let j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
-      const blob = new Blob([bytes], { type: "audio/mpeg" });
-      cache[idx] = URL.createObjectURL(blob);
-      audio.src = cache[idx];
-      audio.play().catch(() => {});
-    } catch (e) {
-      console.error("music load failed", e);
-      playing = false;
-      setPlayIcon(false);
-    } finally {
-      setLoading(false);
-    }
+    schedId = setInterval(scheduler, SCHED_MS);
+    rafId = requestAnimationFrame(updateProg);
   }
 
   function togglePlay() {
-    if (loading) return;
-    if (!audio.src || audio.src === window.location.href) {
-      loadAndPlay(idx);
-      return;
-    }
-    if (playing) {
-      audio.pause();
-      playing = false;
-      setPlayIcon(false);
+    if (playing) { stopPlay(); return; }
+    if (actx && actx.state === "suspended") {
+      actx.resume().then(() => {
+        startTime = actx.currentTime;
+        nextNoteTime = actx.currentTime;
+        playing = true; setPlayIcon(true);
+        schedId = setInterval(scheduler, SCHED_MS);
+        rafId = requestAnimationFrame(updateProg);
+      });
     } else {
-      audio.play().catch(() => {});
-      playing = true;
-      setPlayIcon(true);
+      loadAndPlay(idx);
     }
   }
 
-  audio.addEventListener("ended", () => loadAndPlay(idx + 1));
-  audio.addEventListener("timeupdate", () => {
-    if (!audio.duration || !progFill) return;
-    progFill.style.width = (audio.currentTime / audio.duration * 100) + "%";
-  });
-
-  if (progBar) progBar.addEventListener("click", (e) => {
-    if (!audio.duration) return;
-    const r = progBar.getBoundingClientRect();
-    audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
-  });
-
-  if (prevBtn) prevBtn.addEventListener("click", () => {
-    if (audio.currentTime > 3) { audio.currentTime = 0; return; }
-    loadAndPlay(idx - 1);
-  });
+  if (prevBtn) prevBtn.addEventListener("click", () => loadAndPlay(idx - 1));
   if (nextBtn) nextBtn.addEventListener("click", () => loadAndPlay(idx + 1));
   if (playBtn) playBtn.addEventListener("click", togglePlay);
+
+  if (progBar) progBar.addEventListener("click", e => {
+    const r = progBar.getBoundingClientRect();
+    const pct = (e.clientX - r.left) / r.width;
+    elapsed = pct * TRACK_DUR;
+    if (playing && actx) { startTime = actx.currentTime; nextNoteTime = actx.currentTime; }
+  });
 
   const player       = document.getElementById("music-player");
   const minimizeBtn  = document.getElementById("music-minimize");
@@ -894,8 +990,8 @@ function initMusicPlayer() {
     player && player.classList.toggle("minimized");
   });
   if (closeBtn) closeBtn.addEventListener("click", () => {
+    stopPlay();
     if (player) player.style.display = "none";
-    if (audio) { audio.pause(); playing = false; setPlayIcon(false); }
   });
 
   // expose so sidebar Spotify button can re-open the player
