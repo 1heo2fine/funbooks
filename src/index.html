@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>schoolbooks.lol — Curated Unblocked Directory</title>
+  <title>schoolbooks.lol — Unblocked Games Directory</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23030305'/%3E%3Cpath d='M16 22.5C13 20.5 8 20.5 5.5 21.5L5.5 9.5C8 8.5 13 8.5 16 10.5Z' fill='rgba(255,255,255,0.15)' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M16 22.5C19 20.5 24 20.5 26.5 21.5L26.5 9.5C24 8.5 19 8.5 16 10.5Z' fill='rgba(255,255,255,0.15)' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cline x1='16' y1='10.5' x2='16' y2='22.5' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -201,6 +202,27 @@
       font-weight: 400;
     }
 
+    .search-clear-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-right: 6px;
+      transition: all 0.15s var(--ease);
+    }
+
+    .search-clear-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-main);
+    }
+
     .search-badge-hint {
       font-size: 0.68rem;
       font-family: 'JetBrains Mono', monospace;
@@ -211,6 +233,15 @@
       padding: 4px 8px;
       flex-shrink: 0;
       user-select: none;
+    }
+
+    .results-meta {
+      width: 100%;
+      margin-bottom: 12px;
+      margin-top: -12px;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
     }
 
     /* Liquid Glass Filter Bar */
@@ -446,6 +477,421 @@
       width: 100%;
     }
 
+    /* Proxy Browser FAB + quick-hide hint wrapper */
+    .browser-area {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hide-hint-text {
+      font-size: 0.68rem;
+      color: #545663;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      opacity: 0.55;
+      transition: opacity 0.2s;
+    }
+    .hide-hint-text:hover { opacity: 1; }
+
+    .browser-fab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s var(--ease);
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .browser-fab:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-glass-hover);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+    .instagram-fab {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 50;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s var(--ease);
+      user-select: none;
+      text-decoration: none;
+    }
+    .instagram-fab:hover {
+      background: linear-gradient(135deg, rgba(253,87,88,0.18) 0%, rgba(131,58,180,0.18) 50%, rgba(253,196,104,0.12) 100%);
+      border-color: rgba(253,87,88,0.45);
+      color: #f9a0a0;
+      transform: translateY(-1px);
+    }
+
+    /* Proxy Browser Overlay */
+    .proxy-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      background: rgba(3, 3, 5, 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .proxy-chrome {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .proxy-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+    }
+
+    .proxy-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s var(--ease);
+      flex-shrink: 0;
+    }
+    .proxy-nav-btn:hover:not(:disabled) {
+      background: var(--surface-glass-hover);
+      border-color: var(--border-glass);
+      color: var(--text-main);
+    }
+    .proxy-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .proxy-url-input {
+      flex: 1;
+      height: 34px;
+      padding: 0 14px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: all 0.2s var(--ease);
+    }
+    .proxy-url-input:focus {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .proxy-url-input::placeholder {
+      color: var(--text-dim);
+      font-family: inherit;
+    }
+
+    .proxy-go-btn {
+      height: 34px;
+      padding: 0 16px;
+      border-radius: var(--radius-full);
+      background: #ffffff;
+      border: 1px solid #ffffff;
+      color: #030305;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s var(--ease);
+    }
+    .proxy-go-btn:hover {
+      background: #e0e0e8;
+      border-color: #e0e0e8;
+    }
+
+    .proxy-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s var(--ease);
+    }
+    .proxy-close-btn:hover {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: var(--accent-rose);
+    }
+
+    .proxy-status-bar {
+      padding: 4px 14px 6px;
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border-glass);
+    }
+
+    .proxy-frame-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .proxy-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #fff;
+    }
+
+    .proxy-blocked {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--bg);
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .proxy-blocked-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .proxy-blocked-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      max-width: 360px;
+      line-height: 1.5;
+    }
+    .proxy-open-tab-btn {
+      margin-top: 8px;
+      padding: 9px 20px;
+      border-radius: var(--radius-full);
+      background: #ffffff;
+      border: 1px solid #ffffff;
+      color: #030305;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s var(--ease);
+    }
+    .proxy-open-tab-btn:hover { background: #e0e0e8; border-color: #e0e0e8; }
+
+    /* Hot Banner */
+    .hot-banner {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.07), 0 4px 20px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .hot-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      display: block;
+      margin-bottom: 8px;
+    }
+    .hot-viewport { width: 100%; overflow: hidden; }
+    .hot-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+    }
+    .hot-slide {
+      flex: 0 0 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 2px;
+    }
+    .hot-slide-name {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.015em;
+    }
+    .hot-slide-star { color: #f59e0b; }
+    .hot-slide-domain {
+      display: block;
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+    .hot-slide-arrow {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+    .hot-dots {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .hot-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.15);
+      transition: all 0.35s var(--ease);
+      cursor: pointer;
+    }
+    .hot-dot.active {
+      width: 18px;
+      background: rgba(255,255,255,0.55);
+    }
+
+    /* Link hint and star */
+    .link-hint {
+      display: inline-block;
+      margin-top: 3px;
+      font-size: 0.66rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 5px;
+      padding: 1px 7px;
+    }
+    .link-star { color: #f59e0b; font-size: 0.8em; }
+
+    /* Quick-hide Book Overlay */
+    .book-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #f5f3ec;
+      color: #1c1c1e;
+      overflow-y: auto;
+      display: none;
+      font-family: 'Times New Roman', Times, Georgia, serif;
+    }
+    .book-overlay.visible { display: block; }
+    .book-page {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 56px 52px 80px;
+      min-height: 100vh;
+      position: relative;
+    }
+    .book-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #1c1c1e;
+      padding-bottom: 8px;
+      margin-bottom: 36px;
+      font-size: 0.72rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1c1c1e;
+    }
+    .book-chapter-label { font-size: 0.7rem; font-family: Arial, sans-serif; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #555; margin-bottom: 6px; }
+    .book-title { font-size: 1.8rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+    .book-section { font-size: 1.1rem; font-weight: 700; margin: 28px 0 10px; border-left: 3px solid #1c1c1e; padding-left: 12px; }
+    .book-subsection { font-size: 0.95rem; font-weight: 700; margin: 20px 0 8px; }
+    .book-p { font-size: 0.97rem; line-height: 1.75; margin-bottom: 14px; text-align: justify; }
+    .book-figure {
+      margin: 24px 0;
+      border: 1px solid #ccc;
+      background: #eeece3;
+      padding: 16px 20px;
+      font-size: 0.82rem;
+      font-family: Arial, sans-serif;
+      color: #444;
+      border-radius: 2px;
+    }
+    .book-figure-title { font-weight: 700; margin-bottom: 4px; font-size: 0.83rem; }
+    .book-key { font-weight: 700; font-style: italic; }
+    .book-unhide-btn {
+      display: inline;
+      font-size: 0.72rem;
+      font-family: Arial, sans-serif;
+      color: #777;
+      cursor: pointer;
+      user-select: none;
+      text-decoration: underline dotted;
+    }
+    .book-unhide-btn strong { font-size: 0.72rem; color: #444; }
+    .book-footer {
+      margin-top: 48px;
+      padding-top: 10px;
+      border-top: 1px solid #bbb;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      font-family: Arial, sans-serif;
+      color: #888;
+    }
+    @media (max-width: 640px) {
+      .book-page { padding: 32px 20px 60px; }
+      .book-title { font-size: 1.35rem; }
+    }
+
     /* Custom Minimal Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -472,7 +918,16 @@
   <div class="app-container">
     <!-- Title & Subtitle -->
     <h1 class="page-title">schoolbooks.lol</h1>
-    <p class="page-subtitle">made by 1heo new sites every day!</p>
+    <p class="page-subtitle">new sites every day · made by 1heo</p>
+
+    <!-- Today's Hottest Websites Banner -->
+    <div class="hot-banner" id="hot-banner">
+      <span class="hot-label">Today's hottest websites</span>
+      <div class="hot-viewport">
+        <div class="hot-track" id="hot-track"></div>
+      </div>
+      <div class="hot-dots" id="hot-dots"></div>
+    </div>
 
     <!-- Liquid Glass Search Bar -->
     <div class="search-container">
@@ -481,21 +936,140 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input id="search-input" class="search-input" type="text" placeholder="Search mirrors, proxy nodes, educational apps..." autocomplete="off" />
+        <input id="search-input" class="search-input" type="text" placeholder="Search games, proxies, educational sites..." autocomplete="off" />
+        <button id="search-clear" class="search-clear-btn" style="display:none" aria-label="Clear search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
         <span class="search-badge-hint">⌘K</span>
       </div>
     </div>
 
     <!-- Liquid Glass Filter Bar -->
     <div class="filter-scroll-wrap" id="filter-bar">
-      <button class="filter-glass-pill active" data-filter="all">All sites</button>
+      <button class="filter-glass-pill" data-filter="all">All sites</button>
       <button class="filter-glass-pill" data-filter="hot">Hot</button>
       <button class="filter-glass-pill" data-filter="new">New</button>
-      <button class="filter-glass-pill" data-filter="recommended">Recommended</button>
+      <button class="filter-glass-pill active" data-filter="recommended">Recommended</button>
+    </div>
+
+    <!-- Results count -->
+    <div class="results-meta">
+      <span id="results-count"></span>
     </div>
 
     <!-- Link Directory -->
     <div class="links-list" id="links-list"></div>
+  </div>
+
+  <!-- Instagram Button -->
+  <a href="https://www.instagram.com/schoolbooks.lol?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="instagram-fab" title="Follow our Instagram">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+    <span>follow our instagram</span>
+  </a>
+
+  <!-- Proxy Browser Button + quick-hide hint -->
+  <div class="browser-area">
+    <span id="hide-hint" class="hide-hint-text">press "Q" to hide screen or press this text</span>
+    <button id="open-browser" class="browser-fab" title="Open proxy browser">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="2" y1="12" x2="22" y2="12"></line>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+      </svg>
+      <span>DuckDuckGo</span>
+    </button>
+  </div>
+
+  <!-- Proxy Browser Overlay -->
+  <div id="proxy-browser-overlay" class="proxy-overlay" style="display:none">
+    <div class="proxy-chrome">
+      <div class="proxy-bar">
+        <button class="proxy-nav-btn" id="browser-back" title="Back" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="proxy-nav-btn" id="browser-forward" title="Forward" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="proxy-nav-btn" id="browser-refresh" title="Refresh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+        <input id="browser-url" class="proxy-url-input" type="text" placeholder="Search or enter a URL..." autocomplete="off" spellcheck="false" />
+        <button class="proxy-go-btn" id="browser-go">Go</button>
+        <button class="proxy-close-btn" id="browser-close" title="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="browser-status-bar" class="proxy-status-bar" style="display:none">
+        <span id="browser-status-text"></span>
+      </div>
+    </div>
+    <div class="proxy-frame-wrap">
+      <iframe id="browser-frame" class="proxy-frame" src="about:blank" allowfullscreen></iframe>
+      <div id="browser-blocked-msg" class="proxy-blocked" style="display:none">
+        <p class="proxy-blocked-title">This site can't be embedded</p>
+        <p class="proxy-blocked-sub">The page blocked display in iframes. Try opening it directly instead.</p>
+        <button id="browser-open-tab" class="proxy-open-tab-btn">Open in new tab</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick-hide Book Overlay -->
+  <div id="book-overlay" class="book-overlay">
+    <div class="book-page">
+      <div class="book-header-bar">
+        <span>Biology: Life Sciences</span>
+        <span>Chapter 7 &mdash; Cellular Energy</span>
+      </div>
+      <div class="book-chapter-label">Chapter 7</div>
+      <h1 class="book-title">Cellular Energy: Photosynthesis &amp; Respiration</h1>
+
+      <h2 class="book-section">7.1 Overview of Energy in Living Systems</h2>
+      <p class="book-p">All living organisms require a continuous supply of energy to carry out the fundamental processes of life — growth, reproduction, movement, and homeostasis. In biological systems, this energy is stored and transferred primarily through the molecule <span class="book-key">adenosine triphosphate (ATP)</span>. ATP acts as the universal energy currency of the cell, coupling energy-releasing reactions to energy-requiring ones.</p>
+      <p class="book-p">Energy flows through ecosystems in one direction — from sunlight to producers and then through consumers — while matter cycles continuously. The two central processes that govern this flow are <span class="book-key">photosynthesis</span>, which captures light energy, and <span class="book-key">cellular respiration</span>, which releases stored chemical energy.</p>
+
+      <h2 class="book-section">7.2 Photosynthesis: Capturing Light Energy</h2>
+      <p class="book-p">Photosynthesis occurs primarily in the <span class="book-key">chloroplasts</span> of plant cells and in the cells of algae and cyanobacteria. The overall equation can be summarized as:</p>
+      <div class="book-figure">
+        <div class="book-figure-title">Equation 7.1 — Overall Photosynthesis</div>
+        6CO&#8322; + 6H&#8322;O + light energy &rarr; C&#8326;H&#8321;&#8322;O&#8326; + 6O&#8322;
+      </div>
+      <p class="book-p">This deceptively simple equation conceals two distinct sets of reactions occurring inside the chloroplast. The <span class="book-key">light-dependent reactions</span> take place in the thylakoid membranes and capture sunlight, producing ATP and NADPH while releasing oxygen as a by-product. The <span class="book-key">Calvin cycle</span> (light-independent reactions) occurs in the stroma and uses the ATP and NADPH to fix carbon dioxide into organic molecules.</p>
+
+      <h3 class="book-subsection">7.2a The Light-Dependent Reactions</h3>
+      <p class="book-p">When light strikes a <span class="book-key">chlorophyll</span> molecule embedded in <span class="book-key">Photosystem II</span>, electrons become energized and leave the reaction center. These energized electrons travel down the <span class="book-key">electron transport chain</span>, releasing energy that pumps H&#8314; ions across the thylakoid membrane. The resulting electrochemical gradient drives <span class="book-key">ATP synthase</span> to phosphorylate ADP, producing ATP — a process called <span class="book-key">photophosphorylation</span>.</p>
+      <p class="book-p">Meanwhile, water molecules are split in a process called <span class="book-key">photolysis</span>, replenishing the electrons lost by chlorophyll and releasing O&#8322; gas. At <span class="book-key">Photosystem I</span>, electrons are re-energized and ultimately reduce NADP&#8314; to NADPH, which carries high-energy electrons to the Calvin cycle.</p>
+
+      <div class="book-figure">
+        <div class="book-figure-title">Figure 7.2 &mdash; Summary of Light-Dependent Reactions</div>
+        Photosystem II &rarr; Electron Transport Chain &rarr; ATP Synthase &rarr; Photosystem I &rarr; NADPH<br>
+        Water (H&#8322;O) is split at PSII; oxygen released as waste product.
+      </div>
+
+      <h3 class="book-subsection">7.2b The Calvin Cycle</h3>
+      <p class="book-p">The Calvin cycle uses the ATP and NADPH produced during the light-dependent reactions to convert CO&#8322; into <span class="book-key">glyceraldehyde-3-phosphate (G3P)</span>, a three-carbon sugar that serves as a precursor for glucose and other organic molecules. The enzyme <span class="book-key">RuBisCO</span> catalyzes the critical step of carbon fixation, attaching CO&#8322; to the five-carbon acceptor molecule <span class="book-key">ribulose-1,5-bisphosphate (RuBP)</span>.</p>
+      <p class="book-p">The cycle must turn three times (fixing three CO&#8322; molecules) to produce one net molecule of G3P, consuming 9 ATP and 6 NADPH in the process. Six turns of the cycle are needed to produce one glucose molecule.</p>
+
+      <h2 class="book-section">7.3 Cellular Respiration</h2>
+      <p class="book-p">Cellular respiration is the process by which cells break down organic molecules — primarily glucose — to release the energy stored in their chemical bonds. This energy is captured as ATP and used to power cellular work. The overall equation is essentially the reverse of photosynthesis:</p>
+      <div class="book-figure">
+        <div class="book-figure-title">Equation 7.2 — Overall Cellular Respiration</div>
+        C&#8326;H&#8321;&#8322;O&#8326; + 6O&#8322; &rarr; 6CO&#8322; + 6H&#8322;O + ATP (energy)
+      </div>
+      <p class="book-p">Cellular respiration occurs in three major stages: <span class="book-key">glycolysis</span> (in the cytoplasm), the <span class="book-key">Krebs cycle</span> (in the mitochondrial matrix), and <span class="book-key">oxidative phosphorylation</span> (at the inner mitochondrial membrane). Aerobic respiration produces approximately 36&ndash;38 ATP molecules per glucose molecule, making it far more efficient than anaerobic pathways.</p>
+
+      <div class="book-footer">
+        <span>Section 7 &mdash; Cellular Energy</span>
+        <span id="book-unhide-btn" class="book-unhide-btn"><strong>Press Q to unhide or click this text</strong></span>
+        <span>Page 214</span>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="./app.js"></script>
