@@ -824,13 +824,51 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
     @media (max-width: 640px) {
-      body { padding: 40px 16px 80px; }
-      .link-card { padding: 12px 14px; }
-      .link-url { font-size: 0.88rem; }
+      /* More top room so content clears the fixed FABs */
+      body { padding: 76px 16px 90px; }
+
+      /* Slightly smaller title so it doesn't overflow */
+      .page-title { font-size: clamp(1.9rem, 9vw, 3rem); margin-bottom: 10px; }
+      .page-subtitle { font-size: 0.9rem; margin-bottom: 22px; }
+
+      /* Filter pills: single scrollable row, no wrapping */
+      .filter-scroll-wrap {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        mask-image: linear-gradient(to right, #000 85%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, #000 85%, transparent 100%);
+      }
+      .filter-scroll-wrap::-webkit-scrollbar { display: none; }
+      .filter-glass-pill { flex-shrink: 0; white-space: nowrap; padding: 9px 18px; font-size: 0.73rem; min-height: 38px; }
+
+      /* Link cards */
+      .link-card { padding: 13px 14px; gap: 10px; }
+      .link-url { font-size: 0.9rem; }
       .link-sub-url { display: none; }
-      .filter-glass-pill { padding: 7px 14px; font-size: 0.7rem; }
-      .glass-btn { padding: 6px 9px; font-size: 0.7rem; }
+
+      /* Vote buttons: hide percentage, just icons — much less cramped */
+      .glass-btn { padding: 9px 10px; font-size: 0; min-height: 38px; min-width: 38px; }
+      .glass-btn svg { display: block; }
+      .glass-btn span { display: none; }
       .glass-btn-cta { display: none; }
+
+      /* Instagram FAB: icon only */
+      .instagram-fab { padding: 10px 12px; }
+      .instagram-fab span { display: none; }
+
+      /* Hide the Q-hint on mobile — not useful on touch */
+      .hide-hint-text { display: none; }
+
+      /* Hot banner tighter */
+      .hot-banner { padding: 10px 14px; margin-bottom: 16px; }
+
+      /* IG overlay: safe-area on notched phones */
+      .ig-bar { padding-top: max(10px, env(safe-area-inset-top, 10px)); }
+      .ig-frame-wrap { padding-bottom: env(safe-area-inset-bottom, 0px); }
     }
   </style>
 </head>
