@@ -1834,13 +1834,14 @@ function initFishingGame() {
   if (!overlay) return;
 
   const RARITY = {
-    common:    {label:"Common",    color:"#94a3b8", glow:"rgba(148,163,184,0.3)",  weight:55},
-    uncommon:  {label:"Uncommon",  color:"#34d399", glow:"rgba(52,211,153,0.35)",  weight:25},
-    rare:      {label:"Rare",      color:"#60a5fa", glow:"rgba(96,165,250,0.45)",  weight:12},
-    epic:      {label:"Epic",      color:"#c084fc", glow:"rgba(192,132,252,0.5)",  weight:5},
-    legendary: {label:"Legendary", color:"#fbbf24", glow:"rgba(251,191,36,0.55)",  weight:2},
-    mythic:    {label:"Mythic",    color:"#f472b6", glow:"rgba(244,114,182,0.6)",  weight:0.8},
-    secret:    {label:"SECRET",    color:"#e2e8f0", glow:"rgba(255,255,255,0.65)", weight:0.2},
+    common:     {label:"Common",     color:"#94a3b8", glow:"rgba(148,163,184,0.3)",  weight:55},
+    uncommon:   {label:"Uncommon",   color:"#34d399", glow:"rgba(52,211,153,0.35)",  weight:25},
+    rare:       {label:"Rare",       color:"#60a5fa", glow:"rgba(96,165,250,0.45)",  weight:12},
+    epic:       {label:"Epic",       color:"#c084fc", glow:"rgba(192,132,252,0.5)",  weight:5},
+    legendary:  {label:"Legendary",  color:"#fbbf24", glow:"rgba(251,191,36,0.55)",  weight:2},
+    mythic:     {label:"Mythic",     color:"#f472b6", glow:"rgba(244,114,182,0.6)",  weight:0.8},
+    secret:     {label:"SECRET",     color:"#e2e8f0", glow:"rgba(255,255,255,0.65)", weight:0.03},
+    impossible: {label:"IMPOSSIBLE", color:"#ff0050", glow:"rgba(255,0,80,0.7)",     weight:0.001},
   };
 
   const FISH = [
@@ -1902,15 +1903,40 @@ function initFishingGame() {
     {id:"aurorafish",name:"Aurora Salmon",          emoji:"🌈",rarity:"mythic",   wt:[3,12],     desc:"Scales shimmer every color at once"},
     {id:"eelec",     name:"Electric Eel",           emoji:"⚡",rarity:"mythic",   wt:[5,20],     desc:"600 volts — you felt that one"},
     // Secret (3)
-    {id:"leviathan", name:"Ancient Leviathan",      emoji:"🌊",rarity:"secret",   wt:[8000,32000],desc:"Biblical sea monster. CLASSIFIED."},
-    {id:"crystaldragon",name:"Crystal Dragon Fish", emoji:"🐲",rarity:"secret",   wt:[0.001,0.01],desc:"Looks like a fragment of the universe itself"},
-    {id:"thatone",   name:"The One That Got Away",  emoji:"❓",rarity:"secret",   wt:[null,null], desc:"You finally caught it. It's real."},
+    {id:"leviathan", name:"Ancient Leviathan",      emoji:"🌊",rarity:"secret",     wt:[8000,32000],desc:"Biblical sea monster. CLASSIFIED."},
+    {id:"crystaldragon",name:"Crystal Dragon Fish", emoji:"🐲",rarity:"secret",     wt:[0.001,0.01],desc:"Looks like a fragment of the universe itself"},
+    {id:"thatone",   name:"The One That Got Away",  emoji:"❓",rarity:"secret",     wt:[null,null], desc:"You finally caught it. It's real."},
+    // Impossible (1)
+    {id:"kraken",    name:"The Kraken",             emoji:"🦑",rarity:"impossible", wt:[500000,2000000],desc:"It shouldn't exist. It does. You'll never prove it."},
   ];
 
+  const LUCK_KEY = "fishing_luck_v1";
+  const MAX_LUCK = 1.0, LUCK_PER_CAST = 0.0005;
+  let totalCasts = 0, luck = 0;
+  (function loadLuckState() {
+    try { const d = JSON.parse(localStorage.getItem(LUCK_KEY)||"{}"); totalCasts = d.casts||0; luck = d.luck||0; } catch {}
+  })();
+  function saveLuckState() { try { localStorage.setItem(LUCK_KEY, JSON.stringify({casts:totalCasts,luck})); } catch {} }
+
+  function getLuckWeights() {
+    const L = luck;
+    return {
+      common:     RARITY.common.weight     * Math.max(0, 1 - L * 1.4),
+      uncommon:   RARITY.uncommon.weight   * Math.max(0, 1 - L),
+      rare:       RARITY.rare.weight       * (1 + L * 2),
+      epic:       RARITY.epic.weight       * (1 + L * 3.5),
+      legendary:  RARITY.legendary.weight  * (1 + L * 6),
+      mythic:     RARITY.mythic.weight     * (1 + L * 10),
+      secret:     RARITY.secret.weight     * (1 + L * 16),
+      impossible: RARITY.impossible.weight,
+    };
+  }
+
   function rollFish() {
-    const tot = Object.values(RARITY).reduce((s,r) => s+r.weight, 0);
+    const w = getLuckWeights();
+    const tot = Object.values(w).reduce((s,v) => s+v, 0);
     let rand = Math.random()*tot, tier = "common";
-    for (const [t,r] of Object.entries(RARITY)) { rand -= r.weight; if (rand <= 0) { tier = t; break; } }
+    for (const [t,v] of Object.entries(w)) { rand -= v; if (rand <= 0) { tier = t; break; } }
     const pool = FISH.filter(f => f.rarity === tier);
     const fish = pool[Math.floor(Math.random()*pool.length)];
     const [lo, hi] = fish.wt;
@@ -1941,7 +1967,8 @@ function initFishingGame() {
   }
 
   let state = "idle", stateStart = 0;
-  const CAST_DUR = 550, REEL_DUR = 650, MISS_DUR = 1200;
+  let CAST_DUR = 550, REEL_DUR = 650, MISS_DUR = 1200;
+  let speedActive = false, autoActive = false, autoTimer = null;
   let bobTX = 200, nibbleActive = false, hookOpen = false;
   let waitTimer = null, nibbleMissTimer = null, nibblePingTimer = null;
 
@@ -2070,17 +2097,23 @@ function initFishingGame() {
     if (castBtn) castBtn.style.display = "";
     if (hookBtn) hookBtn.style.display = "none";
     if (revealEl) { revealEl.style.display = "none"; revealEl.className = "fish-reveal"; }
+    if (autoActive) { clearTimeout(autoTimer); autoTimer = setTimeout(doCast, speedActive ? 450 : 900); }
   }
 
   function doCast() {
     if (state !== "idle") return;
+    totalCasts++;
+    luck = Math.min(MAX_LUCK, luck + LUCK_PER_CAST);
+    saveLuckState();
+    updateStatsBar();
+    updateSideButtons();
     bobTX = canvas.width * (0.22 + Math.random()*0.38);
     enterState("casting");
     castBtn.style.display = "none";
     waitTimer = setTimeout(() => {
       if (state === "casting") {
         enterState("waiting");
-        waitTimer = setTimeout(startNibble, 2000 + Math.random()*5000);
+        waitTimer = setTimeout(startNibble, (speedActive ? 1000 : 2000) + Math.random()*(speedActive ? 2500 : 5000));
       }
     }, CAST_DUR);
   }
@@ -2129,7 +2162,7 @@ function initFishingGame() {
     rnEmoji.textContent = fish.emoji;
     rnName.textContent = fish.name;
     rnDesc.textContent = fish.desc;
-    rnWeight.textContent = wStr ? `${wStr} kg` : "?? kg";
+    rnWeight.textContent = wStr ? `${parseFloat(wStr).toLocaleString()} kg` : "?? kg";
     const inner = revealEl.querySelector(".fish-rv-inner");
     if (inner) { inner.style.setProperty("--rv-color", r.color); inner.style.setProperty("--rv-glow", r.glow); }
     revealEl.style.display = "flex";
@@ -2138,6 +2171,56 @@ function initFishingGame() {
     revealEl.classList.add("fish-reveal-show");
     updateCollBtn();
   }
+
+  const speedBtn = document.getElementById("fish-speed-btn");
+  const autoBtn  = document.getElementById("fish-auto-btn");
+  const totalCastsEl = document.getElementById("fish-total-casts");
+  const luckBarEl    = document.getElementById("fish-luck-bar");
+
+  function updateStatsBar() {
+    if (totalCastsEl) totalCastsEl.textContent = `${totalCasts.toLocaleString()} CAST${totalCasts !== 1 ? "S" : ""}`;
+    if (luckBarEl) luckBarEl.textContent = `LUCK ${(luck * 100).toFixed(2)}%`;
+  }
+
+  function updateSideButtons() {
+    if (speedBtn) {
+      if (totalCasts >= 100) {
+        speedBtn.classList.add("unlocked");
+        speedBtn.innerHTML = speedActive ? "2× ON" : "2× OFF";
+        speedBtn.classList.toggle("fish-btn-on", speedActive);
+        speedBtn.title = speedActive ? "2× Speed — click to disable" : "2× Speed — click to enable";
+      } else {
+        speedBtn.innerHTML = `🔒 2× <span style="font-size:0.5em;opacity:0.5">${totalCasts}/100</span>`;
+      }
+    }
+    if (autoBtn) {
+      if (totalCasts >= 25) {
+        autoBtn.classList.add("unlocked");
+        autoBtn.innerHTML = autoActive ? "AUTO ■" : "AUTO ▶";
+        autoBtn.classList.toggle("fish-btn-on", autoActive);
+        autoBtn.title = autoActive ? "Auto-cast ON — click to stop" : "Auto-cast — click to enable";
+      } else {
+        autoBtn.innerHTML = `🔒 AUTO <span style="font-size:0.5em;opacity:0.5">${totalCasts}/25</span>`;
+      }
+    }
+  }
+
+  if (speedBtn) speedBtn.addEventListener("click", () => {
+    if (totalCasts < 100) return;
+    speedActive = !speedActive;
+    CAST_DUR = speedActive ? 275 : 550;
+    REEL_DUR = speedActive ? 325 : 650;
+    MISS_DUR = speedActive ? 600 : 1200;
+    updateSideButtons();
+  });
+
+  if (autoBtn) autoBtn.addEventListener("click", () => {
+    if (totalCasts < 25) return;
+    autoActive = !autoActive;
+    if (!autoActive) { clearTimeout(autoTimer); autoTimer = null; }
+    updateSideButtons();
+    if (autoActive && state === "idle") { clearTimeout(autoTimer); autoTimer = setTimeout(doCast, 600); }
+  });
 
   if (castBtn) castBtn.addEventListener("click", doCast);
   if (hookBtn) hookBtn.addEventListener("click", doHook);
@@ -2151,8 +2234,24 @@ function initFishingGame() {
 
   function updateCollBtn() {
     const n = Object.keys(loadColl()).length;
-    const btn = overlay.querySelector('[data-tab="collection"]');
-    if (btn) btn.textContent = `Collection (${n})`;
+    const btn = overlay.querySelector('[data-tab="index"]');
+    if (btn) btn.textContent = `Index (${n})`;
+  }
+
+  function fishCatchPct(fish) {
+    const baseW = { common:55, uncommon:25, rare:12, epic:5, legendary:2, mythic:0.8, secret:0.03, impossible:0.001 };
+    const total = Object.values(baseW).reduce((s,v) => s+v, 0);
+    const tierCount = FISH.filter(f => f.rarity === fish.rarity).length;
+    return (baseW[fish.rarity] / total / tierCount) * 100;
+  }
+
+  function formatPct(p) {
+    if (p === 0) return "0%";
+    if (p < 0.001) return p.toFixed(4) + "%";
+    if (p < 0.01)  return p.toFixed(3) + "%";
+    if (p < 0.1)   return p.toFixed(2) + "%";
+    if (p < 1)     return p.toFixed(2) + "%";
+    return p.toFixed(1) + "%";
   }
 
   function renderCollection() {
@@ -2161,21 +2260,22 @@ function initFishingGame() {
     if (collCountEl) collCountEl.textContent = `${caught.length} / ${FISH.length} discovered`;
     if (!collGrid) return;
     collGrid.innerHTML = "";
-    const order = ["secret","mythic","legendary","epic","rare","uncommon","common"];
+    const order = ["impossible","secret","mythic","legendary","epic","rare","uncommon","common"];
     const sorted = [
       ...FISH.filter(f => c[f.id]).sort((a,b) => order.indexOf(a.rarity)-order.indexOf(b.rarity)),
-      ...FISH.filter(f => !c[f.id])
+      ...FISH.filter(f => !c[f.id]).sort((a,b) => order.indexOf(a.rarity)-order.indexOf(b.rarity))
     ];
     for (const fish of sorted) {
       const data = c[fish.id], r = RARITY[fish.rarity];
+      const pct = formatPct(fishCatchPct(fish));
       const div = document.createElement("div");
-      div.className = "fish-cc" + (data ? " fish-cc-found" : " fish-cc-unknown");
+      div.className = "fish-cc" + (data ? " fish-cc-found" : " fish-cc-unknown") + (fish.rarity === "impossible" ? " fish-cc-impossible" : "");
       div.style.setProperty("--rc", r.color);
       if (data) {
-        div.innerHTML = `<div class="fish-cc-em">${fish.emoji}</div><div class="fish-cc-nm">${fish.name}</div><div class="fish-cc-ti" style="color:${r.color}">${r.label}</div><div class="fish-cc-ct">×${data.n}</div>`;
-        div.title = `${fish.name} · ${fish.desc}\nBest: ${data.best} kg`;
+        div.innerHTML = `<div class="fish-cc-em">${fish.emoji}</div><div class="fish-cc-nm">${fish.name}</div><div class="fish-cc-ti" style="color:${r.color}">${r.label}</div><div class="fish-cc-pct">${pct}</div><div class="fish-cc-ct">×${data.n}</div>`;
+        div.title = `${fish.name} · ${fish.desc}\nBest: ${data.best.toLocaleString()} kg · Catch rate: ${pct}`;
       } else {
-        div.innerHTML = `<div class="fish-cc-em fish-cc-unk">?</div><div class="fish-cc-nm fish-cc-unk">???</div><div class="fish-cc-ti" style="color:${r.color}">${r.label}</div>`;
+        div.innerHTML = `<div class="fish-cc-em fish-cc-unk">?</div><div class="fish-cc-nm fish-cc-unk">???</div><div class="fish-cc-ti" style="color:${r.color}">${r.label}</div><div class="fish-cc-pct">${pct}</div>`;
       }
       collGrid.appendChild(div);
     }
@@ -2186,7 +2286,7 @@ function initFishingGame() {
       tabBtns.forEach(b => b.classList.remove("active")); btn.classList.add("active");
       const tab = btn.dataset.tab;
       if (gameTab) gameTab.style.display = tab==="game" ? "" : "none";
-      if (collTab) { collTab.style.display = tab==="collection" ? "" : "none"; if (tab==="collection") renderCollection(); }
+      if (collTab) { collTab.style.display = tab==="index" ? "" : "none"; if (tab==="index") renderCollection(); }
     });
   });
 
@@ -2199,6 +2299,8 @@ function initFishingGame() {
     ro.observe(canvas.parentElement);
     goToIdle();
     updateCollBtn();
+    updateStatsBar();
+    updateSideButtons();
     if (!raf) raf = requestAnimationFrame(loop);
   }
 

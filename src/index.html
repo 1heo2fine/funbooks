@@ -2149,23 +2149,36 @@
     .fish-tab-btn:hover:not(.active) { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.7); }
     .fish-tab-panel { position:absolute; inset:0; display:flex; flex-direction:column; overflow:hidden; }
     #fish-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
-    .fish-action-area { position:absolute; bottom:28px; left:0; right:0; display:flex; justify-content:center; pointer-events:none; z-index:2; }
+    .fish-stats-bar { position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between; align-items:center; padding:6px 14px; background:rgba(0,5,16,0.6); backdrop-filter:blur(6px); z-index:3; font-family:'JetBrains Mono',monospace; font-size:0.58rem; font-weight:700; color:rgba(255,255,255,0.35); letter-spacing:0.06em; border-bottom:1px solid rgba(255,255,255,0.05); pointer-events:none; }
+    .fish-stats-luck { color:rgba(34,211,238,0.65); }
+    .fish-action-bar { position:absolute; bottom:22px; left:0; right:0; display:flex; align-items:center; justify-content:center; gap:8px; pointer-events:none; z-index:2; padding:0 10px; }
+    .fish-center-btns { display:flex; align-items:center; justify-content:center; }
     .fish-main-btn { pointer-events:all; padding:14px 42px; border-radius:40px; border:1px solid rgba(34,211,238,0.38); background:rgba(34,211,238,0.11); backdrop-filter:blur(14px); color:#e2e8f0; font-size:1rem; font-weight:800; cursor:pointer; font-family:'Syne',sans-serif; letter-spacing:0.07em; box-shadow:0 0 18px rgba(34,211,238,0.12); transition:all 0.18s; }
     .fish-main-btn:hover { background:rgba(34,211,238,0.2); border-color:rgba(34,211,238,0.6); box-shadow:0 0 30px rgba(34,211,238,0.28); transform:translateY(-2px); }
     .fish-main-btn:active { transform:scale(0.96); }
     .fish-hook-btn { pointer-events:all; padding:15px 48px; border-radius:40px; border:1px solid rgba(255,80,80,0.55); background:rgba(255,60,60,0.15); backdrop-filter:blur(14px); color:#fff; font-size:1.1rem; font-weight:900; cursor:pointer; font-family:'Syne',sans-serif; letter-spacing:0.09em; box-shadow:0 0 24px rgba(255,80,80,0.25); animation:fish-hook-pulse 0.45s ease-in-out infinite; }
     @keyframes fish-hook-pulse { 0%,100%{transform:scale(1);box-shadow:0 0 24px rgba(255,80,80,0.25);} 50%{transform:scale(1.07);box-shadow:0 0 44px rgba(255,80,80,0.55);} }
+    .fish-side-btn { pointer-events:all; min-width:66px; padding:10px 12px; border-radius:40px; border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.28); backdrop-filter:blur(10px); color:rgba(255,255,255,0.22); font-size:0.65rem; font-weight:800; cursor:not-allowed; font-family:'JetBrains Mono',monospace; letter-spacing:0.04em; transition:all 0.18s; text-align:center; white-space:nowrap; }
+    .fish-side-btn.unlocked { color:rgba(255,255,255,0.6); cursor:pointer; border-color:rgba(34,211,238,0.22); background:rgba(34,211,238,0.06); }
+    .fish-side-btn.unlocked:hover { background:rgba(34,211,238,0.14); border-color:rgba(34,211,238,0.45); color:#e2e8f0; }
+    .fish-side-btn.fish-btn-on { background:rgba(34,211,238,0.18); border-color:rgba(34,211,238,0.55); color:#22d3ee; }
     .fish-reveal { position:absolute; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,5,16,0.72); backdrop-filter:blur(8px); z-index:5; }
     .fish-rv-inner { background:rgba(4,16,44,0.92); border:1px solid var(--rv-color,rgba(255,255,255,0.12)); border-radius:18px; padding:28px 24px 24px; max-width:300px; width:88%; text-align:center; display:flex; flex-direction:column; gap:9px; box-shadow:0 8px 60px var(--rv-glow,rgba(255,255,255,0.04)); }
     .fish-reveal-show .fish-rv-inner { animation:fish-rv-in 0.45s cubic-bezier(0.17,0.67,0.35,1.18) both; }
     @keyframes fish-rv-in { from{transform:scale(0.82) translateY(24px);opacity:0;} to{transform:scale(1) translateY(0);opacity:1;} }
-    .fish-rarity-legendary .fish-rv-inner, .fish-rarity-mythic .fish-rv-inner, .fish-rarity-secret .fish-rv-inner { animation:fish-rv-epic 0.6s cubic-bezier(0.17,0.67,0.35,1.18) both; }
+    .fish-rarity-legendary .fish-rv-inner, .fish-rarity-mythic .fish-rv-inner { animation:fish-rv-epic 0.6s cubic-bezier(0.17,0.67,0.35,1.18) both, fish-legendary-flash 1.4s 0.62s ease-in-out 2; }
+    .fish-rarity-secret .fish-rv-inner { animation:fish-rv-epic 0.6s cubic-bezier(0.17,0.67,0.35,1.18) both; box-shadow:0 0 80px rgba(255,255,255,0.12),0 0 160px rgba(255,255,255,0.04); }
+    .fish-rarity-impossible .fish-rv-inner { animation:fish-rv-impossible 0.9s cubic-bezier(0.17,0.67,0.35,1.18) both; border-color:#ff0050; box-shadow:0 0 120px rgba(255,0,80,0.3),0 0 280px rgba(255,0,80,0.1); }
     @keyframes fish-rv-epic { from{transform:scale(0.55);opacity:0;filter:blur(8px);} 65%{transform:scale(1.06);opacity:1;filter:blur(0);} to{transform:scale(1);} }
-    .fish-rarity-secret .fish-rv-inner { box-shadow:0 0 80px rgba(255,255,255,0.12),0 0 160px rgba(255,255,255,0.04); }
+    @keyframes fish-legendary-flash { 0%,100%{box-shadow:0 8px 60px var(--rv-glow);} 50%{box-shadow:0 0 180px var(--rv-glow),0 0 60px rgba(255,215,0,0.1);} }
+    @keyframes fish-rv-impossible { from{transform:scale(0.2) rotate(-720deg);opacity:0;filter:blur(24px) saturate(0);} 55%{transform:scale(1.15) rotate(8deg);opacity:1;filter:blur(0) saturate(1.8);} 75%{transform:scale(0.96) rotate(-3deg);} to{transform:scale(1) rotate(0);filter:saturate(1);} }
     .fish-rn-rarity { font-size:0.65rem; font-weight:900; letter-spacing:0.15em; text-transform:uppercase; font-family:'JetBrains Mono',monospace; }
-    .fish-rn-emoji { font-size:3.4rem; line-height:1; margin:2px 0; }
+    .fish-rn-emoji { font-size:3.4rem; line-height:1; margin:2px 0; transition:font-size 0.1s; }
+    .fish-rarity-legendary .fish-rn-emoji, .fish-rarity-mythic .fish-rn-emoji, .fish-rarity-secret .fish-rn-emoji, .fish-rarity-impossible .fish-rn-emoji { font-size:5.4rem; }
     .fish-rarity-secret .fish-rn-emoji { animation:fish-secret-spin 1.2s cubic-bezier(0.17,0.67,0.35,1.18); }
+    .fish-rarity-impossible .fish-rn-emoji { animation:fish-impossible-spin 1.6s cubic-bezier(0.17,0.67,0.35,1.18); }
     @keyframes fish-secret-spin { from{transform:scale(0.1) rotate(-540deg);} to{transform:scale(1) rotate(0);} }
+    @keyframes fish-impossible-spin { from{transform:scale(0.05) rotate(-1080deg);filter:blur(12px);} 65%{transform:scale(1.18) rotate(15deg);filter:blur(0);} 80%{transform:scale(0.94) rotate(-5deg);} to{transform:scale(1) rotate(0);} }
     .fish-rn-name { font-size:1.2rem; font-weight:800; color:#e2e8f0; font-family:'Syne',sans-serif; }
     .fish-rn-desc { font-size:0.73rem; color:rgba(255,255,255,0.45); line-height:1.55; }
     .fish-rn-weight { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.3); font-family:'JetBrains Mono',monospace; }
@@ -2179,6 +2192,8 @@
     .fish-cc-nm { font-size:0.56rem; font-weight:700; color:rgba(255,255,255,0.65); line-height:1.2; text-align:center; word-break:break-word; }
     .fish-cc-ti { font-size:0.5rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; opacity:0.75; }
     .fish-cc-ct { font-size:0.52rem; font-weight:600; color:rgba(255,255,255,0.3); font-family:'JetBrains Mono',monospace; }
+    .fish-cc-pct { font-size:0.46rem; font-weight:700; color:rgba(255,255,255,0.2); font-family:'JetBrains Mono',monospace; letter-spacing:0.02em; }
+    .fish-cc-impossible { border-color:rgba(255,0,80,0.18); background:rgba(255,0,80,0.03); }
   </style>
 </head>
 <body>
@@ -2747,7 +2762,7 @@
       <span class="game-modal-title">🎣 Gone Fishing</span>
       <div class="fish-tab-row">
         <button class="fish-tab-btn active" data-tab="game">Game</button>
-        <button class="fish-tab-btn" data-tab="collection">Collection</button>
+        <button class="fish-tab-btn" data-tab="index">Index</button>
       </div>
       <button class="game-modal-close" data-for="fishing-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     </div>
@@ -2755,9 +2770,17 @@
       <!-- Game panel -->
       <div id="fish-game-tab" class="fish-tab-panel">
         <canvas id="fish-canvas"></canvas>
-        <div class="fish-action-area">
-          <button id="fish-cast-btn" class="fish-main-btn">🎣 CAST</button>
-          <button id="fish-hook-btn" class="fish-hook-btn" style="display:none">🪝 HOOK!</button>
+        <div class="fish-stats-bar">
+          <span id="fish-total-casts">0 CASTS</span>
+          <span id="fish-luck-bar" class="fish-stats-luck">LUCK 0.00%</span>
+        </div>
+        <div class="fish-action-bar">
+          <button id="fish-speed-btn" class="fish-side-btn" title="Unlocks at 100 casts">🔒 2×</button>
+          <div class="fish-center-btns">
+            <button id="fish-cast-btn" class="fish-main-btn">CAST</button>
+            <button id="fish-hook-btn" class="fish-hook-btn" style="display:none">🪝 HOOK!</button>
+          </div>
+          <button id="fish-auto-btn" class="fish-side-btn" title="Unlocks at 25 casts">🔒 AUTO</button>
         </div>
         <div id="fish-reveal" class="fish-reveal">
           <div class="fish-rv-inner">
@@ -2770,10 +2793,10 @@
           </div>
         </div>
       </div>
-      <!-- Collection panel -->
+      <!-- Index panel -->
       <div id="fish-coll-tab" class="fish-tab-panel" style="display:none">
         <div class="fish-coll-header">
-          <span class="fish-coll-count-text" id="fish-coll-count">0 / 54 discovered</span>
+          <span class="fish-coll-count-text" id="fish-coll-count">0 / 55 discovered</span>
         </div>
         <div style="flex:1;overflow-y:auto;padding:8px 10px 20px">
           <div id="fish-coll-grid" class="fish-coll-grid"></div>
