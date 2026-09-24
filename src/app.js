@@ -302,7 +302,8 @@ function initBrowser() {
   function openOverlay() {
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
-    urlInput.focus();
+    if (!currentUrl) navigate("https://duckduckgo.com");
+    else urlInput.focus();
   }
 
   function closeOverlay() {
