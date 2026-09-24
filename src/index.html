@@ -2,8 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>schoolbooks.lol — Unblocked Games Directory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Unblocked Games – schoolbooks.lol</title>
+  <meta name="description" content="Play 100+ unblocked games at school — Retro Bowl, 1v1.lol, Krunker, Cool Math Games, and more. Free game sites that work on school WiFi." />
+  <meta name="keywords" content="unblocked games, unblocked games at school, free games at school, games not blocked by school, Retro Bowl unblocked, 1v1.lol unblocked, Krunker unblocked, Cool Math Games, Agar.io unblocked, Slither.io unblocked, schoolbooks.lol, unblocked game sites" />
+  <link rel="canonical" href="https://www.schoolbooks.lol/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Unblocked Games – schoolbooks.lol" />
+  <meta property="og:description" content="100+ free unblocked game sites that work at school. New sites added daily." />
+  <meta property="og:url" content="https://www.schoolbooks.lol/" />
+  <meta property="og:site_name" content="schoolbooks.lol" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Unblocked Games – schoolbooks.lol" />
+  <meta name="twitter:description" content="100+ free unblocked game sites that work at school." />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "schoolbooks.lol",
+        "url": "https://www.schoolbooks.lol",
+        "description": "Free unblocked games directory for students — 100+ game sites that work on school WiFi.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://www.schoolbooks.lol/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "name": "Top Unblocked Game Sites",
+        "description": "The best unblocked games and game sites that work at school.",
+        "url": "https://www.schoolbooks.lol",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "1v1.lol Unblocked", "url": "https://1v1.lol" },
+          { "@type": "ListItem", "position": 2, "name": "Krunker.io Unblocked", "url": "https://krunker.io" },
+          { "@type": "ListItem", "position": 3, "name": "Cool Math Games", "url": "https://coolmathgames.com" },
+          { "@type": "ListItem", "position": 4, "name": "Agar.io Unblocked", "url": "https://agar.io" },
+          { "@type": "ListItem", "position": 5, "name": "Slither.io Unblocked", "url": "https://slither.io" }
+        ]
+      }
+    ]
+  }
+  </script>
+
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23030305'/%3E%3Cpath d='M16 22.5C13 20.5 8 20.5 5.5 21.5L5.5 9.5C8 8.5 13 8.5 16 10.5Z' fill='rgba(255,255,255,0.15)' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M16 22.5C19 20.5 24 20.5 26.5 21.5L26.5 9.5C24 8.5 19 8.5 16 10.5Z' fill='rgba(255,255,255,0.15)' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cline x1='16' y1='10.5' x2='16' y2='22.5' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -824,13 +876,51 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
     @media (max-width: 640px) {
-      body { padding: 40px 16px 80px; }
-      .link-card { padding: 12px 14px; }
-      .link-url { font-size: 0.88rem; }
+      /* More top room so content clears the fixed FABs */
+      body { padding: 76px 16px 90px; }
+
+      /* Slightly smaller title so it doesn't overflow */
+      .page-title { font-size: clamp(1.9rem, 9vw, 3rem); margin-bottom: 10px; }
+      .page-subtitle { font-size: 0.9rem; margin-bottom: 22px; }
+
+      /* Filter pills: single scrollable row, no wrapping */
+      .filter-scroll-wrap {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        mask-image: linear-gradient(to right, #000 85%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, #000 85%, transparent 100%);
+      }
+      .filter-scroll-wrap::-webkit-scrollbar { display: none; }
+      .filter-glass-pill { flex-shrink: 0; white-space: nowrap; padding: 9px 18px; font-size: 0.73rem; min-height: 38px; }
+
+      /* Link cards */
+      .link-card { padding: 13px 14px; gap: 10px; }
+      .link-url { font-size: 0.9rem; }
       .link-sub-url { display: none; }
-      .filter-glass-pill { padding: 7px 14px; font-size: 0.7rem; }
-      .glass-btn { padding: 6px 9px; font-size: 0.7rem; }
+
+      /* Vote buttons: hide percentage, just icons — much less cramped */
+      .glass-btn { padding: 9px 10px; font-size: 0; min-height: 38px; min-width: 38px; }
+      .glass-btn svg { display: block; }
+      .glass-btn span { display: none; }
       .glass-btn-cta { display: none; }
+
+      /* Instagram FAB: icon only */
+      .instagram-fab { padding: 10px 12px; }
+      .instagram-fab span { display: none; }
+
+      /* Hide the Q-hint on mobile — not useful on touch */
+      .hide-hint-text { display: none; }
+
+      /* Hot banner tighter */
+      .hot-banner { padding: 10px 14px; margin-bottom: 16px; }
+
+      /* IG overlay: safe-area on notched phones */
+      .ig-bar { padding-top: max(10px, env(safe-area-inset-top, 10px)); }
+      .ig-frame-wrap { padding-bottom: env(safe-area-inset-bottom, 0px); }
     }
   </style>
 </head>
@@ -842,8 +932,8 @@
 
   <div class="app-container">
     <!-- Title & Subtitle -->
-    <h1 class="page-title">schoolbooks.lol</h1>
-    <p class="page-subtitle">new sites every day · made by 1heo</p>
+    <h1 class="page-title">Unblocked Games</h1>
+    <p class="page-subtitle">schoolbooks.lol — new sites every day · made by 1heo</p>
 
     <!-- Today's Hottest Websites Banner -->
     <div class="hot-banner" id="hot-banner">
