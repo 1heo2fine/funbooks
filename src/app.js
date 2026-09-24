@@ -316,8 +316,11 @@ function initBrowser() {
 
   if (!overlay || !frame) return;
 
-  // Proxy endpoint – fetches any URL server-side, strips X-Frame-Options / CSP headers
-  const PROXY = "https://api.allorigins.win/raw?url=";
+  const PROXIES = [
+    "https://api.allorigins.win/raw?url=",
+    "https://corsproxy.io/?",
+    "https://api.codetabs.com/v1/proxy?quest=",
+  ];
 
   const hist = [];
   let histIdx = -1;
@@ -348,7 +351,6 @@ function initBrowser() {
     fwdBtn.disabled  = histIdx >= hist.length - 1;
   }
 
-  // Rewrite HTML so relative links resolve correctly and clicks are intercepted
   function injectProxy(html, pageUrl) {
     let basePath = pageUrl;
     try {
@@ -356,7 +358,12 @@ function initBrowser() {
       basePath = u.origin + u.pathname.replace(/[^/]*$/, "");
     } catch (_) {}
 
-    // Interceptor is injected into the fetched page – it sends clicked hrefs back via postMessage
+    // Strip CSP and X-Frame-Options meta tags so the page can render in our blob iframe
+    html = html.replace(/<meta\s[^>]*http-equiv\s*=\s*["']?(?:content-security-policy|x-frame-options)["']?[^>]*>/gi, "");
+
+    // Override window.top/parent/frameElement so frame-busting JS sees no parent frame
+    const frameBust = `<script>(function(){try{Object.defineProperty(window,'top',{get:function(){return window;}});}catch(e){}try{Object.defineProperty(window,'parent',{get:function(){return window;}});}catch(e){}try{Object.defineProperty(window,'frameElement',{get:function(){return null;}});}catch(e){}})();<` + `/script>`;
+
     const interceptor = `<script>(function(){
       document.addEventListener('click',function(e){
         var a=e.target;while(a&&a.tagName!=='A')a=a.parentElement;
@@ -368,9 +375,7 @@ function initBrowser() {
       document.addEventListener('submit',function(e){e.preventDefault();},true);
     })();<` + `/script>`;
 
-    const baseTag = `<base href="${basePath}">`;
-    const inject  = baseTag + interceptor;
-
+    const inject = `<base href="${basePath}">` + frameBust + interceptor;
     if (/<head[\s>]/i.test(html)) return html.replace(/<head([\s>][^>]*)?>/i, m => m + inject);
     return inject + html;
   }
@@ -394,12 +399,20 @@ function initBrowser() {
     if (openTabBtn) openTabBtn.onclick = () => window.open(url, "_blank");
 
     const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 15000);
+    const timer = setTimeout(() => ctrl.abort(), 20000);
 
     try {
-      const res = await fetch(PROXY + encodeURIComponent(url), { signal: ctrl.signal });
+      let res = null;
+      for (const base of PROXIES) {
+        try {
+          const r = await fetch(base + encodeURIComponent(url), { signal: ctrl.signal });
+          if (r.ok) { res = r; break; }
+        } catch (e) {
+          if (e.name === "AbortError") throw e;
+        }
+      }
       clearTimeout(timer);
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      if (!res) throw new Error("all proxies failed");
 
       const html = await res.text();
       const blob = new Blob([injectProxy(html, url)], { type: "text/html; charset=utf-8" });
