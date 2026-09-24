@@ -1238,6 +1238,455 @@
       .ig-bar { padding-top: max(10px, env(safe-area-inset-top, 10px)); }
       .ig-frame-wrap { padding-bottom: env(safe-area-inset-bottom, 0px); }
     }
+
+    /* ── Our Games FAB ── */
+    .games-fab {
+      position: fixed;
+      top: 58px;
+      left: 16px;
+      z-index: 50;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-full);
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.35);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.4);
+      transition: all 0.2s var(--ease);
+      user-select: none;
+    }
+    .games-fab:hover {
+      background: rgba(99,102,241,0.26);
+      border-color: rgba(99,102,241,0.65);
+      color: #a5b4fc;
+      transform: translateY(-1px);
+    }
+    @media (max-width: 640px) {
+      .games-fab { padding: 10px 12px; }
+      .games-fab span { display: none; }
+    }
+
+    /* ── Games Sidebar ── */
+    .games-sidebar-bd {
+      position: fixed;
+      inset: 0;
+      z-index: 7900;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s var(--ease);
+    }
+    .games-sidebar-bd.open { opacity: 1; pointer-events: auto; }
+    .games-sidebar {
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      width: 300px;
+      z-index: 8000;
+      background: #0b0d14;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.28s var(--ease);
+      overflow: hidden;
+    }
+    .games-sidebar.open { transform: translateX(0); }
+    @media (max-width: 340px) { .games-sidebar { width: 100vw; } }
+
+    .games-sidebar-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.025);
+    }
+    .games-sidebar-hd-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+    }
+    .games-sidebar-x {
+      background: none; border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer; padding: 4px;
+      border-radius: 6px; line-height: 1;
+      font-size: 1rem;
+    }
+    .games-sidebar-x:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    .games-grid {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .game-card {
+      position: relative;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 18px 8px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.14s;
+      font-family: inherit;
+      color: var(--text-main);
+    }
+    .game-card:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.22);
+      transform: translateY(-2px);
+    }
+    .game-card:active { transform: scale(0.96); }
+    .game-card-icon {
+      font-size: 2.2rem;
+      line-height: 1;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+    }
+    .game-card-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-align: center;
+      color: rgba(255,255,255,0.85);
+    }
+    .game-card-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      font-size: 0.5rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 99px;
+    }
+    .game-card-badge.bot { background: rgba(56,189,248,0.2); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
+    .game-card-badge.multi { background: rgba(34,197,94,0.2); color: #22c55e; border: 1px solid rgba(34,197,94,0.35); }
+    .game-card-badge.new-b { background: rgba(251,191,36,0.2); color: #fbbf24; border: 1px solid rgba(251,191,36,0.35); }
+
+    /* ── Generic Game Modal (all new games) ── */
+    .game-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9100;
+      background: #080a10;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .game-modal.open { display: flex; }
+    .game-modal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .game-modal-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.8);
+      text-transform: uppercase;
+    }
+    .game-modal-close {
+      background: none; border: none;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer; padding: 4px;
+      border-radius: 4px; line-height: 1;
+    }
+    .game-modal-close:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .game-modal-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .gm-canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      image-rendering: pixelated;
+    }
+    /* overlay on top of canvas (game-over, start screen) */
+    .gm-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 24px;
+      background: rgba(0,0,0,0.78);
+      backdrop-filter: blur(6px);
+    }
+    .gm-screen.hidden { display: none; }
+    .gm-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+    .gm-sub {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      font-family: 'JetBrains Mono', monospace;
+      text-align: center;
+    }
+    .gm-stat-row { display: flex; gap: 16px; }
+    .gm-stat {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 12px 22px; min-width: 90px;
+    }
+    .gm-stat-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono', monospace; }
+    .gm-stat-val { font-size: 1.8rem; font-weight: 800; color: #fff; font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; line-height: 1; }
+    .gm-btn {
+      padding: 12px 32px; border-radius: 12px; border: none;
+      font-size: 0.85rem; font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.06em; cursor: pointer;
+      transition: transform 0.13s, opacity 0.13s;
+      background: linear-gradient(135deg, #38bdf8, #6366f1); color: #fff;
+    }
+    .gm-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .gm-btn.ghost { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+    .gm-newbest {
+      font-size: 0.78rem; font-weight: 800; color: #ffd700;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
+      text-shadow: 0 0 14px rgba(255,215,0,0.7);
+    }
+
+    /* ── Memory Match ── */
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 72px);
+      gap: 10px;
+      padding: 20px;
+    }
+    @media (max-width: 400px) {
+      .memory-grid { grid-template-columns: repeat(4, 60px); gap: 8px; }
+    }
+    .mem-card {
+      width: 72px; height: 72px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      cursor: pointer;
+      font-size: 2rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.18s, background 0.18s;
+      user-select: none;
+      position: relative;
+    }
+    @media (max-width: 400px) { .mem-card { width: 60px; height: 60px; font-size: 1.7rem; } }
+    .mem-card .mem-back {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 11px;
+      background: rgba(99,102,241,0.18);
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.3);
+      transition: opacity 0.15s;
+    }
+    .mem-card .mem-front {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .mem-card.flipped .mem-back { opacity: 0; }
+    .mem-card.flipped .mem-front { opacity: 1; }
+    .mem-card.matched { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.08); }
+    .mem-card:hover:not(.matched) { background: rgba(255,255,255,0.1); transform: scale(1.04); }
+    .memory-hud {
+      position: absolute; top: 12px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 28px;
+      pointer-events: none;
+    }
+    .memory-hud-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    .memory-hud-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); font-family: 'JetBrains Mono', monospace; }
+    .memory-hud-val { font-size: 1.2rem; font-weight: 800; color: #fff; font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+    /* ── Tic-Tac-Toe ── */
+    .ttt-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 20px; padding: 24px;
+    }
+    .ttt-status {
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.75); font-family: 'JetBrains Mono', monospace;
+      min-height: 1.4em; text-align: center;
+    }
+    .ttt-board {
+      display: grid;
+      grid-template-columns: repeat(3, 90px);
+      grid-template-rows: repeat(3, 90px);
+      gap: 8px;
+    }
+    @media (max-width: 400px) {
+      .ttt-board { grid-template-columns: repeat(3, 76px); grid-template-rows: repeat(3, 76px); }
+    }
+    .ttt-cell {
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 2.4rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.12s;
+      color: #fff;
+    }
+    @media (max-width: 400px) { .ttt-cell { width: 76px; height: 76px; font-size: 2rem; } }
+    .ttt-cell:hover:not([data-mark]) { background: rgba(255,255,255,0.1); transform: scale(1.04); }
+    .ttt-cell[data-mark="X"] { color: #38bdf8; }
+    .ttt-cell[data-mark="O"] { color: #f87171; }
+    .ttt-cell.win-cell { background: rgba(250,204,21,0.15); border-color: rgba(250,204,21,0.45); }
+    .ttt-score-row {
+      display: flex; gap: 14px;
+    }
+    .ttt-score-box {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 10px 20px;
+    }
+    .ttt-score-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); font-family: 'JetBrains Mono', monospace; }
+    .ttt-score-val { font-size: 1.5rem; font-weight: 800; color: #fff; font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+    .ttt-diff-row { display: flex; gap: 8px; }
+    .ttt-diff-btn {
+      padding: 7px 18px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.55);
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .ttt-diff-btn.active { background: rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.55); color: #a5b4fc; }
+
+    /* ── Speed Tap ── */
+    .speedtap-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 20px; padding: 28px 20px; width: 100%; max-width: 380px;
+    }
+    .speedtap-counter {
+      font-size: 6rem; font-weight: 800; line-height: 1;
+      color: #fff; font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 40px rgba(99,102,241,0.7);
+    }
+    .speedtap-timer {
+      font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.45);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .speedtap-btn {
+      width: 160px; height: 160px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(99,102,241,0.35), rgba(139,92,246,0.35));
+      border: 2px solid rgba(99,102,241,0.55);
+      cursor: pointer;
+      font-size: 2.4rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.07s, box-shadow 0.07s;
+      box-shadow: 0 0 40px rgba(99,102,241,0.3);
+      color: #fff;
+    }
+    .speedtap-btn:active { transform: scale(0.93); box-shadow: 0 0 20px rgba(99,102,241,0.2); }
+    .speedtap-btn.idle { filter: grayscale(0.5) opacity(0.6); cursor: default; }
+    .speedtap-msg {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase; min-height: 1em;
+    }
+    .speedtap-vs {
+      display: flex; gap: 18px;
+    }
+    .speedtap-vs-box {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 10px 20px;
+    }
+    .speedtap-vs-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); font-family: 'JetBrains Mono', monospace; }
+    .speedtap-vs-val { font-size: 1.6rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+    .speedtap-vs-val.you { color: #38bdf8; }
+    .speedtap-vs-val.bot { color: #f87171; }
+
+    /* ── Reaction Duel ── */
+    .duel-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 18px; padding: 24px 20px; width: 100%; max-width: 360px;
+    }
+    .duel-code-display {
+      font-size: 3.5rem; font-weight: 800; letter-spacing: 0.25em;
+      color: #fff; font-family: 'JetBrains Mono', monospace;
+      text-shadow: 0 0 30px rgba(34,197,94,0.6);
+      background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 16px; padding: 16px 28px;
+    }
+    .duel-code-input {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 12px; padding: 14px 20px;
+      font-size: 2rem; font-weight: 800; letter-spacing: 0.2em;
+      color: #fff; font-family: 'JetBrains Mono', monospace;
+      text-align: center; width: 200px;
+      transition: border-color 0.15s;
+    }
+    .duel-code-input:focus { outline: none; border-color: rgba(34,197,94,0.5); }
+    .duel-arena {
+      width: 300px; height: 200px; border-radius: 20px;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; cursor: pointer;
+      transition: background 0.12s;
+    }
+    .duel-arena.armed {
+      background: rgba(34,197,94,0.12);
+      border-color: rgba(34,197,94,0.45);
+      box-shadow: 0 0 40px rgba(34,197,94,0.2);
+    }
+    .duel-arena-inner {
+      font-size: 3.5rem; line-height: 1;
+      transition: transform 0.1s;
+    }
+    .duel-arena:active .duel-arena-inner { transform: scale(0.85); }
+    .duel-score-row { display: flex; gap: 16px; align-items: center; }
+    .duel-score-box {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 12px 22px; min-width: 80px;
+    }
+    .duel-score-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.12em; font-family: 'JetBrains Mono', monospace; color: rgba(255,255,255,0.4); }
+    .duel-score-val { font-size: 2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; color: #fff; }
+    .duel-vs-lbl { font-size: 0.7rem; font-weight: 800; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace; }
+    .duel-status { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.55); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; text-align: center; min-height: 1.2em; }
   </style>
 </head>
 <body>
@@ -1284,7 +1733,6 @@
       <button class="filter-glass-pill" data-filter="hot">Hot</button>
       <button class="filter-glass-pill" data-filter="new">New</button>
       <button class="filter-glass-pill active" data-filter="recommended">Recommended</button>
-      <button id="plane-fab" class="plane-pill" title="Play Flappy Plane">✈ Fly</button>
     </div>
 
     <!-- Results count -->
@@ -1295,6 +1743,15 @@
     <!-- Link Directory -->
     <div class="links-list" id="links-list"></div>
   </div>
+
+  <!-- Our Games FAB -->
+  <button id="games-fab" class="games-fab" title="Our Games">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+      <path d="M12 12h.01M8 12h.01M16 12h.01"></path>
+    </svg>
+    <span>our games</span>
+  </button>
 
   <!-- Instagram Button -->
   <button id="ig-fab" class="instagram-fab" title="Open Instagram">
@@ -1337,6 +1794,259 @@
         <p class="ig-blocked-title">Instagram couldn't load here</p>
         <p class="ig-blocked-sub">Instagram uses protections that prevent embedding. Open it directly instead.</p>
         <button id="ig-open-tab" class="ig-open-tab-btn">Open Instagram ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Games Sidebar Backdrop -->
+  <div id="games-sidebar-bd" class="games-sidebar-bd"></div>
+
+  <!-- Games Sidebar -->
+  <div id="games-sidebar" class="games-sidebar">
+    <div class="games-sidebar-hd">
+      <span class="games-sidebar-hd-title">🎮 Our Games</span>
+      <button id="games-sidebar-x" class="games-sidebar-x">✕</button>
+    </div>
+    <div class="games-grid">
+      <button class="game-card" data-game="plane">
+        <div class="game-card-icon">✈</div>
+        <div class="game-card-name">Flappy Plane</div>
+      </button>
+      <button class="game-card" data-game="snake">
+        <div class="game-card-icon">🐍</div>
+        <div class="game-card-name">Snake</div>
+        <span class="game-card-badge new-b">NEW</span>
+      </button>
+      <button class="game-card" data-game="brick">
+        <div class="game-card-icon">🧱</div>
+        <div class="game-card-name">Brick Smash</div>
+        <span class="game-card-badge new-b">NEW</span>
+      </button>
+      <button class="game-card" data-game="memory">
+        <div class="game-card-icon">🃏</div>
+        <div class="game-card-name">Memory Match</div>
+        <span class="game-card-badge new-b">NEW</span>
+      </button>
+      <button class="game-card" data-game="ttt">
+        <div class="game-card-icon">🤖</div>
+        <div class="game-card-name">Tic-Tac-Toe</div>
+        <span class="game-card-badge bot">VS BOT</span>
+      </button>
+      <button class="game-card" data-game="space">
+        <div class="game-card-icon">🌌</div>
+        <div class="game-card-name">Space Dodge</div>
+        <span class="game-card-badge new-b">NEW</span>
+      </button>
+      <button class="game-card" data-game="speedtap">
+        <div class="game-card-icon">⚡</div>
+        <div class="game-card-name">Speed Tap</div>
+        <span class="game-card-badge new-b">NEW</span>
+      </button>
+      <button class="game-card" data-game="duel">
+        <div class="game-card-icon">👥</div>
+        <div class="game-card-name">1v1 Duel</div>
+        <span class="game-card-badge multi">MULTI</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Snake Game -->
+  <div id="snake-overlay" class="game-modal">
+    <div class="game-modal-bar">
+      <span class="game-modal-title">🐍 Snake</span>
+      <button class="game-modal-close" data-for="snake-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="game-modal-body">
+      <canvas id="snake-canvas" class="gm-canvas" width="480" height="480"></canvas>
+      <div id="snake-start" class="gm-screen">
+        <div class="gm-title">🐍 SNAKE</div>
+        <div class="gm-sub">ARROW KEYS / WASD / SWIPE</div>
+        <button id="snake-play-btn" class="gm-btn">▶ PLAY</button>
+      </div>
+      <div id="snake-over" class="gm-screen hidden">
+        <div class="gm-title">GAME OVER</div>
+        <div class="gm-stat-row">
+          <div class="gm-stat"><span class="gm-stat-lbl">SCORE</span><span class="gm-stat-val" id="snake-score-val">0</span></div>
+          <div class="gm-stat"><span class="gm-stat-lbl">BEST</span><span class="gm-stat-val" id="snake-best-val">0</span></div>
+        </div>
+        <div id="snake-newbest" class="gm-newbest hidden">★ NEW HIGH SCORE ★</div>
+        <button id="snake-retry-btn" class="gm-btn">↺ PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brick Smash Game -->
+  <div id="brick-overlay" class="game-modal">
+    <div class="game-modal-bar">
+      <span class="game-modal-title">🧱 Brick Smash</span>
+      <button class="game-modal-close" data-for="brick-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="game-modal-body">
+      <canvas id="brick-canvas" class="gm-canvas" width="480" height="560"></canvas>
+      <div id="brick-start" class="gm-screen">
+        <div class="gm-title">🧱 BRICK SMASH</div>
+        <div class="gm-sub">MOUSE / TOUCH TO MOVE PADDLE</div>
+        <button id="brick-play-btn" class="gm-btn">▶ PLAY</button>
+      </div>
+      <div id="brick-over" class="gm-screen hidden">
+        <div class="gm-title" id="brick-over-title">GAME OVER</div>
+        <div class="gm-stat-row">
+          <div class="gm-stat"><span class="gm-stat-lbl">SCORE</span><span class="gm-stat-val" id="brick-score-val">0</span></div>
+          <div class="gm-stat"><span class="gm-stat-lbl">BEST</span><span class="gm-stat-val" id="brick-best-val">0</span></div>
+        </div>
+        <button id="brick-retry-btn" class="gm-btn">↺ PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Memory Match Game -->
+  <div id="memory-overlay" class="game-modal">
+    <div class="game-modal-bar">
+      <span class="game-modal-title">🃏 Memory Match</span>
+      <button class="game-modal-close" data-for="memory-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="game-modal-body" style="flex-direction:column; justify-content:flex-start; overflow-y:auto; padding-top: 58px;">
+      <div class="memory-hud">
+        <div class="memory-hud-item"><span class="memory-hud-lbl">PAIRS</span><span class="memory-hud-val" id="mem-pairs">0/8</span></div>
+        <div class="memory-hud-item"><span class="memory-hud-lbl">MOVES</span><span class="memory-hud-val" id="mem-moves">0</span></div>
+        <div class="memory-hud-item"><span class="memory-hud-lbl">TIME</span><span class="memory-hud-val" id="mem-time">0</span></div>
+      </div>
+      <div class="memory-grid" id="memory-grid"></div>
+      <div id="memory-start" class="gm-screen">
+        <div class="gm-title">🃏 MEMORY</div>
+        <div class="gm-sub">FLIP CARDS TO FIND MATCHING PAIRS</div>
+        <button id="memory-play-btn" class="gm-btn">▶ PLAY</button>
+      </div>
+      <div id="memory-win" class="gm-screen hidden">
+        <div class="gm-title">YOU WIN! 🎉</div>
+        <div class="gm-stat-row">
+          <div class="gm-stat"><span class="gm-stat-lbl">MOVES</span><span class="gm-stat-val" id="mem-win-moves">0</span></div>
+          <div class="gm-stat"><span class="gm-stat-lbl">TIME</span><span class="gm-stat-val" id="mem-win-time">0s</span></div>
+        </div>
+        <button id="memory-retry-btn" class="gm-btn">↺ PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tic-Tac-Toe Game -->
+  <div id="ttt-overlay" class="game-modal">
+    <div class="game-modal-bar">
+      <span class="game-modal-title">🤖 Tic-Tac-Toe vs Bot</span>
+      <button class="game-modal-close" data-for="ttt-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="game-modal-body">
+      <div class="ttt-wrap">
+        <div class="ttt-diff-row">
+          <button class="ttt-diff-btn active" data-diff="easy">Easy</button>
+          <button class="ttt-diff-btn" data-diff="hard">Hard</button>
+        </div>
+        <div class="ttt-status" id="ttt-status">YOUR TURN (X)</div>
+        <div class="ttt-board" id="ttt-board">
+          <button class="ttt-cell" data-i="0"></button>
+          <button class="ttt-cell" data-i="1"></button>
+          <button class="ttt-cell" data-i="2"></button>
+          <button class="ttt-cell" data-i="3"></button>
+          <button class="ttt-cell" data-i="4"></button>
+          <button class="ttt-cell" data-i="5"></button>
+          <button class="ttt-cell" data-i="6"></button>
+          <button class="ttt-cell" data-i="7"></button>
+          <button class="ttt-cell" data-i="8"></button>
+        </div>
+        <div class="ttt-score-row">
+          <div class="ttt-score-box"><span class="ttt-score-lbl">YOU</span><span class="ttt-score-val" id="ttt-wins">0</span></div>
+          <div class="ttt-score-box"><span class="ttt-score-lbl">DRAW</span><span class="ttt-score-val" id="ttt-draws">0</span></div>
+          <div class="ttt-score-box"><span class="ttt-score-lbl">BOT</span><span class="ttt-score-val" id="ttt-losses">0</span></div>
+        </div>
+        <button id="ttt-new-btn" class="gm-btn ghost">New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Space Dodge Game -->
+  <div id="space-overlay" class="game-modal">
+    <div class="game-modal-bar">
+      <span class="game-modal-title">🌌 Space Dodge</span>
+      <button class="game-modal-close" data-for="space-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="game-modal-body">
+      <canvas id="space-canvas" class="gm-canvas" width="480" height="600"></canvas>
+      <div id="space-start" class="gm-screen">
+        <div class="gm-title">🌌 SPACE DODGE</div>
+        <div class="gm-sub">ARROW / WASD / MOUSE / TOUCH TO MOVE</div>
+        <button id="space-play-btn" class="gm-btn">▶ PLAY</button>
+      </div>
+      <div id="space-over" class="gm-screen hidden">
+        <div class="gm-title">GAME OVER</div>
+        <div class="gm-stat-row">
+          <div class="gm-stat"><span class="gm-stat-lbl">SCORE</span><span class="gm-stat-val" id="space-score-val">0</span></div>
+          <div class="gm-stat"><span class="gm-stat-lbl">BEST</span><span class="gm-stat-val" id="space-best-val">0</span></div>
+        </div>
+        <div id="space-newbest" class="gm-newbest hidden">★ NEW HIGH SCORE ★</div>
+        <button id="space-retry-btn" class="gm-btn">↺ PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Speed Tap Game -->
+  <div id="speedtap-overlay" class="game-modal">
+    <div class="game-modal-bar">
+      <span class="game-modal-title">⚡ Speed Tap</span>
+      <button class="game-modal-close" data-for="speedtap-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="game-modal-body">
+      <div class="speedtap-wrap">
+        <div class="speedtap-counter" id="speedtap-count">0</div>
+        <div class="speedtap-timer" id="speedtap-timer">TAP TO START</div>
+        <button id="speedtap-btn" class="speedtap-btn idle">⚡</button>
+        <div class="speedtap-msg" id="speedtap-msg">TAP THE BUTTON AS FAST AS YOU CAN!</div>
+        <div class="speedtap-vs" id="speedtap-vs" style="display:none">
+          <div class="speedtap-vs-box"><span class="speedtap-vs-lbl">YOU</span><span class="speedtap-vs-val you" id="speedtap-you-val">0</span></div>
+          <div class="speedtap-vs-box"><span class="speedtap-vs-lbl">BOT</span><span class="speedtap-vs-val bot" id="speedtap-bot-val">0</span></div>
+        </div>
+        <button id="speedtap-again-btn" class="gm-btn" style="display:none">↺ PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1v1 Reaction Duel Game -->
+  <div id="duel-overlay" class="game-modal">
+    <div class="game-modal-bar">
+      <span class="game-modal-title">👥 1v1 Reaction Duel</span>
+      <button class="game-modal-close" data-for="duel-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="game-modal-body">
+      <!-- Lobby screen -->
+      <div id="duel-lobby" class="duel-wrap">
+        <div class="gm-title" style="font-size:1.6rem">👥 1v1 DUEL</div>
+        <div class="gm-sub" style="max-width:280px; line-height:1.6">Open this game in <strong style="color:#fff">another tab</strong> and enter the same code to play against a friend</div>
+        <button id="duel-create-btn" class="gm-btn">CREATE ROOM</button>
+        <div style="display:flex;align-items:center;gap:12px;width:100%;max-width:260px">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1)"></div>
+          <span style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'JetBrains Mono',monospace">OR</span>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1)"></div>
+        </div>
+        <input id="duel-join-input" class="duel-code-input" type="text" maxlength="4" placeholder="CODE" inputmode="numeric">
+        <button id="duel-join-btn" class="gm-btn ghost">JOIN ROOM</button>
+      </div>
+      <!-- Waiting screen -->
+      <div id="duel-waiting" class="duel-wrap" style="display:none">
+        <div class="gm-sub">ROOM CODE</div>
+        <div id="duel-code-display" class="duel-code-display">----</div>
+        <div class="duel-status" id="duel-wait-msg">Waiting for opponent to join…</div>
+        <button id="duel-cancel-btn" class="gm-btn ghost">Cancel</button>
+      </div>
+      <!-- Game screen -->
+      <div id="duel-game" class="duel-wrap" style="display:none">
+        <div class="duel-score-row">
+          <div class="duel-score-box"><span class="duel-score-lbl">YOU</span><span class="duel-score-val" id="duel-my-score">0</span></div>
+          <span class="duel-vs-lbl">VS</span>
+          <div class="duel-score-box"><span class="duel-score-lbl">THEM</span><span class="duel-score-val" id="duel-their-score">0</span></div>
+        </div>
+        <div id="duel-arena" class="duel-arena">
+          <div class="duel-arena-inner" id="duel-arena-icon">🎯</div>
+        </div>
+        <div class="duel-status" id="duel-game-status">GET READY…</div>
+        <button id="duel-rematch-btn" class="gm-btn" style="display:none">↺ REMATCH</button>
       </div>
     </div>
   </div>
