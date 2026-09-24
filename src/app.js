@@ -167,7 +167,7 @@ export function renderAll() {
 
     if (currentFilter === "all") return true;
     if (currentFilter === "hot") return m.tag === "hot";
-    if (currentFilter === "new") return m.tag === "new";
+    if (currentFilter === "unblocked") return m.tag === "unblocked";
     if (currentFilter === "io") return m.tag === "io";
     if (currentFilter === "recommended") return m.featured || computeStatus(m.url).kind === "recommended";
     return false;
@@ -264,8 +264,11 @@ safeInit(init);
 safeInit(initHotBanner);
 safeInit(upgradeAvatars);
 safeInit(initInstagram);
-safeInit(initQuickHide);
 safeInit(initGamesHub);
+safeInit(initSocialSidebar);
+safeInit(initScrollHide);
+safeInit(initMusicPlayer);
+safeInit(initQuickHide);
 safeInit(initPlaneGame);
 safeInit(initSnakeGame);
 safeInit(initBrickGame);
@@ -303,6 +306,10 @@ function initQuickHide() {
 
   showPage(0);
 
+  // Auto-open on load, auto-close after 3 seconds
+  open();
+  setTimeout(() => { if (overlay.classList.contains("visible")) close(); }, 3000);
+
   const hint = document.getElementById("hide-hint");
   if (hint) hint.addEventListener("click", toggle);
 
@@ -323,16 +330,15 @@ function initQuickHide() {
 }
 
 function initGamesHub() {
-  const fab = document.getElementById("games-fab");
   const sidebar = document.getElementById("games-sidebar");
   const bd = document.getElementById("games-sidebar-bd");
   const closeX = document.getElementById("games-sidebar-x");
-  if (!fab || !sidebar || !bd || !closeX) return;
+  if (!sidebar || !bd || !closeX) return;
 
   function open() { sidebar.classList.add("open"); bd.classList.add("open"); document.body.style.overflow = "hidden"; }
   function close() { sidebar.classList.remove("open"); bd.classList.remove("open"); document.body.style.overflow = ""; }
 
-  fab.addEventListener("click", open);
+  window._openGamesHub = open;
   closeX.addEventListener("click", close);
   bd.addEventListener("click", close);
 
@@ -589,10 +595,134 @@ function initInstagram() {
 
   if (openTabBtn) openTabBtn.onclick = () => window.open("https://www.instagram.com/", "_blank");
 
-  openBtn.addEventListener("click", openOverlay);
-  closeBtn.addEventListener("click", closeOverlay);
+  if (openBtn) openBtn.addEventListener("click", openOverlay);
+  if (closeBtn) closeBtn.addEventListener("click", closeOverlay);
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && overlay.style.display !== "none") closeOverlay();
+  });
+
+  window._openInstagram = () => { openOverlay(); if (!prevBlobUrl) navigate("https://lite.instagram.com/"); };
+}
+
+function initSocialSidebar() {
+  const bd = document.getElementById("social-sidebar-bd");
+  const sidebar = document.getElementById("social-sidebar");
+  const closeX = document.getElementById("social-sidebar-x");
+  const menuFab = document.getElementById("menu-fab");
+  if (!sidebar || !bd || !menuFab) return;
+
+  function openSidebar() { sidebar.classList.add("open"); bd.classList.add("open"); document.body.style.overflow = "hidden"; }
+  function closeSidebar() { sidebar.classList.remove("open"); bd.classList.remove("open"); document.body.style.overflow = ""; }
+
+  menuFab.addEventListener("click", openSidebar);
+  if (closeX) closeX.addEventListener("click", closeSidebar);
+  bd.addEventListener("click", closeSidebar);
+
+  const APP_URLS = { tiktok: "https://tiktok.com", reddit: "https://reddit.com", omegle: "https://omegle.com", roblox: "https://roblox.com", spotify: "https://open.spotify.com" };
+
+  sidebar.querySelectorAll(".social-app-box").forEach(box => {
+    box.addEventListener("click", () => {
+      closeSidebar();
+      const app = box.dataset.app;
+      setTimeout(() => {
+        if (app === "instagram") {
+          if (window._openInstagram) window._openInstagram();
+          else { const ol = document.getElementById("ig-overlay"); if (ol) { ol.style.display = "flex"; document.body.style.overflow = "hidden"; } }
+        } else {
+          const ol = document.getElementById(app + "-overlay");
+          if (!ol) return;
+          const frame = ol.querySelector(".app-overlay-frame");
+          if (frame && frame.src === "about:blank") frame.src = APP_URLS[app] || "";
+          ol.style.display = "flex";
+          document.body.style.overflow = "hidden";
+        }
+      }, 120);
+    });
+  });
+
+  const exploreBtn = document.getElementById("explore-games-btn");
+  if (exploreBtn) exploreBtn.addEventListener("click", () => { closeSidebar(); setTimeout(() => { if (window._openGamesHub) window._openGamesHub(); }, 120); });
+
+  document.querySelectorAll(".app-overlay-close").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.close;
+      if (id) { const el = document.getElementById(id); if (el) { el.style.display = "none"; document.body.style.overflow = ""; } }
+    });
+  });
+  document.querySelectorAll(".app-overlay-open-btn").forEach(btn => {
+    btn.addEventListener("click", () => { if (btn.dataset.href) window.open(btn.dataset.href, "_blank"); });
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeSidebar();
+      document.querySelectorAll(".app-overlay").forEach(ol => { if (ol.style.display !== "none") { ol.style.display = "none"; document.body.style.overflow = ""; } });
+    }
+  });
+}
+
+function initScrollHide() {
+  const menuFab = document.getElementById("menu-fab");
+  const browserArea = document.querySelector(".browser-area");
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const goingDown = y > lastY + 4 && y > 80;
+        if (menuFab) menuFab.classList.toggle("scroll-hidden-left", goingDown);
+        if (browserArea) browserArea.classList.toggle("scroll-hidden-right", goingDown);
+        lastY = y;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+function initMusicPlayer() {
+  const TRACKS = [
+    "3d0KltVlWeJtZVtkT4gyPb",
+    "4ZYlzwjjAJrflwWg4DJTlT",
+    "425nRSdx2ZNW43ki7uNKMR",
+    "4RMNWqkxIchzVmdRknOOOQ",
+    "5xyzb5BEgTq9sgxxnoNIqT"
+  ];
+  const iframe = document.getElementById("music-iframe");
+  const counter = document.getElementById("music-counter");
+  const prevBtn = document.getElementById("music-prev");
+  const nextBtn = document.getElementById("music-next");
+  const playBtn = document.getElementById("music-play");
+  const playIcon = document.getElementById("music-play-icon");
+  if (!iframe) return;
+
+  let idx = 0;
+  let playing = false;
+
+  function loadTrack(i, play) {
+    idx = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
+    const autoplay = play ? "&autoplay=1" : "";
+    iframe.src = `https://open.spotify.com/embed/track/${TRACKS[idx]}?utm_source=generator&theme=0${autoplay}`;
+    if (counter) counter.textContent = `${idx + 1} / ${TRACKS.length}`;
+  }
+
+  function setPlayIcon(isPlaying) {
+    if (!playIcon) return;
+    playIcon.setAttribute("fill", "currentColor");
+    playIcon.setAttribute("stroke", "none");
+    playIcon.innerHTML = isPlaying
+      ? '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>'
+      : '<polygon points="5 3 19 12 5 21 5 3"/>';
+  }
+
+  if (prevBtn) prevBtn.addEventListener("click", () => loadTrack(idx - 1, playing));
+  if (nextBtn) nextBtn.addEventListener("click", () => loadTrack(idx + 1, playing));
+  if (playBtn) playBtn.addEventListener("click", () => {
+    playing = !playing;
+    setPlayIcon(playing);
+    loadTrack(idx, playing);
   });
 }
 

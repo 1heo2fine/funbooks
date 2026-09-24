@@ -737,6 +737,274 @@
     }
     .ig-open-tab-btn:hover { background: linear-gradient(135deg, rgba(14,165,233,1), rgba(6,182,212,1)); box-shadow: 0 6px 24px rgba(56,189,248,0.45); }
 
+    /* ── Menu FAB (⋮ three-line button) ── */
+    .menu-fab {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      cursor: pointer;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.4);
+      transition: background 0.2s var(--ease), border-color 0.2s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+      user-select: none;
+    }
+    .menu-fab:hover { background: rgba(34,211,238,0.14); border-color: rgba(34,211,238,0.4); color: var(--accent-cyan); transform: translateY(-1px); }
+    .menu-fab-line { width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: opacity 0.2s; }
+    /* scroll-hide state */
+    .scroll-hidden-left { transform: translateX(-80px) !important; opacity: 0 !important; pointer-events: none !important; }
+    .scroll-hidden-right { transform: translateX(80px) !important; opacity: 0 !important; pointer-events: none !important; }
+    .browser-area { transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; }
+    .menu-fab { transition: background 0.2s var(--ease), border-color 0.2s, color 0.2s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; }
+
+    /* ── Social Sidebar backdrop ── */
+    .social-sidebar-bd {
+      position: fixed;
+      inset: 0;
+      z-index: 7900;
+      background: rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s var(--ease);
+    }
+    .social-sidebar-bd.open { opacity: 1; pointer-events: auto; }
+
+    /* ── Social Sidebar panel ── */
+    .social-sidebar {
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      width: 280px;
+      z-index: 8000;
+      background: rgba(3, 18, 45, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(56,189,248,0.18);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.28s var(--ease);
+      overflow: hidden;
+    }
+    .social-sidebar.open { transform: translateX(0); }
+    @media (max-width: 340px) { .social-sidebar { width: 100vw; } }
+
+    .social-sidebar-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(56,189,248,0.15);
+      flex-shrink: 0;
+      background: rgba(6,32,72,0.6);
+    }
+    .social-sidebar-title {
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+    }
+    .social-sidebar-x {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s;
+    }
+    .social-sidebar-x:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .social-sidebar-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .social-app-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .social-app-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 14px 8px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: all 0.18s var(--ease);
+      user-select: none;
+    }
+    .social-app-box:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
+    .social-app-box img { width: 40px; height: 40px; object-fit: contain; border-radius: 10px; }
+    .social-app-box .sab-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 24px; }
+    .explore-games-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      background: rgba(99,102,241,0.13);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: #a5b4fc;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      transition: all 0.18s var(--ease);
+      user-select: none;
+    }
+    .explore-games-box:hover { background: rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.55); color: #c7d2fe; transform: translateY(-1px); }
+
+    /* ── Generic app overlay (TikTok / Reddit / Omegle / Roblox / Spotify) ── */
+    .app-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      background: rgba(3,3,5,0.97);
+    }
+    .app-overlay-bar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border-glass);
+      gap: 12px;
+    }
+    .app-overlay-wordmark {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-main);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+    .app-overlay-wordmark img { width: 22px; height: 22px; border-radius: 6px; object-fit: contain; }
+    .app-overlay-close {
+      display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .app-overlay-close:hover { background: rgba(244,63,94,0.12); border-color: rgba(244,63,94,0.3); color: var(--accent-rose); }
+    .app-overlay-frame-wrap { flex: 1; position: relative; overflow: hidden; }
+    .app-overlay-frame { width: 100%; height: 100%; border: none; display: block; background: #fafafa; }
+    .app-overlay-blocked {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; background: var(--bg); padding: 40px 20px; text-align: center;
+    }
+    .app-overlay-blocked-title { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+    .app-overlay-blocked-sub { font-size: 0.82rem; color: var(--text-muted); max-width: 360px; line-height: 1.5; }
+    .app-overlay-open-btn {
+      margin-top: 8px; padding: 9px 20px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(14,165,233,0.85), rgba(6,182,212,0.85));
+      border: 1px solid rgba(125,211,252,0.5);
+      color: #e8f8ff; font-size: 0.82rem; font-weight: 700;
+      font-family: inherit; cursor: pointer; transition: all 0.15s;
+      box-shadow: 0 4px 16px rgba(56,189,248,0.3);
+    }
+    .app-overlay-open-btn:hover { background: linear-gradient(135deg, rgba(14,165,233,1), rgba(6,182,212,1)); }
+
+    /* ── Music Mini-Player ── */
+    .music-player {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      z-index: 60;
+      width: 240px;
+      border-radius: 18px;
+      background: rgba(3,18,45,0.92);
+      border: 1px solid rgba(56,189,248,0.22);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+    }
+    .music-player-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 0;
+    }
+    .music-player-label {
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+    }
+    .music-player-counter {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .music-player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 8px 14px;
+    }
+    .music-ctrl-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+    .music-ctrl-btn:hover { background: rgba(34,211,238,0.18); border-color: rgba(34,211,238,0.4); color: var(--accent-cyan); }
+    .music-ctrl-btn.play-btn {
+      width: 38px; height: 38px;
+      background: rgba(34,211,238,0.15);
+      border-color: rgba(34,211,238,0.4);
+      color: var(--accent-cyan);
+    }
+    .music-ctrl-btn.play-btn:hover { background: rgba(34,211,238,0.28); }
+    .music-iframe-wrap {
+      padding: 0 10px 10px;
+    }
+    .music-iframe-wrap iframe {
+      border-radius: 10px;
+      overflow: hidden;
+      display: block;
+    }
+
     /* Hot Banner */
     .hot-banner {
       width: 100%;
@@ -1758,8 +2026,7 @@
     <!-- Liquid Glass Filter Bar -->
     <div class="filter-scroll-wrap" id="filter-bar">
       <button class="filter-glass-pill" data-filter="all">All sites</button>
-      <button class="filter-glass-pill" data-filter="hot">Hot</button>
-      <button class="filter-glass-pill" data-filter="new">New</button>
+      <button class="filter-glass-pill" data-filter="unblocked">Unblocked Games</button>
       <button class="filter-glass-pill" data-filter="io">.io Games</button>
       <button class="filter-glass-pill active" data-filter="recommended">Recommended</button>
     </div>
@@ -1773,23 +2040,11 @@
     <div class="links-list" id="links-list"></div>
   </div>
 
-  <!-- Our Games FAB -->
-  <button id="games-fab" class="games-fab" title="Our Games">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="2" y="6" width="20" height="12" rx="2"></rect>
-      <path d="M12 12h.01M8 12h.01M16 12h.01"></path>
-    </svg>
-    <span>our games</span>
-  </button>
-
-  <!-- Instagram Button -->
-  <button id="ig-fab" class="instagram-fab" title="Open Instagram">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-    </svg>
-    <span>instagram</span>
+  <!-- Menu FAB (⋮) -->
+  <button id="menu-fab" class="menu-fab" title="Apps & Games">
+    <span class="menu-fab-line"></span>
+    <span class="menu-fab-line"></span>
+    <span class="menu-fab-line"></span>
   </button>
 
   <!-- Quick-hide hint (no browser button) -->
@@ -1824,6 +2079,140 @@
         <p class="ig-blocked-sub">Instagram uses protections that prevent embedding. Open it directly instead.</p>
         <button id="ig-open-tab" class="ig-open-tab-btn">Open Instagram ↗</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Social Sidebar Backdrop -->
+  <div id="social-sidebar-bd" class="social-sidebar-bd"></div>
+
+  <!-- Social Sidebar -->
+  <div id="social-sidebar" class="social-sidebar">
+    <div class="social-sidebar-hd">
+      <span class="social-sidebar-title">Apps &amp; Games</span>
+      <button id="social-sidebar-x" class="social-sidebar-x">✕</button>
+    </div>
+    <div class="social-sidebar-body">
+      <div class="social-app-grid">
+        <!-- Instagram -->
+        <button class="social-app-box" data-app="instagram">
+          <img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=64" alt="Instagram">
+          <span>Instagram</span>
+        </button>
+        <!-- TikTok -->
+        <button class="social-app-box" data-app="tiktok">
+          <img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=64" alt="TikTok">
+          <span>TikTok</span>
+        </button>
+        <!-- Reddit -->
+        <button class="social-app-box" data-app="reddit">
+          <img src="https://www.google.com/s2/favicons?domain=reddit.com&sz=64" alt="Reddit">
+          <span>Reddit</span>
+        </button>
+        <!-- Omegle -->
+        <button class="social-app-box" data-app="omegle">
+          <img src="https://www.google.com/s2/favicons?domain=omegle.com&sz=64" alt="Omegle">
+          <span>Omegle</span>
+        </button>
+        <!-- Roblox -->
+        <button class="social-app-box" data-app="roblox">
+          <img src="https://www.google.com/s2/favicons?domain=roblox.com&sz=64" alt="Roblox">
+          <span>Roblox</span>
+        </button>
+        <!-- Spotify -->
+        <button class="social-app-box" data-app="spotify">
+          <img src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="Spotify">
+          <span>Spotify</span>
+        </button>
+      </div>
+      <button class="explore-games-box" id="explore-games-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><line x1="8" y1="11" x2="8" y2="15"/><line x1="6" y1="13" x2="10" y2="13"/><circle cx="16" cy="12" r="1"/><circle cx="18" cy="14.5" r="1"/></svg>
+        Explore Our Games
+      </button>
+    </div>
+  </div>
+
+  <!-- TikTok Overlay -->
+  <div id="tiktok-overlay" class="app-overlay" style="display:none">
+    <div class="app-overlay-bar">
+      <div class="app-overlay-wordmark">
+        <img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=64" alt="">TikTok
+      </div>
+      <button class="app-overlay-close" data-close="tiktok-overlay"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="app-overlay-frame-wrap">
+      <iframe class="app-overlay-frame" src="about:blank" allowfullscreen></iframe>
+      <div class="app-overlay-blocked" style="display:none">
+        <p class="app-overlay-blocked-title">TikTok couldn't load here</p>
+        <p class="app-overlay-blocked-sub">TikTok uses protections that prevent embedding.</p>
+        <button class="app-overlay-open-btn" data-href="https://tiktok.com">Open TikTok ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reddit Overlay -->
+  <div id="reddit-overlay" class="app-overlay" style="display:none">
+    <div class="app-overlay-bar">
+      <div class="app-overlay-wordmark">
+        <img src="https://www.google.com/s2/favicons?domain=reddit.com&sz=64" alt="">Reddit
+      </div>
+      <button class="app-overlay-close" data-close="reddit-overlay"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="app-overlay-frame-wrap">
+      <iframe class="app-overlay-frame" src="about:blank" allowfullscreen></iframe>
+      <div class="app-overlay-blocked" style="display:none">
+        <p class="app-overlay-blocked-title">Reddit couldn't load here</p>
+        <p class="app-overlay-blocked-sub">Reddit uses protections that prevent embedding.</p>
+        <button class="app-overlay-open-btn" data-href="https://reddit.com">Open Reddit ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Omegle Overlay -->
+  <div id="omegle-overlay" class="app-overlay" style="display:none">
+    <div class="app-overlay-bar">
+      <div class="app-overlay-wordmark">
+        <img src="https://www.google.com/s2/favicons?domain=omegle.com&sz=64" alt="">Omegle
+      </div>
+      <button class="app-overlay-close" data-close="omegle-overlay"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="app-overlay-frame-wrap">
+      <iframe class="app-overlay-frame" src="about:blank" allowfullscreen></iframe>
+      <div class="app-overlay-blocked" style="display:none">
+        <p class="app-overlay-blocked-title">Omegle couldn't load here</p>
+        <p class="app-overlay-blocked-sub">Omegle uses protections that prevent embedding.</p>
+        <button class="app-overlay-open-btn" data-href="https://omegle.com">Open Omegle ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roblox Overlay -->
+  <div id="roblox-overlay" class="app-overlay" style="display:none">
+    <div class="app-overlay-bar">
+      <div class="app-overlay-wordmark">
+        <img src="https://www.google.com/s2/favicons?domain=roblox.com&sz=64" alt="">Roblox
+      </div>
+      <button class="app-overlay-close" data-close="roblox-overlay"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="app-overlay-frame-wrap">
+      <iframe class="app-overlay-frame" src="about:blank" allowfullscreen></iframe>
+      <div class="app-overlay-blocked" style="display:none">
+        <p class="app-overlay-blocked-title">Roblox couldn't load here</p>
+        <p class="app-overlay-blocked-sub">Roblox uses protections that prevent embedding.</p>
+        <button class="app-overlay-open-btn" data-href="https://roblox.com">Open Roblox ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spotify Overlay -->
+  <div id="spotify-overlay" class="app-overlay" style="display:none">
+    <div class="app-overlay-bar">
+      <div class="app-overlay-wordmark">
+        <img src="https://www.google.com/s2/favicons?domain=spotify.com&sz=64" alt="">Spotify
+      </div>
+      <button class="app-overlay-close" data-close="spotify-overlay"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="app-overlay-frame-wrap">
+      <iframe class="app-overlay-frame" src="about:blank" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -1869,6 +2258,32 @@
         <div class="game-card-icon"><svg viewBox="0 0 40 40" width="44" height="44" fill="none"><circle cx="8" cy="9" r="4" fill="#f87171"/><path d="M4 27 Q4 17 8 15 Q12 17 12 27 Z" fill="#f87171"/><line x1="5.5" y1="27" x2="5" y2="34" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"/><line x1="10.5" y1="27" x2="11" y2="34" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"/><line x1="12" y1="19" x2="17" y2="22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><circle cx="32" cy="9" r="4" fill="#f87171"/><path d="M28 27 Q28 17 32 15 Q36 17 36 27 Z" fill="#f87171"/><line x1="29.5" y1="27" x2="29" y2="34" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"/><line x1="34.5" y1="27" x2="35" y2="34" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"/><line x1="28" y1="19" x2="23" y2="22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="10" x2="20" y2="32" stroke="rgba(248,113,113,0.35)" stroke-width="1" stroke-dasharray="3 2"/></svg></div>
         <div class="game-card-name">1v1 Duel</div>
       </button>
+    </div>
+  </div>
+
+  <!-- Music Mini-Player -->
+  <div id="music-player" class="music-player">
+    <div class="music-player-header">
+      <span class="music-player-label">♪ Now Playing</span>
+      <span class="music-player-counter" id="music-counter">1 / 5</span>
+    </div>
+    <div class="music-player-controls">
+      <button class="music-ctrl-btn" id="music-prev" title="Previous">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+      </button>
+      <button class="music-ctrl-btn play-btn" id="music-play" title="Play/Pause">
+        <svg id="music-play-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+      <button class="music-ctrl-btn" id="music-next" title="Next">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+      </button>
+    </div>
+    <div class="music-iframe-wrap" id="music-iframe-wrap">
+      <iframe id="music-iframe"
+        src="https://open.spotify.com/embed/track/3d0KltVlWeJtZVtkT4gyPb?utm_source=generator&theme=0"
+        width="220" height="80" frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy" style="border-radius:10px"></iframe>
     </div>
   </div>
 

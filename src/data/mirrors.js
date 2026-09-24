@@ -31,15 +31,15 @@ export const MIRRORS = [
   { name: "Slither.io Unblocked", url: "https://slither.io", tag: "hot" },
   { name: "Skribbl.io Unblocked", url: "https://skribbl.io", tag: "hot" },
 
-  // New
-  { name: "3kh0", url: "https://3kh0.com", tag: "new" },
-  { name: "Radon Games", url: "https://radon.games", tag: "new" },
-  { name: "Kazwire", url: "https://kazwire.com", tag: "new" },
-  { name: "NettleWeb", url: "https://nettleweb.com", tag: "new" },
-  { name: "Lunaar", url: "https://lunaar.org", tag: "new" },
-  { name: "Now.gg", url: "https://now.gg", tag: "new" },
-  { name: "KBH Games", url: "https://kbhgames.com", tag: "new" },
-  { name: "Games.lol", url: "https://games.lol", tag: "new" },
+  // Unblocked Games
+  { name: "3kh0", url: "https://3kh0.com", tag: "unblocked" },
+  { name: "Radon Games", url: "https://radon.games", tag: "unblocked" },
+  { name: "Kazwire", url: "https://kazwire.com", tag: "unblocked" },
+  { name: "NettleWeb", url: "https://nettleweb.com", tag: "unblocked" },
+  { name: "Lunaar", url: "https://lunaar.org", tag: "unblocked" },
+  { name: "Now.gg", url: "https://now.gg", tag: "unblocked" },
+  { name: "KBH Games", url: "https://kbhgames.com", tag: "unblocked" },
+  { name: "Games.lol", url: "https://games.lol", tag: "unblocked" },
 
   // Classic game portals
   { name: "Y8 Games", url: "https://y8.com" },
