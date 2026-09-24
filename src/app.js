@@ -618,7 +618,7 @@ function initSocialSidebar() {
   if (closeX) closeX.addEventListener("click", closeSidebar);
   bd.addEventListener("click", closeSidebar);
 
-  const APP_URLS = { tiktok: "https://tiktok.com", reddit: "https://reddit.com", omegle: "https://omegle.com", roblox: "https://roblox.com", spotify: "https://open.spotify.com" };
+  const APP_URLS = { tiktok: "https://tiktok.com", reddit: "https://reddit.com", omegle: "https://omegle.com", roblox: "https://roblox.com" };
 
   sidebar.querySelectorAll(".social-app-box").forEach(box => {
     box.addEventListener("click", () => {
@@ -628,6 +628,8 @@ function initSocialSidebar() {
         if (app === "instagram") {
           if (window._openInstagram) window._openInstagram();
           else { const ol = document.getElementById("ig-overlay"); if (ol) { ol.style.display = "flex"; document.body.style.overflow = "hidden"; } }
+        } else if (app === "spotify") {
+          if (window._openMusicPlayer) window._openMusicPlayer();
         } else {
           const ol = document.getElementById(app + "-overlay");
           if (!ol) return;
@@ -805,6 +807,63 @@ function initMusicPlayer() {
     if (player) player.style.display = "none";
     if (audio) { audio.pause(); playing = false; setPlayIcon(false); }
   });
+
+  // expose so sidebar Spotify button can re-open the player
+  window._openMusicPlayer = () => {
+    if (!player) return;
+    player.style.display = "";
+    player.classList.remove("minimized");
+  };
+
+  // draggable
+  const dragHandle = player && player.querySelector(".music-player-top");
+  if (dragHandle && player) {
+    let dragging = false, ox = 0, oy = 0;
+
+    function startDrag(cx, cy) {
+      const r = player.getBoundingClientRect();
+      player.style.right = "auto";
+      player.style.bottom = "auto";
+      player.style.left = r.left + "px";
+      player.style.top  = r.top  + "px";
+      player.style.transition = "none";
+      ox = cx - r.left;
+      oy = cy - r.top;
+      dragging = true;
+      document.body.style.userSelect = "none";
+    }
+
+    function moveDrag(cx, cy) {
+      if (!dragging) return;
+      const maxX = window.innerWidth  - player.offsetWidth;
+      const maxY = window.innerHeight - player.offsetHeight;
+      player.style.left = Math.max(0, Math.min(maxX, cx - ox)) + "px";
+      player.style.top  = Math.max(0, Math.min(maxY, cy - oy)) + "px";
+    }
+
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      document.body.style.userSelect = "";
+      player.style.transition = "";
+    }
+
+    dragHandle.addEventListener("mousedown", e => {
+      if (e.target.closest(".music-wm-btn")) return;
+      startDrag(e.clientX, e.clientY);
+    });
+    document.addEventListener("mousemove", e => moveDrag(e.clientX, e.clientY));
+    document.addEventListener("mouseup", endDrag);
+
+    dragHandle.addEventListener("touchstart", e => {
+      if (e.target.closest(".music-wm-btn")) return;
+      startDrag(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    document.addEventListener("touchmove", e => {
+      if (dragging) { e.preventDefault(); moveDrag(e.touches[0].clientX, e.touches[0].clientY); }
+    }, { passive: false });
+    document.addEventListener("touchend", endDrag);
+  }
 
   updateMeta();
 }
