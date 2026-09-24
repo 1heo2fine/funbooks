@@ -221,7 +221,7 @@ export function init() {
 
 init();
 initHotBanner();
-initBrowser();
+initInstagram();
 initQuickHide();
 
 function initQuickHide() {
@@ -299,20 +299,14 @@ function initHotBanner() {
   setInterval(() => goTo(current + 1), 3000);
 }
 
-function initBrowser() {
-  const overlay    = document.getElementById("proxy-browser-overlay");
-  const openBtn    = document.getElementById("open-browser");
-  const closeBtn   = document.getElementById("browser-close");
-  const urlInput   = document.getElementById("browser-url");
-  const goBtn      = document.getElementById("browser-go");
-  const frame      = document.getElementById("browser-frame");
-  const backBtn    = document.getElementById("browser-back");
-  const fwdBtn     = document.getElementById("browser-forward");
-  const refreshBtn = document.getElementById("browser-refresh");
-  const statusBar  = document.getElementById("browser-status-bar");
-  const statusText = document.getElementById("browser-status-text");
-  const blockedMsg = document.getElementById("browser-blocked-msg");
-  const openTabBtn = document.getElementById("browser-open-tab");
+function initInstagram() {
+  const overlay    = document.getElementById("ig-overlay");
+  const openBtn    = document.getElementById("ig-fab");
+  const closeBtn   = document.getElementById("ig-close");
+  const statusEl   = document.getElementById("ig-status");
+  const frame      = document.getElementById("ig-frame");
+  const blockedMsg = document.getElementById("ig-blocked");
+  const openTabBtn = document.getElementById("ig-open-tab");
 
   if (!overlay || !frame) return;
 
@@ -322,55 +316,62 @@ function initBrowser() {
     "https://api.codetabs.com/v1/proxy?quest=",
   ];
 
-  const hist = [];
-  let histIdx = -1;
-  let currentUrl = "";
+  const IG_ORIGINS = ["instagram.com", "cdninstagram.com", "fbcdn.net"];
   let prevBlobUrl = null;
   let busy = false;
 
-  function normalizeUrl(raw) {
-    raw = raw.trim();
-    if (!raw) return "";
-    if (/^https?:\/\//i.test(raw)) return raw;
-    if (/^localhost|^\d{1,3}\.\d{1,3}/.test(raw)) return "http://" + raw;
-    if (raw.includes(" ") || !raw.includes(".")) {
-      return "https://lite.duckduckgo.com/lite/?q=" + encodeURIComponent(raw);
-    }
-    return "https://" + raw;
+  function isIgUrl(url) {
+    try {
+      const h = new URL(url).hostname.replace(/^www\./, "");
+      return IG_ORIGINS.some(o => h === o || h.endsWith("." + o));
+    } catch (_) { return false; }
   }
 
   function setStatus(msg) {
-    if (!msg) { statusBar.style.display = "none"; return; }
-    statusBar.style.display = "block";
-    statusText.textContent = msg;
+    if (statusEl) statusEl.textContent = msg;
   }
 
-  function updateNavBtns() {
-    backBtn.disabled = histIdx <= 0;
-    fwdBtn.disabled  = histIdx >= hist.length - 1;
-  }
-
-  function injectProxy(html, pageUrl) {
-    let basePath = pageUrl;
-    try {
-      const u = new URL(pageUrl);
-      basePath = u.origin + u.pathname.replace(/[^/]*$/, "");
-    } catch (_) {}
-
-    // Strip CSP and X-Frame-Options meta tags so the page can render in our blob iframe
+  function buildInjected(html, pageUrl) {
+    // Strip CSP/X-Frame-Options meta tags
     html = html.replace(/<meta\s[^>]*http-equiv\s*=\s*["']?(?:content-security-policy|x-frame-options)["']?[^>]*>/gi, "");
 
-    // Override window.top/parent/frameElement so frame-busting JS sees no parent frame
-    const frameBust = `<script>(function(){try{Object.defineProperty(window,'top',{get:function(){return window;}});}catch(e){}try{Object.defineProperty(window,'parent',{get:function(){return window;}});}catch(e){}try{Object.defineProperty(window,'frameElement',{get:function(){return null;}});}catch(e){}})();<` + `/script>`;
+    // Frame-bust bypass
+    const frameBust = `<script>(function(){try{Object.defineProperty(window,'top',{get:function(){return window;}})}catch(e){}try{Object.defineProperty(window,'parent',{get:function(){return window;}})}catch(e){}try{Object.defineProperty(window,'frameElement',{get:function(){return null;}})}catch(e){}})();<` + `/script>`;
 
-    const interceptor = `<script>(function(){
+    // Proxy override: route fetch + XHR through allorigins so API calls work
+    // Also lock navigation: only instagram.com links go through, others are silently blocked
+    const proxyScript = `<script>(function(){
+      var PROXY='https://api.allorigins.win/raw?url=';
+      var IG=['instagram.com','cdninstagram.com','fbcdn.net','cdninstagram.com'];
+      function isIG(u){try{var h=new URL(u).hostname.replace(/^www\\./,'');return IG.some(function(o){return h===o||h.endsWith('.'+o);});}catch(e){return false;}}
+      function absUrl(u){if(!u)return u;if(/^https?:\\/\\//.test(u))return u;if(u.startsWith('//'))return 'https:'+u;if(u.startsWith('/'))return 'https://www.instagram.com'+u;return u;}
+
+      var oFetch=window.fetch;
+      window.fetch=function(u,opts){
+        var abs=absUrl(typeof u==='string'?u:(u&&u.url)||'');
+        if(abs&&isIG(abs))return oFetch(PROXY+encodeURIComponent(abs),opts);
+        return oFetch.apply(this,arguments);
+      };
+
+      var oOpen=XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open=function(m,u){
+        var abs=absUrl(u||'');
+        if(abs&&isIG(abs))arguments[1]=PROXY+encodeURIComponent(abs);
+        return oOpen.apply(this,arguments);
+      };
+
       document.addEventListener('click',function(e){
         var a=e.target;while(a&&a.tagName!=='A')a=a.parentElement;
-        if(a&&a.href&&!/^(javascript:|blob:|#)/.test(a.getAttribute('href')||'')){
-          e.preventDefault();e.stopPropagation();
-          window.parent.postMessage({__pb:a.href},'*');
-        }
+        if(!a||!a.href)return;
+        var href=a.getAttribute('href')||'';
+        if(/^(javascript:|blob:|#|data:)/.test(href))return;
+        e.preventDefault();e.stopPropagation();
+        try{
+          var url=new URL(a.href,window.location.href);
+          if(isIG(url.toString()))window.parent.postMessage({__ig:url.toString()},'*');
+        }catch(err){}
       },true);
+
       document.addEventListener('submit',function(e){
         e.preventDefault();
         var f=e.target;
@@ -379,36 +380,25 @@ function initBrowser() {
         if(method==='get'){
           var params=new URLSearchParams();
           new FormData(f).forEach(function(v,k){params.set(k,v);});
-          try{var u=new URL(action,window.location.href);u.search=params.toString();window.parent.postMessage({__pb:u.toString()},'*');}catch(err){}
+          try{var u=new URL(action,window.location.href);u.search=params.toString();if(isIG(u.toString()))window.parent.postMessage({__ig:u.toString()},'*');}catch(err){}
         }
       },true);
     })();<` + `/script>`;
 
-    const inject = `<base href="${basePath}">` + frameBust + interceptor;
+    const inject = `<base href="https://www.instagram.com/">` + frameBust + proxyScript;
     if (/<head[\s>]/i.test(html)) return html.replace(/<head([\s>][^>]*)?>/i, m => m + inject);
     return inject + html;
   }
 
-  async function navigate(url, pushHistory = true) {
+  async function navigate(url) {
     if (!url || busy) return;
     busy = true;
-
     blockedMsg.style.display = "none";
     frame.style.display = "block";
-    currentUrl = url;
-    urlInput.value = url;
-    setStatus("Proxying…");
-
-    if (pushHistory) {
-      hist.splice(histIdx + 1);
-      hist.push(url);
-      histIdx = hist.length - 1;
-    }
-    updateNavBtns();
-    if (openTabBtn) openTabBtn.onclick = () => window.open(url, "_blank");
+    setStatus("Loading…");
 
     const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 20000);
+    const timer = setTimeout(() => ctrl.abort(), 25000);
 
     try {
       let res = null;
@@ -424,7 +414,7 @@ function initBrowser() {
       if (!res) throw new Error("all proxies failed");
 
       const html = await res.text();
-      const blob = new Blob([injectProxy(html, url)], { type: "text/html; charset=utf-8" });
+      const blob = new Blob([buildInjected(html, url)], { type: "text/html; charset=utf-8" });
       if (prevBlobUrl) URL.revokeObjectURL(prevBlobUrl);
       prevBlobUrl = URL.createObjectURL(blob);
       frame.src = prevBlobUrl;
@@ -439,9 +429,9 @@ function initBrowser() {
     }
   }
 
-  // Navigation messages from inside the proxied page
+  // Only allow instagram.com navigation from inside the frame
   window.addEventListener("message", (e) => {
-    if (e.data && e.data.__pb) navigate(e.data.__pb);
+    if (e.data && e.data.__ig && isIgUrl(e.data.__ig)) navigate(e.data.__ig);
   });
 
   frame.addEventListener("load", () => setStatus(""));
@@ -449,8 +439,7 @@ function initBrowser() {
   function openOverlay() {
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
-    if (!currentUrl) navigate("https://lite.duckduckgo.com");
-    else urlInput.focus();
+    if (!prevBlobUrl) navigate("https://www.instagram.com/");
   }
 
   function closeOverlay() {
@@ -458,21 +447,10 @@ function initBrowser() {
     document.body.style.overflow = "";
   }
 
+  if (openTabBtn) openTabBtn.onclick = () => window.open("https://www.instagram.com/", "_blank");
+
   openBtn.addEventListener("click", openOverlay);
   closeBtn.addEventListener("click", closeOverlay);
-  goBtn.addEventListener("click", () => navigate(normalizeUrl(urlInput.value)));
-  urlInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") navigate(normalizeUrl(urlInput.value));
-  });
-  backBtn.addEventListener("click", () => {
-    if (histIdx > 0) { histIdx--; navigate(hist[histIdx], false); }
-  });
-  fwdBtn.addEventListener("click", () => {
-    if (histIdx < hist.length - 1) { histIdx++; navigate(hist[histIdx], false); }
-  });
-  refreshBtn.addEventListener("click", () => {
-    if (currentUrl) navigate(currentUrl, false);
-  });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && overlay.style.display !== "none") closeOverlay();
   });
