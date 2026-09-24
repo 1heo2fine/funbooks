@@ -105,32 +105,53 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Ocean Canvas Background */
+    /* Ocean CSS Background */
     #ocean-bg {
       position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
       z-index: 0;
       pointer-events: none;
+      background: linear-gradient(180deg, #020910 0%, #031528 50%, #052040 78%, #020c20 100%);
+      overflow: hidden;
     }
+    #ocean-bg .wave {
+      position: absolute;
+      left: -50%;
+      width: 200%;
+      background-repeat: repeat-x;
+      background-size: 50% 100%;
+      will-change: transform;
+    }
+    #ocean-bg .wave1 {
+      bottom: 0; height: 38%;
+      opacity: 0.13;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 C1320,80 1380,40 1440,60 L1440,120 L0,120 Z' fill='%230ea5e9'/%3E%3C/svg%3E");
+      animation: waveDrift1 12s linear infinite;
+    }
+    #ocean-bg .wave2 {
+      bottom: 0; height: 30%;
+      opacity: 0.09;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,120 L0,120 Z' fill='%2322d3ee'/%3E%3C/svg%3E");
+      animation: waveDrift2 9s linear infinite;
+    }
+    #ocean-bg .wave3 {
+      bottom: 0; height: 22%;
+      opacity: 0.07;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,70 C180,40 360,90 540,55 C720,20 900,80 1080,50 C1260,20 1380,70 1440,55 L1440,120 L0,120 Z' fill='%2338bdf8'/%3E%3C/svg%3E");
+      animation: waveDrift3 7s linear infinite;
+    }
+    @keyframes waveDrift1 { to { transform: translateX(25%); } }
+    @keyframes waveDrift2 { to { transform: translateX(-25%); } }
+    @keyframes waveDrift3 { to { transform: translateX(20%); } }
     .ocean-surface-glow {
       position: fixed;
-      top: -120px;
-      left: 50%;
+      top: -100px; left: 50%;
       transform: translateX(-50%);
-      width: 900px;
-      height: 500px;
-      background: radial-gradient(ellipse at center, rgba(14, 165, 233, 0.09) 0%, rgba(56, 189, 248, 0.04) 45%, transparent 75%);
+      width: 800px; height: 400px;
+      background: radial-gradient(ellipse at center, rgba(14,165,233,0.07) 0%, transparent 70%);
       border-radius: 50%;
-      filter: blur(50px);
       pointer-events: none;
       z-index: 0;
-      animation: surfacePulse 8s ease-in-out infinite;
-    }
-    @keyframes surfacePulse {
-      0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-      50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
     }
 
     body {
@@ -319,8 +340,6 @@
       letter-spacing: 0.03em;
       color: var(--text-muted);
       cursor: pointer;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 16px rgba(0, 0, 0, 0.25);
       transition: all 0.25s var(--ease);
       user-select: none;
@@ -374,8 +393,6 @@
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
       padding: 14px 18px;
-      backdrop-filter: blur(32px) saturate(180%);
-      -webkit-backdrop-filter: blur(32px) saturate(180%);
       box-shadow: 
         inset 0 1px 1px rgba(255, 255, 255, 0.09),
         0 10px 30px rgba(0, 0, 0, 0.4);
@@ -478,8 +495,6 @@
       font-weight: 600;
       font-family: 'JetBrains Mono', monospace;
       cursor: pointer;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
       transition: all 0.2s var(--ease);
       user-select: none;
@@ -581,8 +596,6 @@
       font-family: inherit;
       letter-spacing: -0.01em;
       cursor: pointer;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 20px rgba(0, 0, 0, 0.4);
       transition: all 0.2s var(--ease);
       user-select: none;
@@ -603,8 +616,6 @@
       display: flex;
       flex-direction: column;
       background: rgba(3, 3, 5, 0.97);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
     }
     .ig-chrome {
       flex-shrink: 0;
@@ -727,8 +738,6 @@
       border-radius: 16px;
       padding: 12px 16px;
       margin-bottom: 20px;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       box-shadow: inset 0 1px 1px rgba(255,255,255,0.07), 0 4px 20px rgba(0,0,0,0.3);
       overflow: hidden;
     }
@@ -1108,7 +1117,6 @@
       position: absolute;
       inset: 0;
       background: rgba(0,0,0,0.72);
-      backdrop-filter: blur(4px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1261,8 +1269,6 @@
       font-family: inherit;
       letter-spacing: -0.01em;
       cursor: pointer;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.4);
       transition: all 0.2s var(--ease);
       user-select: none;
@@ -1284,7 +1290,6 @@
       inset: 0;
       z-index: 7900;
       background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(4px);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.28s var(--ease);
@@ -1455,7 +1460,6 @@
       gap: 18px;
       padding: 24px;
       background: rgba(0,0,0,0.78);
-      backdrop-filter: blur(6px);
     }
     .gm-screen.hidden { display: none; }
     .gm-title {
@@ -1704,7 +1708,11 @@
 </head>
 <body>
   <!-- Ambient Orbs & Geometric Rings matching reference -->
-  <canvas id="ocean-bg"></canvas>
+  <div id="ocean-bg">
+    <div class="wave wave1"></div>
+    <div class="wave wave2"></div>
+    <div class="wave wave3"></div>
+  </div>
   <div class="ocean-surface-glow"></div>
   <div class="ocean-depth-vignette"></div>
 
@@ -2289,109 +2297,5 @@
   </div>
 
   <script type="module" src="./app.js"></script>
-  <script>
-  (function() {
-    var canvas = document.getElementById('ocean-bg');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d', { alpha: false });
-    var W, H, particles = [], time = 0, last = 0;
-    var STEP = 16; // ~60fps cap via 16ms throttle
-    // Render at half resolution for perf, CSS scales it up
-    var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
-    var WAVE_LAYERS = [
-      { speed: 0.55, amp: 36, freq: 0.011, y: 0.62, alpha: 0.10, color: '14,165,233' },
-      { speed: 0.80, amp: 22, freq: 0.017, y: 0.72, alpha: 0.08, color: '34,211,238' },
-      { speed: 1.20, amp: 13, freq: 0.027, y: 0.82, alpha: 0.06, color: '56,189,248' },
-    ];
-    // Pre-cache gradient per layer (rebuilt on resize)
-    var waveGrads = [];
-    function resize() {
-      W = canvas.width = Math.round(window.innerWidth * DPR);
-      H = canvas.height = Math.round(window.innerHeight * DPR);
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.scale(DPR, DPR);
-      waveGrads = [];
-    }
-    function spawnParticle() {
-      return {
-        x: Math.random() * (W / DPR),
-        y: (H / DPR) + 5,
-        r: Math.random() * 1.8 + 0.4,
-        vy: -(Math.random() * 0.22 + 0.05),
-        vx: (Math.random() - 0.5) * 0.09,
-        alpha: Math.random() * 0.38 + 0.07,
-        life: 0,
-        maxLife: Math.random() * 380 + 160,
-        color: Math.random() > 0.5 ? '56,189,248' : '34,211,238',
-      };
-    }
-    var MAX_P = 30;
-    for (var i = 0; i < MAX_P; i++) { var p = spawnParticle(); p.y = Math.random() * (H / DPR); particles.push(p); }
-    var VW, VH; // viewport dims (CSS px)
-    function drawFrame(t) {
-      requestAnimationFrame(drawFrame);
-      if (t - last < STEP) return;
-      last = t;
-      time = t * 0.001;
-      VW = W / DPR; VH = H / DPR;
-      // Background
-      ctx.fillStyle = '#020910';
-      ctx.fillRect(0, 0, VW, VH);
-      // Subtle depth gradient overlay (cheap, static-ish)
-      if (!drawFrame._depthGrad || drawFrame._depthH !== VH) {
-        drawFrame._depthGrad = ctx.createLinearGradient(0, 0, 0, VH);
-        drawFrame._depthGrad.addColorStop(0,    'rgba(3,21,52,0)');
-        drawFrame._depthGrad.addColorStop(0.55, 'rgba(4,29,60,0.45)');
-        drawFrame._depthGrad.addColorStop(1,    'rgba(2,12,32,0.7)');
-        drawFrame._depthH = VH;
-      }
-      ctx.fillStyle = drawFrame._depthGrad;
-      ctx.fillRect(0, 0, VW, VH);
-      // Wave layers — drawn every 8px for speed
-      for (var li = 0; li < WAVE_LAYERS.length; li++) {
-        var lyr = WAVE_LAYERS[li];
-        var baseY = VH * lyr.y;
-        if (!waveGrads[li] || waveGrads[li]._h !== VH) {
-          var wg = ctx.createLinearGradient(0, baseY - lyr.amp - 10, 0, VH);
-          wg.addColorStop(0, 'rgba(' + lyr.color + ',' + lyr.alpha + ')');
-          wg.addColorStop(1, 'rgba(' + lyr.color + ',0.01)');
-          wg._h = VH;
-          waveGrads[li] = wg;
-        }
-        ctx.beginPath();
-        ctx.moveTo(0, VH);
-        for (var x = 0; x <= VW; x += 8) {
-          var y = baseY + Math.sin(x * lyr.freq + time * lyr.speed) * lyr.amp
-                        + Math.sin(x * lyr.freq * 1.6 + time * lyr.speed * 0.7 + 1.1) * lyr.amp * 0.35;
-          ctx.lineTo(x, y);
-        }
-        ctx.lineTo(VW, VH);
-        ctx.closePath();
-        ctx.fillStyle = waveGrads[li];
-        ctx.fill();
-      }
-      // Particles — no shadowBlur (expensive), use larger alpha instead
-      for (var pi = 0; pi < particles.length; pi++) {
-        var p = particles[pi];
-        p.x += p.vx; p.y += p.vy; p.life++;
-        var fade = p.life < 30 ? p.life / 30 : p.life > p.maxLife - 30 ? (p.maxLife - p.life) / 30 : 1;
-        var a = p.alpha * fade;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, 6.2832);
-        ctx.fillStyle = 'rgba(' + p.color + ',' + a + ')';
-        ctx.fill();
-        if (p.life >= p.maxLife || p.y < -10) particles[pi] = spawnParticle();
-      }
-    }
-    var rTimer;
-    window.addEventListener('resize', function() {
-      clearTimeout(rTimer);
-      rTimer = setTimeout(function() { ctx.setTransform(1,0,0,1,0,0); resize(); }, 150);
-    });
-    resize();
-    requestAnimationFrame(drawFrame);
-  })();
-  </script>
 </body>
 </html>
