@@ -316,7 +316,7 @@ function initInstagram() {
     "https://api.codetabs.com/v1/proxy?quest=",
   ];
 
-  const IG_ORIGINS = ["instagram.com", "cdninstagram.com", "fbcdn.net"];
+  const IG_ORIGINS = ["instagram.com", "cdninstagram.com", "fbcdn.net", "lite.instagram.com"];
   let prevBlobUrl = null;
   let busy = false;
 
@@ -332,46 +332,67 @@ function initInstagram() {
   }
 
   function buildInjected(html, pageUrl) {
-    // Strip CSP/X-Frame-Options meta tags
+    const PROXY = "https://api.allorigins.win/raw?url=";
+    const IG_BASE = pageUrl ? new URL(pageUrl).origin : "https://www.instagram.com";
+
+    // Strip CSP/X-Frame-Options meta tags and SRI integrity (will be invalid after URL rewriting)
     html = html.replace(/<meta\s[^>]*http-equiv\s*=\s*["']?(?:content-security-policy|x-frame-options)["']?[^>]*>/gi, "");
+    html = html.replace(/\s+integrity="sha\d+-[^"]*"/gi, "");
+    html = html.replace(/\s+crossorigin="[^"]*"/gi, "");
+
+    // Rewrite src/href attributes so JS bundles + CSS load through the CORS proxy
+    // (without this, scripts fail from blob URL's null origin)
+    function toAbs(url) {
+      if (!url) return url;
+      if (url.startsWith("//")) return "https:" + url;
+      if (url.startsWith("/")) return IG_BASE + url;
+      return url;
+    }
+    function isIgCdn(url) {
+      try {
+        const h = new URL(url).hostname;
+        return h.endsWith(".instagram.com") || h.endsWith(".cdninstagram.com") ||
+               h.endsWith(".fbcdn.net") || h === "instagram.com";
+      } catch { return false; }
+    }
+    html = html.replace(/((?:src|href)\s*=\s*")([^"#\s][^"]*?)(")/gi, (m, pre, url, post) => {
+      if (/^(blob:|data:|javascript:|mailto:|tel:|#)/.test(url)) return m;
+      if (url.startsWith(PROXY)) return m; // already proxied
+      const abs = toAbs(url);
+      if (!abs || !abs.startsWith("http")) return m;
+      if (isIgCdn(abs) || url.startsWith("/")) return pre + PROXY + encodeURIComponent(abs) + post;
+      return m;
+    });
 
     // Frame-bust bypass
     const frameBust = `<script>(function(){try{Object.defineProperty(window,'top',{get:function(){return window;}})}catch(e){}try{Object.defineProperty(window,'parent',{get:function(){return window;}})}catch(e){}try{Object.defineProperty(window,'frameElement',{get:function(){return null;}})}catch(e){}})();<` + `/script>`;
 
-    // Proxy override: route fetch + XHR through allorigins so API calls work
-    // Also lock navigation: only instagram.com links go through, others are silently blocked
+    // Runtime proxy override: route fetch + XHR through allorigins + lock navigation to IG only
     const proxyScript = `<script>(function(){
-      var PROXY='https://api.allorigins.win/raw?url=';
-      var IG=['instagram.com','cdninstagram.com','fbcdn.net','cdninstagram.com'];
+      var P='https://api.allorigins.win/raw?url=';
+      var IG=['instagram.com','cdninstagram.com','fbcdn.net'];
       function isIG(u){try{var h=new URL(u).hostname.replace(/^www\\./,'');return IG.some(function(o){return h===o||h.endsWith('.'+o);});}catch(e){return false;}}
-      function absUrl(u){if(!u)return u;if(/^https?:\\/\\//.test(u))return u;if(u.startsWith('//'))return 'https:'+u;if(u.startsWith('/'))return 'https://www.instagram.com'+u;return u;}
-
-      var oFetch=window.fetch;
+      function abs(u){if(!u)return u;if(/^https?:\\/\\//.test(u))return u;if(u.startsWith('//'))return 'https:'+u;if(u.startsWith('/'))return '${IG_BASE}'+u;return u;}
+      var oF=window.fetch;
       window.fetch=function(u,opts){
-        var abs=absUrl(typeof u==='string'?u:(u&&u.url)||'');
-        if(abs&&isIG(abs))return oFetch(PROXY+encodeURIComponent(abs),opts);
-        return oFetch.apply(this,arguments);
+        var a=abs(typeof u==='string'?u:(u&&u.url)||'');
+        if(a&&isIG(a))return oF(P+encodeURIComponent(a),opts);
+        return oF.apply(this,arguments);
       };
-
-      var oOpen=XMLHttpRequest.prototype.open;
+      var oO=XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open=function(m,u){
-        var abs=absUrl(u||'');
-        if(abs&&isIG(abs))arguments[1]=PROXY+encodeURIComponent(abs);
-        return oOpen.apply(this,arguments);
+        var a=abs(u||'');
+        if(a&&isIG(a))arguments[1]=P+encodeURIComponent(a);
+        return oO.apply(this,arguments);
       };
-
       document.addEventListener('click',function(e){
         var a=e.target;while(a&&a.tagName!=='A')a=a.parentElement;
         if(!a||!a.href)return;
         var href=a.getAttribute('href')||'';
         if(/^(javascript:|blob:|#|data:)/.test(href))return;
         e.preventDefault();e.stopPropagation();
-        try{
-          var url=new URL(a.href,window.location.href);
-          if(isIG(url.toString()))window.parent.postMessage({__ig:url.toString()},'*');
-        }catch(err){}
+        try{var url=new URL(a.href,window.location.href);if(isIG(url.toString()))window.parent.postMessage({__ig:url.toString()},'*');}catch(err){}
       },true);
-
       document.addEventListener('submit',function(e){
         e.preventDefault();
         var f=e.target;
@@ -385,9 +406,22 @@ function initInstagram() {
       },true);
     })();<` + `/script>`;
 
-    const inject = `<base href="https://www.instagram.com/">` + frameBust + proxyScript;
+    const inject = frameBust + proxyScript;
     if (/<head[\s>]/i.test(html)) return html.replace(/<head([\s>][^>]*)?>/i, m => m + inject);
     return inject + html;
+  }
+
+  async function fetchWithTimeout(url, ms) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), ms);
+    try {
+      const r = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(t);
+      return r;
+    } catch (e) {
+      clearTimeout(t);
+      throw e;
+    }
   }
 
   async function navigate(url) {
@@ -397,30 +431,24 @@ function initInstagram() {
     frame.style.display = "block";
     setStatus("Loading…");
 
-    const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 25000);
-
     try {
       let res = null;
       for (const base of PROXIES) {
         try {
-          const r = await fetch(base + encodeURIComponent(url), { signal: ctrl.signal });
+          const r = await fetchWithTimeout(base + encodeURIComponent(url), 12000);
           if (r.ok) { res = r; break; }
-        } catch (e) {
-          if (e.name === "AbortError") throw e;
-        }
+        } catch (_) {}
       }
-      clearTimeout(timer);
       if (!res) throw new Error("all proxies failed");
 
       const html = await res.text();
-      const blob = new Blob([buildInjected(html, url)], { type: "text/html; charset=utf-8" });
+      const injected = buildInjected(html, url);
+      const blob = new Blob([injected], { type: "text/html; charset=utf-8" });
       if (prevBlobUrl) URL.revokeObjectURL(prevBlobUrl);
       prevBlobUrl = URL.createObjectURL(blob);
       frame.src = prevBlobUrl;
       setStatus("");
     } catch (_) {
-      clearTimeout(timer);
       setStatus("");
       frame.style.display = "none";
       blockedMsg.style.display = "flex";
@@ -439,7 +467,7 @@ function initInstagram() {
   function openOverlay() {
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
-    if (!prevBlobUrl) navigate("https://www.instagram.com/");
+    if (!prevBlobUrl) navigate("https://lite.instagram.com/");
   }
 
   function closeOverlay() {

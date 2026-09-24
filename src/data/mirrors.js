@@ -25,11 +25,11 @@ export const MIRRORS = [
   { name: "Cool Math Games", url: "https://coolmathgames.com", tag: "hot" },
   { name: "Poki", url: "https://poki.com", tag: "hot" },
   { name: "CrazyGames", url: "https://crazygames.com", tag: "hot" },
-  { name: "Krunker.io", url: "https://krunker.io", tag: "hot" },
-  { name: "1v1.lol", url: "https://1v1.lol", tag: "hot" },
-  { name: "Agar.io", url: "https://agar.io", tag: "hot" },
-  { name: "Slither.io", url: "https://slither.io", tag: "hot" },
-  { name: "Skribbl.io", url: "https://skribbl.io", tag: "hot" },
+  { name: "Krunker.io Unblocked", url: "https://krunker.io", tag: "hot" },
+  { name: "1v1.lol Unblocked", url: "https://1v1.lol", tag: "hot" },
+  { name: "Agar.io Unblocked", url: "https://agar.io", tag: "hot" },
+  { name: "Slither.io Unblocked", url: "https://slither.io", tag: "hot" },
+  { name: "Skribbl.io Unblocked", url: "https://skribbl.io", tag: "hot" },
 
   // New
   { name: "3kh0", url: "https://3kh0.com", tag: "new" },
