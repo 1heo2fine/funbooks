@@ -333,9 +333,8 @@ function initBrowser() {
     if (!raw) return "";
     if (/^https?:\/\//i.test(raw)) return raw;
     if (/^localhost|^\d{1,3}\.\d{1,3}/.test(raw)) return "http://" + raw;
-    // Treat as search query if it contains spaces or has no dot
     if (raw.includes(" ") || !raw.includes(".")) {
-      return "https://duckduckgo.com/?q=" + encodeURIComponent(raw);
+      return "https://lite.duckduckgo.com/lite/?q=" + encodeURIComponent(raw);
     }
     return "https://" + raw;
   }
@@ -372,7 +371,17 @@ function initBrowser() {
           window.parent.postMessage({__pb:a.href},'*');
         }
       },true);
-      document.addEventListener('submit',function(e){e.preventDefault();},true);
+      document.addEventListener('submit',function(e){
+        e.preventDefault();
+        var f=e.target;
+        var action=f.getAttribute('action')||window.location.href;
+        var method=(f.getAttribute('method')||'get').toLowerCase();
+        if(method==='get'){
+          var params=new URLSearchParams();
+          new FormData(f).forEach(function(v,k){params.set(k,v);});
+          try{var u=new URL(action,window.location.href);u.search=params.toString();window.parent.postMessage({__pb:u.toString()},'*');}catch(err){}
+        }
+      },true);
     })();<` + `/script>`;
 
     const inject = `<base href="${basePath}">` + frameBust + interceptor;
@@ -440,7 +449,7 @@ function initBrowser() {
   function openOverlay() {
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
-    if (!currentUrl) navigate("https://duckduckgo.com");
+    if (!currentUrl) navigate("https://lite.duckduckgo.com");
     else urlInput.focus();
   }
 
