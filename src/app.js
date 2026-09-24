@@ -1831,9 +1831,11 @@ function initDuelGame() {
 // ─── 3D Fish Model Renderer ────────────────────────────────────────────────────
 const FISH_RENDERER = (() => {
   function lh(h,a){
-    if(!h||h[0]!=='#')return h||'#888';
+    if(!h||h[0]!=='#')return h||'#888888';
     const n=parseInt(h.slice(1),16);
-    return `rgb(${Math.min(255,(n>>16)+(a*255|0))},${Math.min(255,((n>>8)&255)+(a*255|0))},${Math.min(255,(n&255)+(a*255|0))})`;
+    const c=x=>Math.max(0,Math.min(255,x))|0;
+    const r=c((n>>16)+(a*255|0)),g=c(((n>>8)&255)+(a*255|0)),b=c((n&255)+(a*255|0));
+    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
   }
   const dh=(h,a)=>lh(h,-a);
 
@@ -2597,8 +2599,10 @@ function initFishingGame() {
       if (modelRaf) cancelAnimationFrame(modelRaf);
       modelPhase = 0;
       (function animModel() {
-        modelPhase++;
-        FISH_RENDERER.drawFish(modelCtx, fish.id, fish.rarity, modelPhase);
+        try {
+          modelPhase++;
+          FISH_RENDERER.drawFish(modelCtx, fish.id, fish.rarity, modelPhase);
+        } catch(e) { console.warn("[fish render]", e); }
         modelRaf = requestAnimationFrame(animModel);
       })();
     }
