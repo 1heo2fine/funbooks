@@ -884,9 +884,19 @@
 
     /* ── Plane pill button ── */
     .plane-pill {
+      position: relative;
       background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(99,102,241,0.18));
-      border-color: rgba(56,189,248,0.4);
+      border: 1px solid rgba(56,189,248,0.4);
+      border-radius: var(--radius-full);
+      padding: 9px 18px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
       color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .plane-pill:hover { border-color: rgba(56,189,248,0.7); color: #fff; }
 
@@ -968,6 +978,7 @@
       }
       .filter-scroll-wrap::-webkit-scrollbar { display: none; }
       .filter-glass-pill { flex-shrink: 0; white-space: nowrap; padding: 9px 18px; font-size: 0.73rem; min-height: 38px; }
+      .plane-pill { padding: 9px 18px; font-size: 0.73rem; min-height: 38px; }
 
       /* Link cards */
       .link-card { padding: 13px 14px; gap: 10px; }
@@ -1040,7 +1051,7 @@
       <button class="filter-glass-pill" data-filter="hot">Hot</button>
       <button class="filter-glass-pill" data-filter="new">New</button>
       <button class="filter-glass-pill active" data-filter="recommended">Recommended</button>
-      <button id="plane-fab" class="filter-glass-pill plane-pill" title="Play Flappy Plane">✈ Fly</button>
+      <button id="plane-fab" class="plane-pill" title="Play Flappy Plane">✈ Fly</button>
     </div>
 
     <!-- Results count -->
