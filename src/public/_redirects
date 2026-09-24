@@ -1,0 +1,2 @@
+# 301 permanent redirect: non-www → www
+https://schoolbooks.lol/* https://www.schoolbooks.lol/:splat 301!
