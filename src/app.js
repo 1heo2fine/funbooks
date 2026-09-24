@@ -278,6 +278,21 @@ safeInit(initTttGame);
 safeInit(initSpaceGame);
 safeInit(initSpeedTapGame);
 safeInit(initDuelGame);
+safeInit(initFabGameHide);
+
+function initFabGameHide() {
+  const fab = document.getElementById("menu-fab");
+  if (!fab) return;
+  const overlays = document.querySelectorAll(".game-modal, .plane-overlay");
+  function sync() {
+    const anyOpen = [...overlays].some(el =>
+      el.classList.contains("open") || el.classList.contains("visible")
+    );
+    fab.classList.toggle("fab-game-hidden", anyOpen);
+  }
+  const obs = new MutationObserver(sync);
+  overlays.forEach(el => obs.observe(el, { attributes: true, attributeFilter: ["class"] }));
+}
 
 function initQuickHide() {
   const overlay = document.getElementById("book-overlay");
