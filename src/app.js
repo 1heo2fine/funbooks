@@ -222,6 +222,27 @@ export function init() {
 init();
 initHotBanner();
 initBrowser();
+initQuickHide();
+
+function initQuickHide() {
+  const overlay = document.getElementById("book-overlay");
+  if (!overlay) return;
+
+  function toggle() { overlay.classList.toggle("visible"); }
+
+  const hint = document.getElementById("hide-hint");
+  if (hint) hint.addEventListener("click", toggle);
+
+  const unhideBtn = document.getElementById("book-unhide-btn");
+  if (unhideBtn) unhideBtn.addEventListener("click", toggle);
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "q" || e.key === "Q") && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+      e.preventDefault();
+      toggle();
+    }
+  });
+}
 
 function initHotBanner() {
   const track = document.getElementById("hot-track");
