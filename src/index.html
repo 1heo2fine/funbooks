@@ -2173,10 +2173,10 @@
     @keyframes fish-legendary-flash { 0%,100%{box-shadow:0 8px 60px var(--rv-glow);} 50%{box-shadow:0 0 180px var(--rv-glow),0 0 60px rgba(255,215,0,0.1);} }
     @keyframes fish-rv-impossible { from{transform:scale(0.2) rotate(-720deg);opacity:0;filter:blur(24px) saturate(0);} 55%{transform:scale(1.15) rotate(8deg);opacity:1;filter:blur(0) saturate(1.8);} 75%{transform:scale(0.96) rotate(-3deg);} to{transform:scale(1) rotate(0);filter:saturate(1);} }
     .fish-rn-rarity { font-size:0.65rem; font-weight:900; letter-spacing:0.15em; text-transform:uppercase; font-family:'JetBrains Mono',monospace; }
-    .fish-rn-emoji { font-size:3.4rem; line-height:1; margin:2px 0; transition:font-size 0.1s; }
-    .fish-rarity-legendary .fish-rn-emoji, .fish-rarity-mythic .fish-rn-emoji, .fish-rarity-secret .fish-rn-emoji, .fish-rarity-impossible .fish-rn-emoji { font-size:5.4rem; }
-    .fish-rarity-secret .fish-rn-emoji { animation:fish-secret-spin 1.2s cubic-bezier(0.17,0.67,0.35,1.18); }
-    .fish-rarity-impossible .fish-rn-emoji { animation:fish-impossible-spin 1.6s cubic-bezier(0.17,0.67,0.35,1.18); }
+    .fish-model-canvas { display:block; width:100%; max-width:260px; height:130px; margin:4px auto 2px; border-radius:10px; }
+    .fish-rarity-legendary .fish-model-canvas, .fish-rarity-mythic .fish-model-canvas { filter:drop-shadow(0 0 8px var(--rv-color,rgba(255,215,0,0.45))); }
+    .fish-rarity-secret .fish-model-canvas { filter:drop-shadow(0 0 10px rgba(255,255,255,0.35)); animation:fish-secret-spin 1.2s cubic-bezier(0.17,0.67,0.35,1.18); }
+    .fish-rarity-impossible .fish-model-canvas { filter:drop-shadow(0 0 14px rgba(255,0,80,0.65)); animation:fish-impossible-spin 1.6s cubic-bezier(0.17,0.67,0.35,1.18); }
     @keyframes fish-secret-spin { from{transform:scale(0.1) rotate(-540deg);} to{transform:scale(1) rotate(0);} }
     @keyframes fish-impossible-spin { from{transform:scale(0.05) rotate(-1080deg);filter:blur(12px);} 65%{transform:scale(1.18) rotate(15deg);filter:blur(0);} 80%{transform:scale(0.94) rotate(-5deg);} to{transform:scale(1) rotate(0);} }
     .fish-rn-name { font-size:1.2rem; font-weight:800; color:#e2e8f0; font-family:'Syne',sans-serif; }
@@ -2785,7 +2785,7 @@
         <div id="fish-reveal" class="fish-reveal">
           <div class="fish-rv-inner">
             <div class="fish-rn-rarity" id="fish-rn-rarity"></div>
-            <div class="fish-rn-emoji" id="fish-rn-emoji"></div>
+            <canvas id="fish-model-canvas" class="fish-model-canvas" width="260" height="130"></canvas>
             <div class="fish-rn-name" id="fish-rn-name"></div>
             <div class="fish-rn-desc" id="fish-rn-desc"></div>
             <div class="fish-rn-weight" id="fish-rn-weight"></div>
