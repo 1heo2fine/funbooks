@@ -860,10 +860,23 @@
       border-top: 1px solid #bbb;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 0.72rem;
       font-family: Arial, sans-serif;
       color: #888;
     }
+    .book-footer-nav { display: flex; align-items: center; gap: 8px; }
+    .book-nav-btn {
+      background: none;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      padding: 2px 9px;
+      font-size: 0.72rem;
+      font-family: Arial, sans-serif;
+      color: #555;
+      cursor: pointer;
+    }
+    .book-nav-btn:hover { background: #eee; border-color: #999; }
     @media (max-width: 640px) {
       .book-page { padding: 32px 20px 60px; }
       .book-title { font-size: 1.35rem; }
@@ -1024,8 +1037,10 @@
     </div>
   </div>
 
-  <!-- Quick-hide Book Overlay -->
+  <!-- Quick-hide Book Overlay (5 chapters, Q to toggle, ←/→ to navigate) -->
   <div id="book-overlay" class="book-overlay">
+
+    <!-- ═══ PAGE 1: Cellular Energy ═══ -->
     <div class="book-page">
       <div class="book-header-bar">
         <span>Biology: Life Sciences</span>
@@ -1044,36 +1059,179 @@
         <div class="book-figure-title">Equation 7.1 — Overall Photosynthesis</div>
         6CO&#8322; + 6H&#8322;O + light energy &rarr; C&#8326;H&#8321;&#8322;O&#8326; + 6O&#8322;
       </div>
-      <p class="book-p">This deceptively simple equation conceals two distinct sets of reactions occurring inside the chloroplast. The <span class="book-key">light-dependent reactions</span> take place in the thylakoid membranes and capture sunlight, producing ATP and NADPH while releasing oxygen as a by-product. The <span class="book-key">Calvin cycle</span> (light-independent reactions) occurs in the stroma and uses the ATP and NADPH to fix carbon dioxide into organic molecules.</p>
-
-      <h3 class="book-subsection">7.2a The Light-Dependent Reactions</h3>
-      <p class="book-p">When light strikes a <span class="book-key">chlorophyll</span> molecule embedded in <span class="book-key">Photosystem II</span>, electrons become energized and leave the reaction center. These energized electrons travel down the <span class="book-key">electron transport chain</span>, releasing energy that pumps H&#8314; ions across the thylakoid membrane. The resulting electrochemical gradient drives <span class="book-key">ATP synthase</span> to phosphorylate ADP, producing ATP — a process called <span class="book-key">photophosphorylation</span>.</p>
-      <p class="book-p">Meanwhile, water molecules are split in a process called <span class="book-key">photolysis</span>, replenishing the electrons lost by chlorophyll and releasing O&#8322; gas. At <span class="book-key">Photosystem I</span>, electrons are re-energized and ultimately reduce NADP&#8314; to NADPH, which carries high-energy electrons to the Calvin cycle.</p>
-
-      <div class="book-figure">
-        <div class="book-figure-title">Figure 7.2 &mdash; Summary of Light-Dependent Reactions</div>
-        Photosystem II &rarr; Electron Transport Chain &rarr; ATP Synthase &rarr; Photosystem I &rarr; NADPH<br>
-        Water (H&#8322;O) is split at PSII; oxygen released as waste product.
-      </div>
-
-      <h3 class="book-subsection">7.2b The Calvin Cycle</h3>
-      <p class="book-p">The Calvin cycle uses the ATP and NADPH produced during the light-dependent reactions to convert CO&#8322; into <span class="book-key">glyceraldehyde-3-phosphate (G3P)</span>, a three-carbon sugar that serves as a precursor for glucose and other organic molecules. The enzyme <span class="book-key">RuBisCO</span> catalyzes the critical step of carbon fixation, attaching CO&#8322; to the five-carbon acceptor molecule <span class="book-key">ribulose-1,5-bisphosphate (RuBP)</span>.</p>
-      <p class="book-p">The cycle must turn three times (fixing three CO&#8322; molecules) to produce one net molecule of G3P, consuming 9 ATP and 6 NADPH in the process. Six turns of the cycle are needed to produce one glucose molecule.</p>
+      <p class="book-p">The <span class="book-key">light-dependent reactions</span> take place in the thylakoid membranes and produce ATP and NADPH. The <span class="book-key">Calvin cycle</span> occurs in the stroma and uses those molecules to fix carbon dioxide into organic compounds. When light strikes <span class="book-key">Photosystem II</span>, electrons energize and travel down the <span class="book-key">electron transport chain</span>, driving <span class="book-key">ATP synthase</span> via a proton gradient — a process called <span class="book-key">photophosphorylation</span>. Water is split by <span class="book-key">photolysis</span>, releasing O&#8322; as a by-product.</p>
 
       <h2 class="book-section">7.3 Cellular Respiration</h2>
-      <p class="book-p">Cellular respiration is the process by which cells break down organic molecules — primarily glucose — to release the energy stored in their chemical bonds. This energy is captured as ATP and used to power cellular work. The overall equation is essentially the reverse of photosynthesis:</p>
+      <p class="book-p">Cellular respiration breaks down glucose to release stored energy as ATP. The overall reaction is the inverse of photosynthesis:</p>
       <div class="book-figure">
         <div class="book-figure-title">Equation 7.2 — Overall Cellular Respiration</div>
-        C&#8326;H&#8321;&#8322;O&#8326; + 6O&#8322; &rarr; 6CO&#8322; + 6H&#8322;O + ATP (energy)
+        C&#8326;H&#8321;&#8322;O&#8326; + 6O&#8322; &rarr; 6CO&#8322; + 6H&#8322;O + ATP
       </div>
-      <p class="book-p">Cellular respiration occurs in three major stages: <span class="book-key">glycolysis</span> (in the cytoplasm), the <span class="book-key">Krebs cycle</span> (in the mitochondrial matrix), and <span class="book-key">oxidative phosphorylation</span> (at the inner mitochondrial membrane). Aerobic respiration produces approximately 36&ndash;38 ATP molecules per glucose molecule, making it far more efficient than anaerobic pathways.</p>
+      <p class="book-p">The three stages — <span class="book-key">glycolysis</span> (cytoplasm), the <span class="book-key">Krebs cycle</span> (mitochondrial matrix), and <span class="book-key">oxidative phosphorylation</span> (inner mitochondrial membrane) — together yield approximately 36–38 ATP per glucose molecule. Glycolysis produces only 2 net ATP but does not require oxygen; it is the shared gateway for both aerobic and anaerobic metabolism.</p>
+
+      <div class="book-figure">
+        <div class="book-figure-title">Table 7.1 — ATP Yield by Stage</div>
+        Glycolysis: 2 ATP &nbsp;|&nbsp; Krebs cycle: 2 ATP &nbsp;|&nbsp; Oxidative phosphorylation: ~32–34 ATP
+      </div>
 
       <div class="book-footer">
         <span>Section 7 &mdash; Cellular Energy</span>
-        <span id="book-unhide-btn" class="book-unhide-btn"><strong>Press Q to unhide or click this text</strong></span>
-        <span>Page 214</span>
+        <span class="book-unhide-btn"><strong>Press Q to close</strong></span>
+        <span class="book-footer-nav">
+          <button class="book-nav-btn book-prev">&larr;</button>
+          <span>Page 214 &nbsp;/&nbsp; 5</span>
+          <button class="book-nav-btn book-next">&rarr;</button>
+        </span>
       </div>
     </div>
+
+    <!-- ═══ PAGE 2: Genetics & Heredity ═══ -->
+    <div class="book-page">
+      <div class="book-header-bar">
+        <span>Biology: Life Sciences</span>
+        <span>Chapter 8 &mdash; Genetics &amp; Heredity</span>
+      </div>
+      <div class="book-chapter-label">Chapter 8</div>
+      <h1 class="book-title">Genetics and Heredity: DNA, Meiosis &amp; Mendelian Inheritance</h1>
+
+      <h2 class="book-section">8.1 DNA Structure and the Central Dogma</h2>
+      <p class="book-p"><span class="book-key">Deoxyribonucleic acid (DNA)</span> is a double-stranded polymer composed of nucleotides, each containing a deoxyribose sugar, a phosphate group, and one of four nitrogenous bases: <span class="book-key">adenine (A)</span>, <span class="book-key">thymine (T)</span>, <span class="book-key">guanine (G)</span>, and <span class="book-key">cytosine (C)</span>. The two strands are held together by hydrogen bonds following <span class="book-key">Chargaff's rules</span> (A pairs with T; G pairs with C) and wind into a <span class="book-key">double helix</span>.</p>
+      <p class="book-p">The <span class="book-key">central dogma</span> of molecular biology describes the directional flow of genetic information: DNA is <span class="book-key">transcribed</span> into messenger RNA (mRNA) in the nucleus, and mRNA is then <span class="book-key">translated</span> into protein at ribosomes in the cytoplasm. Each three-base sequence on mRNA, called a <span class="book-key">codon</span>, specifies a particular amino acid or a stop signal.</p>
+
+      <h2 class="book-section">8.2 Meiosis and Genetic Variation</h2>
+      <p class="book-p"><span class="book-key">Meiosis</span> is a specialized cell division that produces four genetically unique haploid gametes from a single diploid parent cell. It consists of two sequential divisions: <span class="book-key">Meiosis I</span> separates homologous chromosome pairs (a reductional division), while <span class="book-key">Meiosis II</span> separates sister chromatids. Genetic diversity arises through <span class="book-key">crossing over</span> during prophase I, when non-sister chromatids exchange segments at <span class="book-key">chiasmata</span>, and through <span class="book-key">independent assortment</span> of homologous pairs.</p>
+      <div class="book-figure">
+        <div class="book-figure-title">Figure 8.1 &mdash; Overview of Meiosis</div>
+        Diploid cell (2n) &rarr; Meiosis I &rarr; 2 haploid cells &rarr; Meiosis II &rarr; 4 genetically unique gametes (n)
+      </div>
+
+      <h2 class="book-section">8.3 Mendelian Inheritance Patterns</h2>
+      <p class="book-p">Gregor Mendel's experiments with pea plants established the foundational laws of heredity. The <span class="book-key">Law of Segregation</span> states that allele pairs separate during gamete formation, so each gamete receives only one allele for each gene. The <span class="book-key">Law of Independent Assortment</span> states that alleles for different genes segregate independently, provided those genes are on non-homologous chromosomes.</p>
+      <p class="book-p">A <span class="book-key">monohybrid cross</span> (Aa × Aa) yields a 3:1 phenotypic ratio in the F&#8322; generation. A <span class="book-key">dihybrid cross</span> (AaBb × AaBb) yields a 9:3:3:1 ratio. Variations such as <span class="book-key">incomplete dominance</span>, <span class="book-key">codominance</span>, and <span class="book-key">polygenic inheritance</span> extend Mendel's model to account for continuous and blended phenotypes.</p>
+
+      <div class="book-footer">
+        <span>Section 8 &mdash; Genetics &amp; Heredity</span>
+        <span class="book-unhide-btn"><strong>Press Q to close</strong></span>
+        <span class="book-footer-nav">
+          <button class="book-nav-btn book-prev">&larr;</button>
+          <span>Page 237 &nbsp;/&nbsp; 5</span>
+          <button class="book-nav-btn book-next">&rarr;</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE 3: The Cell Cycle ═══ -->
+    <div class="book-page">
+      <div class="book-header-bar">
+        <span>Biology: Life Sciences</span>
+        <span>Chapter 4 &mdash; The Cell Cycle</span>
+      </div>
+      <div class="book-chapter-label">Chapter 4</div>
+      <h1 class="book-title">The Cell Cycle: Mitosis and Cell Division</h1>
+
+      <h2 class="book-section">4.1 Phases of the Cell Cycle</h2>
+      <p class="book-p">The <span class="book-key">cell cycle</span> is an ordered sequence of events by which a cell duplicates its contents and divides into two daughter cells. It consists of two broad phases: <span class="book-key">interphase</span>, during which the cell grows and replicates its DNA, and the <span class="book-key">mitotic (M) phase</span>, during which the duplicated chromosomes are segregated and the cell divides.</p>
+      <p class="book-p">Interphase is subdivided into <span class="book-key">G&#8321;</span> (first gap — cell growth, protein synthesis), <span class="book-key">S phase</span> (DNA synthesis — each chromosome is duplicated into two sister chromatids joined at the <span class="book-key">centromere</span>), and <span class="book-key">G&#8322;</span> (second gap — continued growth and preparation for division). Cells that exit the cycle and enter a non-dividing state are said to be in <span class="book-key">G&#8320;</span>.</p>
+
+      <h2 class="book-section">4.2 Stages of Mitosis</h2>
+      <p class="book-p">Mitosis is conventionally divided into four stages:</p>
+      <div class="book-figure">
+        <div class="book-figure-title">Table 4.1 — Stages of Mitosis</div>
+        <strong>Prophase:</strong> chromatin condenses; mitotic spindle forms; nuclear envelope breaks down.<br>
+        <strong>Metaphase:</strong> chromosomes align at the <em>metaphase plate</em>; spindle fibers attach to kinetochores.<br>
+        <strong>Anaphase:</strong> sister chromatids separate and migrate to opposite poles.<br>
+        <strong>Telophase:</strong> nuclear envelopes reform; chromosomes decondense; spindle disassembles.
+      </div>
+      <p class="book-p"><span class="book-key">Cytokinesis</span> — the division of cytoplasm — typically overlaps with telophase. In animal cells, a <span class="book-key">cleavage furrow</span> pinches the cell in two. In plant cells, a <span class="book-key">cell plate</span> forms along the former metaphase plate and grows outward to separate the daughter cells.</p>
+
+      <h2 class="book-section">4.3 Cell Cycle Regulation and Cancer</h2>
+      <p class="book-p">Progression through the cell cycle is tightly regulated at <span class="book-key">checkpoints</span> — G&#8321;/S, G&#8322;/M, and the spindle assembly checkpoint — by proteins called <span class="book-key">cyclins</span> and <span class="book-key">cyclin-dependent kinases (CDKs)</span>. <span class="book-key">Tumor suppressor proteins</span> such as p53 and Rb halt division when DNA damage is detected, while <span class="book-key">proto-oncogenes</span> stimulate growth.</p>
+      <p class="book-p">Cancer arises when mutations disable checkpoints or constitutively activate growth signals, allowing cells to divide uncontrollably. The resulting mass of cells — a <span class="book-key">tumor</span> — may be benign (localized) or malignant (capable of <span class="book-key">metastasis</span>, spreading to other tissues).</p>
+
+      <div class="book-footer">
+        <span>Section 4 &mdash; The Cell Cycle</span>
+        <span class="book-unhide-btn"><strong>Press Q to close</strong></span>
+        <span class="book-footer-nav">
+          <button class="book-nav-btn book-prev">&larr;</button>
+          <span>Page 118 &nbsp;/&nbsp; 5</span>
+          <button class="book-nav-btn book-next">&rarr;</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE 4: Evolution ═══ -->
+    <div class="book-page">
+      <div class="book-header-bar">
+        <span>Biology: Life Sciences</span>
+        <span>Chapter 11 &mdash; Evolution</span>
+      </div>
+      <div class="book-chapter-label">Chapter 11</div>
+      <h1 class="book-title">Evolution and Natural Selection</h1>
+
+      <h2 class="book-section">11.1 Darwin's Theory of Natural Selection</h2>
+      <p class="book-p">Charles Darwin's <em>On the Origin of Species</em> (1859) proposed that species change over time through a process of <span class="book-key">natural selection</span>. The core argument rests on four observations: (1) individuals in a population vary in heritable traits; (2) more offspring are produced than can survive; (3) individuals with advantageous traits are more likely to survive and reproduce (<span class="book-key">differential reproductive success</span>); and (4) advantageous traits accumulate in the population over generations.</p>
+      <p class="book-p">Darwin's contemporary Alfred Russel Wallace independently arrived at the same conclusion. Together, their work shifted biology from a static, species-fixed worldview to a dynamic one in which <span class="book-key">descent with modification</span> from common ancestors explains the diversity of life.</p>
+
+      <h2 class="book-section">11.2 Evidence for Evolution</h2>
+      <p class="book-p">Multiple independent lines of evidence support evolutionary theory:</p>
+      <div class="book-figure">
+        <div class="book-figure-title">Table 11.1 — Categories of Evolutionary Evidence</div>
+        <strong>Fossil record:</strong> sequential appearance and change in preserved organisms over geologic time.<br>
+        <strong>Comparative anatomy:</strong> homologous structures (same origin, different function) &amp; vestigial organs.<br>
+        <strong>Biogeography:</strong> species distributions match predictions from continental drift and isolation.<br>
+        <strong>Molecular biology:</strong> DNA and protein sequence similarities reflect shared ancestry.<br>
+        <strong>Direct observation:</strong> antibiotic resistance, industrial melanism, Galápagos finch beak changes.
+      </div>
+
+      <h2 class="book-section">11.3 Mechanisms of Evolution</h2>
+      <p class="book-p">Beyond natural selection, evolutionary change occurs through <span class="book-key">genetic drift</span> (random changes in allele frequency, most pronounced in small populations — the <span class="book-key">bottleneck effect</span> and <span class="book-key">founder effect</span>), <span class="book-key">gene flow</span> (movement of alleles between populations), and <span class="book-key">mutation</span> (the ultimate source of new genetic variation).</p>
+      <p class="book-p"><span class="book-key">Speciation</span> — the formation of new species — occurs when populations become reproductively isolated. <span class="book-key">Allopatric speciation</span> follows geographic separation; <span class="book-key">sympatric speciation</span> occurs without physical barriers, often through polyploidy in plants or niche divergence in animals. Over evolutionary time, these processes generate the <span class="book-key">phylogenetic tree of life</span>.</p>
+
+      <div class="book-footer">
+        <span>Section 11 &mdash; Evolution</span>
+        <span class="book-unhide-btn"><strong>Press Q to close</strong></span>
+        <span class="book-footer-nav">
+          <button class="book-nav-btn book-prev">&larr;</button>
+          <span>Page 331 &nbsp;/&nbsp; 5</span>
+          <button class="book-nav-btn book-next">&rarr;</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE 5: Macromolecules ═══ -->
+    <div class="book-page">
+      <div class="book-header-bar">
+        <span>Biology: Life Sciences</span>
+        <span>Chapter 3 &mdash; Macromolecules</span>
+      </div>
+      <div class="book-chapter-label">Chapter 3</div>
+      <h1 class="book-title">Biological Macromolecules: The Chemistry of Life</h1>
+
+      <h2 class="book-section">3.1 Carbohydrates</h2>
+      <p class="book-p"><span class="book-key">Carbohydrates</span> are composed of carbon, hydrogen, and oxygen in approximately a 1:2:1 ratio. <span class="book-key">Monosaccharides</span> (e.g., glucose, fructose, galactose) are the monomers; they link via <span class="book-key">glycosidic bonds</span> (dehydration synthesis) to form <span class="book-key">disaccharides</span> (sucrose, maltose, lactose) and <span class="book-key">polysaccharides</span>. Polysaccharides serve diverse roles: <span class="book-key">starch</span> and <span class="book-key">glycogen</span> store energy in plants and animals respectively, while <span class="book-key">cellulose</span> provides structural support in plant cell walls, and <span class="book-key">chitin</span> forms the exoskeletons of arthropods and the cell walls of fungi.</p>
+
+      <h2 class="book-section">3.2 Proteins</h2>
+      <p class="book-p">Proteins are polymers of <span class="book-key">amino acids</span> linked by <span class="book-key">peptide bonds</span>. Each of the 20 standard amino acids has a unique R-group (side chain) that determines its chemical properties. Protein structure is described at four hierarchical levels: <span class="book-key">primary</span> (amino acid sequence), <span class="book-key">secondary</span> (&alpha;-helices and &beta;-pleated sheets stabilized by hydrogen bonds), <span class="book-key">tertiary</span> (overall 3D folding), and <span class="book-key">quaternary</span> (association of multiple polypeptide subunits). Proteins function as enzymes, structural components, signal molecules, transport proteins, and immune antibodies.</p>
+      <div class="book-figure">
+        <div class="book-figure-title">Figure 3.2 — Enzyme Active Site Model</div>
+        Substrate binds to the <em>active site</em> of an enzyme (lock-and-key or induced-fit model); the enzyme lowers activation energy without being consumed in the reaction.
+      </div>
+
+      <h2 class="book-section">3.3 Lipids and Nucleic Acids</h2>
+      <p class="book-p"><span class="book-key">Lipids</span> are hydrophobic molecules including <span class="book-key">triglycerides</span> (energy storage), <span class="book-key">phospholipids</span> (bilayer membrane structure), and <span class="book-key">steroids</span> (cholesterol, hormones). Phospholipids are amphipathic — their hydrophilic heads face aqueous environments while hydrophobic fatty-acid tails orient inward, forming the <span class="book-key">fluid mosaic model</span> of the cell membrane.</p>
+      <p class="book-p"><span class="book-key">Nucleic acids</span> — DNA and RNA — are polymers of <span class="book-key">nucleotides</span>, each consisting of a pentose sugar, a phosphate group, and a nitrogenous base. DNA stores genetic information in the sequence of its bases; RNA carries that information to ribosomes for translation. <span class="book-key">ATP</span> is itself a modified nucleotide that serves as the primary energy currency of the cell.</p>
+
+      <div class="book-footer">
+        <span>Section 3 &mdash; Macromolecules</span>
+        <span class="book-unhide-btn"><strong>Press Q to close</strong></span>
+        <span class="book-footer-nav">
+          <button class="book-nav-btn book-prev">&larr;</button>
+          <span>Page 72 &nbsp;/&nbsp; 5</span>
+          <button class="book-nav-btn book-next">&rarr;</button>
+        </span>
+      </div>
+    </div>
+
   </div>
 
   <script type="module" src="./app.js"></script>

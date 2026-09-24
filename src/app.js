@@ -228,18 +228,45 @@ function initQuickHide() {
   const overlay = document.getElementById("book-overlay");
   if (!overlay) return;
 
-  function toggle() { overlay.classList.toggle("visible"); }
+  const pages = Array.from(overlay.querySelectorAll(".book-page"));
+  let cur = 0;
+  const originalTitle = document.title;
+
+  const pageTitles = [
+    "Ch. 7 – Cellular Energy | AP Biology",
+    "Ch. 8 – Genetics & Heredity | AP Biology",
+    "Ch. 4 – The Cell Cycle | AP Biology",
+    "Ch. 11 – Evolution | AP Biology",
+    "Ch. 3 – Macromolecules | AP Biology",
+  ];
+
+  function showPage(n) {
+    cur = ((n % pages.length) + pages.length) % pages.length;
+    pages.forEach((p, i) => { p.style.display = i === cur ? "block" : "none"; });
+    if (overlay.classList.contains("visible")) document.title = pageTitles[cur];
+  }
+
+  function open()  { overlay.classList.add("visible");    document.title = pageTitles[cur]; }
+  function close() { overlay.classList.remove("visible"); document.title = originalTitle; }
+  function toggle() { overlay.classList.contains("visible") ? close() : open(); }
+
+  showPage(0);
 
   const hint = document.getElementById("hide-hint");
   if (hint) hint.addEventListener("click", toggle);
 
-  const unhideBtn = document.getElementById("book-unhide-btn");
-  if (unhideBtn) unhideBtn.addEventListener("click", toggle);
+  overlay.addEventListener("click", (e) => {
+    if (e.target.closest(".book-unhide-btn")) close();
+    if (e.target.closest(".book-prev")) showPage(cur - 1);
+    if (e.target.closest(".book-next")) showPage(cur + 1);
+  });
 
   document.addEventListener("keydown", (e) => {
-    if ((e.key === "q" || e.key === "Q") && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
-      e.preventDefault();
-      toggle();
+    const typing = document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA";
+    if ((e.key === "q" || e.key === "Q") && !typing) { e.preventDefault(); toggle(); }
+    if (overlay.classList.contains("visible")) {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown")  { e.preventDefault(); showPage(cur + 1); }
+      if (e.key === "ArrowLeft"  || e.key === "ArrowUp")    { e.preventDefault(); showPage(cur - 1); }
     }
   });
 }
