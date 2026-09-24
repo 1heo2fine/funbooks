@@ -708,17 +708,21 @@ function initSiteBrowser() {
   const fsBtn    = document.getElementById("sb-fullscreen");
   if (!browser || !frame) return;
 
+  const fab = document.getElementById("menu-fab");
+
   function open(url) {
     frame.src = url;
     urlInput.value = url;
     browser.style.display = "flex";
     document.body.style.overflow = "hidden";
+    if (fab) fab.classList.add("fab-game-hidden");
   }
 
   function close() {
     browser.style.display = "none";
     document.body.style.overflow = "";
     frame.src = "about:blank";
+    if (fab) fab.classList.remove("fab-game-hidden");
   }
 
   window._openSiteBrowser = open;
