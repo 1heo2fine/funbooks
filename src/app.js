@@ -803,45 +803,25 @@ function initScrollHide() {
 
 function initMusicPlayer() {
   const TRACKS = [
-    { name: "Lo-Fi Chill",   bpm: 80,  root: 220  },
-    { name: "Study Beats",   bpm: 92,  root: 196  },
-    { name: "Ambient Flow",  bpm: 70,  root: 246.9},
-    { name: "Focus Mode",    bpm: 86,  root: 207.7},
+    { file: "track1.mp3", name: "Beyoncé – Morning Dew Donk" },
+    { file: "track2.mp3", name: "Wxoda – Vibin" },
+    { file: "track3.mp3", name: "LONOWN – addiction (Slowed)" },
+    { file: "track4.mp3", name: "Delinquent – My Destiny (Slowed)" },
   ];
 
+  const audio    = document.getElementById("music-audio");
   const counter  = document.getElementById("music-counter");
   const trackEl  = document.getElementById("music-track-name");
   const prevBtn  = document.getElementById("music-prev");
   const nextBtn  = document.getElementById("music-next");
   const playBtn  = document.getElementById("music-play");
   const playIcon = document.getElementById("music-play-icon");
+  const loadDot  = document.getElementById("music-loading");
   const progFill = document.getElementById("music-progress-fill");
   const progBar  = document.getElementById("music-progress-bar");
+  if (!audio) return;
 
-  let idx = 0;
-  let playing = false;
-  let actx = null;
-  let masterGain = null;
-  let startTime = 0;
-  let elapsed = 0;
-  let rafId = null;
-  let schedId = null;
-  let nextNoteTime = 0;
-  let beat = 0;
-  const LOOK_AHEAD = 0.1;
-  const SCHED_MS = 25;
-  const TRACK_DUR = 180;
-
-  function actxGet() {
-    if (!actx) {
-      actx = new (window.AudioContext || window.webkitAudioContext)();
-      masterGain = actx.createGain();
-      masterGain.gain.value = 0.55;
-      masterGain.connect(actx.destination);
-    }
-    if (actx.state === "suspended") actx.resume();
-    return actx;
-  }
+  let idx = 0, playing = false;
 
   function setPlayIcon(on) {
     if (!playIcon) return;
@@ -855,154 +835,51 @@ function initMusicPlayer() {
     if (trackEl) trackEl.textContent = TRACKS[idx].name;
   }
 
-  function kick(t) {
-    const ctx = actx;
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.connect(g); g.connect(masterGain);
-    o.frequency.setValueAtTime(160, t);
-    o.frequency.exponentialRampToValueAtTime(0.01, t + 0.35);
-    g.gain.setValueAtTime(0.9, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-    o.start(t); o.stop(t + 0.35);
-  }
-
-  function hat(t, loud) {
-    const ctx = actx;
-    const sz = Math.floor(ctx.sampleRate * 0.06);
-    const buf = ctx.createBuffer(1, sz, ctx.sampleRate);
-    const d = buf.getChannelData(0);
-    for (let i = 0; i < sz; i++) d[i] = (Math.random() * 2 - 1);
-    const src = ctx.createBufferSource(); src.buffer = buf;
-    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 7000;
-    const g = ctx.createGain();
-    src.connect(hp); hp.connect(g); g.connect(masterGain);
-    g.gain.setValueAtTime(loud ? 0.35 : 0.18, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-    src.start(t); src.stop(t + 0.06);
-  }
-
-  function bass(t, freq, dur) {
-    const ctx = actx;
-    const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
-    o.type = "sawtooth"; o.frequency.value = freq;
-    lp.type = "lowpass"; lp.frequency.value = 380;
-    o.connect(lp); lp.connect(g); g.connect(masterGain);
-    g.gain.setValueAtTime(0.32, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.85);
-    o.start(t); o.stop(t + dur);
-  }
-
-  function pad(t, freqs, dur) {
-    freqs.forEach(f => {
-      const ctx = actx;
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "sine"; o.frequency.value = f;
-      o.connect(g); g.connect(masterGain);
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(0.045, t + 0.25);
-      g.gain.setValueAtTime(0.045, t + dur - 0.4);
-      g.gain.linearRampToValueAtTime(0, t + dur);
-      o.start(t); o.stop(t + dur);
-    });
-  }
-
-  function scheduleOne(t) {
-    const tr = TRACKS[idx];
-    const bd = 60 / tr.bpm;
-    const b16 = beat % 16;
-    const r = tr.root;
-    if (b16 === 0 || b16 === 8) kick(t);
-    if (b16 % 2 === 0) hat(t, b16 === 0 || b16 === 8);
-    const bassSeq = [r / 2, r * 0.75 / 2, r * 0.889 / 2, r / 2];
-    if (b16 % 4 === 0) bass(t, bassSeq[b16 / 4], bd * 3.5);
-    if (b16 % 4 === 0) {
-      const chords = [
-        [r, r * 1.25, r * 1.5],
-        [r * 0.889, r * 1.111, r * 1.333],
-        [r * 0.75, r * 0.944, r * 1.125],
-        [r * 1.0, r * 1.185, r * 1.5],
-      ];
-      pad(t, chords[b16 / 4], bd * 4);
-    }
-    beat++;
-    return bd;
-  }
-
-  function scheduler() {
-    const ctx = actxGet();
-    while (nextNoteTime < ctx.currentTime + LOOK_AHEAD) {
-      const d = scheduleOne(nextNoteTime);
-      nextNoteTime += d;
-    }
-  }
-
-  function updateProg() {
-    if (!playing) return;
-    const e = actx.currentTime - startTime + elapsed;
-    const pct = Math.min(e / TRACK_DUR, 1) * 100;
-    if (progFill) progFill.style.width = pct + "%";
-    if (pct >= 100) { stopPlay(); loadAndPlay((idx + 1) % TRACKS.length); return; }
-    rafId = requestAnimationFrame(updateProg);
-  }
-
-  function stopPlay() {
-    clearInterval(schedId); schedId = null;
-    cancelAnimationFrame(rafId); rafId = null;
-    if (actx) { elapsed += actx.currentTime - startTime; actx.suspend(); }
-    playing = false;
-    setPlayIcon(false);
-  }
-
   function loadAndPlay(i) {
-    if (schedId) clearInterval(schedId);
-    if (rafId) cancelAnimationFrame(rafId);
     idx = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
-    beat = 0; elapsed = 0;
     updateMeta();
-    const ctx = actxGet();
-    startTime = ctx.currentTime;
-    nextNoteTime = ctx.currentTime;
+    audio.src = TRACKS[idx].file;
+    audio.play().catch(() => {});
     playing = true;
     setPlayIcon(true);
-    schedId = setInterval(scheduler, SCHED_MS);
-    rafId = requestAnimationFrame(updateProg);
   }
 
   function togglePlay() {
-    if (playing) { stopPlay(); return; }
-    if (actx && actx.state === "suspended") {
-      actx.resume().then(() => {
-        startTime = actx.currentTime;
-        nextNoteTime = actx.currentTime;
-        playing = true; setPlayIcon(true);
-        schedId = setInterval(scheduler, SCHED_MS);
-        rafId = requestAnimationFrame(updateProg);
-      });
-    } else {
-      loadAndPlay(idx);
-    }
+    if (!audio.src || audio.src === window.location.href) { loadAndPlay(idx); return; }
+    if (playing) { audio.pause(); playing = false; setPlayIcon(false); }
+    else { audio.play().catch(() => {}); playing = true; setPlayIcon(true); }
   }
 
-  if (prevBtn) prevBtn.addEventListener("click", () => loadAndPlay(idx - 1));
+  audio.addEventListener("ended", () => loadAndPlay(idx + 1));
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration || !progFill) return;
+    progFill.style.width = (audio.currentTime / audio.duration * 100) + "%";
+  });
+  audio.addEventListener("waiting", () => { if (loadDot) loadDot.style.display = "block"; });
+  audio.addEventListener("canplay", () => { if (loadDot) loadDot.style.display = "none"; });
+
+  if (progBar) progBar.addEventListener("click", e => {
+    if (!audio.duration) return;
+    const r = progBar.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+  });
+
+  if (prevBtn) prevBtn.addEventListener("click", () => {
+    if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+    loadAndPlay(idx - 1);
+  });
   if (nextBtn) nextBtn.addEventListener("click", () => loadAndPlay(idx + 1));
   if (playBtn) playBtn.addEventListener("click", togglePlay);
 
-  if (progBar) progBar.addEventListener("click", e => {
-    const r = progBar.getBoundingClientRect();
-    const pct = (e.clientX - r.left) / r.width;
-    elapsed = pct * TRACK_DUR;
-    if (playing && actx) { startTime = actx.currentTime; nextNoteTime = actx.currentTime; }
-  });
-
-  const player       = document.getElementById("music-player");
-  const minimizeBtn  = document.getElementById("music-minimize");
-  const closeBtn     = document.getElementById("music-close");
+  const player      = document.getElementById("music-player");
+  const minimizeBtn = document.getElementById("music-minimize");
+  const closeBtn    = document.getElementById("music-close");
 
   if (minimizeBtn) minimizeBtn.addEventListener("click", () => {
     player && player.classList.toggle("minimized");
   });
   if (closeBtn) closeBtn.addEventListener("click", () => {
-    stopPlay();
+    audio.pause(); playing = false; setPlayIcon(false);
     if (player) player.style.display = "none";
   });
 
