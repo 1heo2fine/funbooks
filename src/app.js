@@ -256,6 +256,13 @@ function upgradeAvatars(root = document) {
 
 const GAMES = {};
 
+// Virtual coin wallet – shared across all casino games
+const _COINS = {
+  get() { try { return Math.max(0, parseInt(localStorage.getItem('sb_coins') || '1000')); } catch(e) { return 1000; } },
+  set(n) { try { localStorage.setItem('sb_coins', String(Math.max(0, n|0))); } catch(e) {} },
+  add(n) { this.set(this.get() + n); },
+};
+
 function safeInit(fn) {
   try { fn(); } catch (e) { console.error("[init error]", fn.name, e); }
 }
@@ -279,6 +286,11 @@ safeInit(initSpaceGame);
 safeInit(initSpeedTapGame);
 safeInit(initDuelGame);
 safeInit(initFishingGame);
+safeInit(initSlotsGame);
+safeInit(initBlackjackGame);
+safeInit(initMinesGame);
+safeInit(initLucky21Game);
+safeInit(initRouletteGame);
 safeInit(initFabGameHide);
 
 function initFabGameHide() {
@@ -2848,4 +2860,290 @@ function initFishingGame() {
       if (raf) { cancelAnimationFrame(raf); raf = null; }
     }
   });
+}
+
+// ─── Slots ────────────────────────────────────────────────────────────────
+function initSlotsGame() {
+  const ov = document.getElementById('slots-overlay');
+  if (!ov) return;
+  const SYMS = ['🍒','🍋','🍊','🍇','⭐','💎','7'];
+  const PAYS = {'7':50,'💎':20,'⭐':10,'🍇':5,'🍊':3,'🍋':2,'🍒':1.5};
+  const reels = [0,1,2].map(i => document.getElementById(`slots-r${i}`));
+  const balEl = document.getElementById('slots-bal');
+  const betDisp = document.getElementById('slots-bet-disp');
+  const msgEl = document.getElementById('slots-msg');
+  const spinBtn = document.getElementById('slots-spin');
+  let bet = 50, spinning = false;
+
+  function upBal() { if(balEl) balEl.textContent = _COINS.get().toLocaleString(); }
+  ov.querySelectorAll('.slots-bet').forEach(b => b.addEventListener('click', () => {
+    ov.querySelectorAll('.slots-bet').forEach(x=>x.classList.remove('sel')); b.classList.add('sel');
+    bet = parseInt(b.dataset.v); if(betDisp) betDisp.textContent = bet;
+  }));
+
+  function spin() {
+    if (spinning) return;
+    if (_COINS.get() < bet) { msgEl.textContent='❌ Not enough coins!'; return; }
+    spinning = true; spinBtn.disabled = true;
+    _COINS.add(-bet); upBal(); msgEl.textContent = '🎰 Spinning…';
+    const finals = reels.map(() => SYMS[Math.floor(Math.random()*SYMS.length)]);
+    let done = 0;
+    reels.forEach((r, i) => {
+      let n = 0; const total = 14 + i*7;
+      const iv = setInterval(() => {
+        if(r) r.textContent = SYMS[Math.floor(Math.random()*SYMS.length)];
+        if (++n >= total) {
+          clearInterval(iv); if(r) r.textContent = finals[i];
+          if (++done === 3) result(finals);
+        }
+      }, 80 + i*25);
+    });
+  }
+
+  function result(s) {
+    spinning = false; spinBtn.disabled = false;
+    let win = 0, msg = '';
+    if (s[0]===s[1] && s[1]===s[2]) {
+      win = Math.round(bet * PAYS[s[0]]); _COINS.add(win);
+      msg = `🎉 JACKPOT! +${win} coins`;
+    } else if (s[0]===s[1]||s[1]===s[2]||s[0]===s[2]) {
+      win = Math.round(bet * 0.75); _COINS.add(win);
+      msg = `✨ Two of a kind! +${win} coins`;
+    } else { msg = `😔 No match. -${bet} coins`; }
+    msgEl.textContent = msg; upBal();
+  }
+
+  spinBtn && spinBtn.addEventListener('click', spin);
+  function open() {
+    ov.classList.add('open'); document.body.style.overflow='hidden'; upBal();
+    msgEl.textContent='Choose your bet and spin!';
+    reels.forEach(r => { if(r) r.textContent = SYMS[Math.floor(Math.random()*SYMS.length)]; });
+  }
+  GAMES.slots = open;
+}
+
+// ─── Blackjack ────────────────────────────────────────────────────────────
+function initBlackjackGame() {
+  const ov = document.getElementById('bj-overlay');
+  if (!ov) return;
+  const SUITS=['♠','♥','♦','♣'], RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const RED=new Set(['♥','♦']);
+  function cv(r){return r==='A'?11:['J','Q','K'].includes(r)?10:+r;}
+  function hv(h){let t=h.reduce((s,c)=>s+cv(c.r),0),a=h.filter(c=>c.r==='A').length;while(t>21&&a--)t-=10;return t;}
+  function deck(){const d=[];for(const s of SUITS)for(const r of RANKS)d.push({r,s});for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}return d;}
+  function cardH(c,hidden){if(hidden)return`<div class="ccard ccard-back"></div>`;const rd=RED.has(c.s)?' red':'';return`<div class="ccard${rd}"><span class="crank">${c.r}</span><span class="csuit">${c.s}</span></div>`;}
+
+  let dk=[],ph=[],dh=[],bet=25,phase='bet';
+  const balEl=ov.querySelector('#bj-bal'), betDisp=ov.querySelector('#bj-bet-disp');
+  const pCards=ov.querySelector('#bj-pcards'), dCards=ov.querySelector('#bj-dcards');
+  const pVal=ov.querySelector('#bj-pval'), dVal=ov.querySelector('#bj-dval');
+  const msg=ov.querySelector('#bj-msg');
+  const hitBtn=ov.querySelector('#bj-hit'), standBtn=ov.querySelector('#bj-stand'), dealBtn=ov.querySelector('#bj-deal');
+
+  function upBal(){if(balEl)balEl.textContent=_COINS.get().toLocaleString();}
+  function render(hideD=true){
+    if(pCards)pCards.innerHTML=ph.map(c=>cardH(c)).join('');
+    if(dCards)dCards.innerHTML=dh.map((c,i)=>cardH(c,hideD&&i===1)).join('');
+    if(pVal)pVal.textContent=ph.length?hv(ph):'';
+    if(dVal)dVal.textContent=dh.length?(hideD&&dh.length>1?'?':hv(dh)):'';
+  }
+
+  ov.querySelectorAll('.bj-bet').forEach(b=>b.addEventListener('click',()=>{
+    if(phase!=='bet')return;
+    ov.querySelectorAll('.bj-bet').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
+    bet=parseInt(b.dataset.v);
+  }));
+
+  function deal(){
+    if(_COINS.get()<bet){msg.textContent='❌ Not enough coins!';return;}
+    _COINS.add(-bet);upBal();dk=deck();ph=[dk.pop(),dk.pop()];dh=[dk.pop(),dk.pop()];
+    phase='play';[hitBtn,standBtn].forEach(b=>b&&(b.disabled=false));if(dealBtn)dealBtn.disabled=true;
+    msg.textContent='';render(true);
+    if(hv(ph)===21)end('bj');
+  }
+  function hit(){if(phase!=='play')return;ph.push(dk.pop());render(true);if(hv(ph)>21)end('bust');}
+  function stand(){
+    if(phase!=='play')return;phase='dealer';[hitBtn,standBtn].forEach(b=>b&&(b.disabled=true));
+    while(hv(dh)<17)dh.push(dk.pop());render(false);
+    const pv=hv(ph),dv=hv(dh);
+    if(dv>21||pv>dv)end('win');else if(pv===dv)end('push');else end('lose');
+  }
+  function end(r){
+    phase='bet';render(false);[hitBtn,standBtn].forEach(b=>b&&(b.disabled=true));if(dealBtn)dealBtn.disabled=false;
+    const M={win:`✅ Win! +${bet} coins`,push:`🤝 Push — bet returned`,bust:`💥 Bust! -${bet}`,lose:`❌ Dealer wins. -${bet}`,bj:`🃏 Blackjack! +${Math.round(bet*1.5)} coins`};
+    msg.textContent=M[r];
+    if(r==='win')_COINS.add(bet*2);else if(r==='push')_COINS.add(bet);else if(r==='bj')_COINS.add(Math.round(bet*2.5));
+    upBal();
+  }
+  hitBtn&&hitBtn.addEventListener('click',hit);standBtn&&standBtn.addEventListener('click',stand);dealBtn&&dealBtn.addEventListener('click',deal);
+
+  function open(){
+    ov.classList.add('open');document.body.style.overflow='hidden';phase='bet';upBal();
+    msg.textContent='Place your bet and deal!';ph=[];dh=[];
+    if(pCards)pCards.innerHTML='';if(dCards)dCards.innerHTML='';if(pVal)pVal.textContent='';if(dVal)dVal.textContent='';
+    [hitBtn,standBtn].forEach(b=>b&&(b.disabled=true));if(dealBtn)dealBtn.disabled=false;
+  }
+  GAMES.blackjack=open;
+}
+
+// ─── Mines ────────────────────────────────────────────────────────────────
+function initMinesGame() {
+  const ov = document.getElementById('mines-overlay');
+  if (!ov) return;
+  let bet=25, mineCount=5, grid=[], revealed=0, active=false;
+  const balEl=ov.querySelector('#mines-bal'), multEl=ov.querySelector('#mines-mult'), msgEl=ov.querySelector('#mines-msg'), gridEl=ov.querySelector('#mines-grid');
+  const cashBtn=ov.querySelector('#mines-cash'), startBtn=ov.querySelector('#mines-start');
+
+  function upBal(){if(balEl)balEl.textContent=_COINS.get().toLocaleString();}
+  ov.querySelectorAll('.mn-bet').forEach(b=>b.addEventListener('click',()=>{ov.querySelectorAll('.mn-bet').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');bet=parseInt(b.dataset.v);}));
+  ov.querySelectorAll('.mn-cnt').forEach(b=>b.addEventListener('click',()=>{ov.querySelectorAll('.mn-cnt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');mineCount=parseInt(b.dataset.v);}));
+
+  function calcMult(safe){
+    let p=1;for(let i=0;i<safe;i++)p*=(25-mineCount-i)/(25-i);
+    return Math.max(1.01, parseFloat((0.97/Math.max(p,0.001)).toFixed(2)));
+  }
+
+  function renderGrid(showAll){
+    if(!gridEl)return;gridEl.innerHTML='';
+    grid.forEach((mine,i)=>{
+      const t=document.createElement('button');t.className='mines-tile';
+      if(showAll){t.textContent=mine?'💣':'💎';t.disabled=true;t.classList.add(mine?'mine':'gem');}
+      else{t.textContent='?';t.disabled=!active;t.addEventListener('click',()=>reveal(i,t));}
+      gridEl.appendChild(t);
+    });
+  }
+
+  function reveal(i,tile){
+    if(!active)return;tile.disabled=true;
+    if(grid[i]){tile.textContent='💣';tile.classList.add('mine');active=false;cashBtn&&(cashBtn.disabled=true);startBtn&&(startBtn.disabled=false);msgEl.textContent=`💥 BOOM! Lost ${bet} coins`;setTimeout(()=>renderGrid(true),350);}
+    else{tile.textContent='💎';tile.classList.add('gem');revealed++;const m=calcMult(revealed);multEl&&(multEl.textContent=m.toFixed(2)+'x');cashBtn&&(cashBtn.disabled=false);msgEl.textContent=`Safe! Cash out now for ${Math.round(bet*m)} coins`;if(revealed>=25-mineCount)cashOut();}
+  }
+
+  function cashOut(){
+    if(!active&&revealed===0)return;active=false;const m=calcMult(revealed),win=Math.round(bet*m);
+    _COINS.add(win);upBal();msgEl.textContent=`✅ Cashed out ${m.toFixed(2)}x = +${win} coins`;
+    cashBtn&&(cashBtn.disabled=true);startBtn&&(startBtn.disabled=false);renderGrid(true);
+  }
+
+  function start(){
+    if(_COINS.get()<bet){msgEl.textContent='❌ Not enough coins!';return;}
+    _COINS.add(-bet);upBal();grid=Array(25).fill(false);const pos=[];
+    while(pos.length<mineCount){const p=Math.floor(Math.random()*25);if(!pos.includes(p))pos.push(p);}
+    pos.forEach(p=>grid[p]=true);revealed=0;active=true;
+    multEl&&(multEl.textContent='1.00x');cashBtn&&(cashBtn.disabled=true);startBtn&&(startBtn.disabled=true);
+    msgEl.textContent='Click tiles — avoid the mines!';renderGrid(false);
+  }
+
+  cashBtn&&cashBtn.addEventListener('click',cashOut);startBtn&&startBtn.addEventListener('click',start);
+
+  function open(){
+    ov.classList.add('open');document.body.style.overflow='hidden';active=false;revealed=0;bet=25;mineCount=5;
+    upBal();multEl&&(multEl.textContent='1.00x');cashBtn&&(cashBtn.disabled=true);startBtn&&(startBtn.disabled=false);
+    msgEl.textContent='Set bet & mines, then start!';renderGrid(false);
+    ov.querySelectorAll('.mn-bet').forEach(b=>{b.classList.remove('sel');if(b.dataset.v==='25')b.classList.add('sel');});
+    ov.querySelectorAll('.mn-cnt').forEach(b=>{b.classList.remove('sel');if(b.dataset.v==='5')b.classList.add('sel');});
+  }
+  GAMES.mines=open;
+}
+
+// ─── Lucky 21 ─────────────────────────────────────────────────────────────
+function initLucky21Game() {
+  const ov = document.getElementById('l21-overlay');
+  if (!ov) return;
+  const SUITS=['♠','♥','♦','♣'],RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'],RED=new Set(['♥','♦']);
+  function cv(r){return['J','Q','K'].includes(r)?10:r==='A'?11:+r;}
+  function hv(h){let t=h.reduce((s,c)=>s+cv(c.r),0),a=h.filter(c=>c.r==='A').length;while(t>21&&a--)t-=10;return t;}
+  function deck(){const d=[];for(const s of SUITS)for(const r of RANKS)d.push({r,s});for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}return d;}
+  function cardH(c){const rd=RED.has(c.s)?' red':'';return`<div class="ccard${rd}"><span class="crank">${c.r}</span><span class="csuit">${c.s}</span></div>`;}
+  function payout(t){if(t===21)return[5,'🎯 Lucky 21! 5x'];if(t===20)return[2,'✨ 20 — 2x'];if(t===19)return[1.5,'👍 19 — 1.5x'];if(t>=17)return[1.2,`🙂 ${t} — 1.2x`];return[0,`Too low (${t}) — no payout`];}
+
+  let dk=[],hand=[],bet=25,active=false;
+  const balEl=ov.querySelector('#l21-bal'),totalEl=ov.querySelector('#l21-total'),cardsEl=ov.querySelector('#l21-cards'),msgEl=ov.querySelector('#l21-msg');
+  const drawBtn=ov.querySelector('#l21-draw'),standBtn=ov.querySelector('#l21-stand'),dealBtn=ov.querySelector('#l21-deal');
+
+  function upBal(){if(balEl)balEl.textContent=_COINS.get().toLocaleString();}
+  function render(){if(cardsEl)cardsEl.innerHTML=hand.map(cardH).join('');const t=hv(hand);if(totalEl)totalEl.textContent=hand.length?t:'';}
+
+  ov.querySelectorAll('.l21-bet').forEach(b=>b.addEventListener('click',()=>{ov.querySelectorAll('.l21-bet').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');bet=parseInt(b.dataset.v);}));
+
+  function deal(){
+    if(_COINS.get()<bet){msgEl.textContent='❌ Not enough coins!';return;}
+    _COINS.add(-bet);upBal();dk=deck();hand=[dk.pop()];active=true;render();
+    msgEl.textContent='Draw or Stand!';[drawBtn,standBtn].forEach(b=>b&&(b.disabled=false));if(dealBtn)dealBtn.disabled=true;
+  }
+  function draw(){
+    if(!active)return;hand.push(dk.pop());render();const t=hv(hand);
+    if(t>21){active=false;msgEl.textContent=`💥 Bust! (${t}) Lost ${bet} coins`;[drawBtn,standBtn].forEach(b=>b&&(b.disabled=true));if(dealBtn)dealBtn.disabled=false;upBal();}
+    else if(t===21)endRound();
+  }
+  function endRound(){
+    if(!active&&hand.length===0)return;active=false;const t=hv(hand),[m,label]=payout(t);
+    const win=Math.round(bet*m);if(m>0){_COINS.add(win);msgEl.textContent=`${label} — +${win} coins!`;}else{msgEl.textContent=`${label} — lost ${bet} coins`;}
+    [drawBtn,standBtn].forEach(b=>b&&(b.disabled=true));if(dealBtn)dealBtn.disabled=false;upBal();
+  }
+
+  drawBtn&&drawBtn.addEventListener('click',draw);standBtn&&standBtn.addEventListener('click',endRound);dealBtn&&dealBtn.addEventListener('click',deal);
+
+  function open(){
+    ov.classList.add('open');document.body.style.overflow='hidden';active=false;hand=[];bet=25;upBal();
+    if(cardsEl)cardsEl.innerHTML='';if(totalEl)totalEl.textContent='';msgEl.textContent='Place your bet and deal!';
+    [drawBtn,standBtn].forEach(b=>b&&(b.disabled=true));if(dealBtn)dealBtn.disabled=false;
+    ov.querySelectorAll('.l21-bet').forEach(b=>{b.classList.remove('sel');if(b.dataset.v==='25')b.classList.add('sel');});
+  }
+  GAMES.lucky21=open;
+}
+
+// ─── Roulette ─────────────────────────────────────────────────────────────
+function initRouletteGame() {
+  const ov = document.getElementById('rl-overlay');
+  if (!ov) return;
+  const REDS=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+  function color(n){return n===0?'green':REDS.has(n)?'red':'black';}
+  function check(n,t){
+    const c=color(n);
+    if(t==='red')return[c==='red',2];if(t==='black')return[c==='black',2];
+    if(t==='even')return[n>0&&n%2===0,2];if(t==='odd')return[n%2===1,2];
+    if(t==='low')return[n>=1&&n<=18,2];if(t==='high')return[n>=19&&n<=36,2];
+    if(t==='dozen1')return[n>=1&&n<=12,3];if(t==='dozen2')return[n>=13&&n<=24,3];if(t==='dozen3')return[n>=25&&n<=36,3];
+    if(t==='green')return[n===0,35];
+    return[false,0];
+  }
+
+  let bet=25,betType=null,spinning=false,wheelRot=0;
+  const balEl=ov.querySelector('#rl-bal'),wheelEl=ov.querySelector('#rl-wheel'),centerEl=ov.querySelector('#rl-center'),resultEl=ov.querySelector('#rl-result'),msgEl=ov.querySelector('#rl-msg'),spinBtn=ov.querySelector('#rl-spin');
+
+  function upBal(){if(balEl)balEl.textContent=_COINS.get().toLocaleString();}
+  ov.querySelectorAll('.rl-bet').forEach(b=>b.addEventListener('click',()=>{ov.querySelectorAll('.rl-bet').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');bet=parseInt(b.dataset.v);}));
+  ov.querySelectorAll('.rl-type').forEach(b=>b.addEventListener('click',()=>{ov.querySelectorAll('.rl-type').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');betType=b.dataset.t;}));
+
+  function spin(){
+    if(spinning)return;if(!betType){msgEl.textContent='⚠️ Choose a bet type first!';return;}
+    if(_COINS.get()<bet){msgEl.textContent='❌ Not enough coins!';return;}
+    spinning=true;spinBtn.disabled=true;_COINS.add(-bet);upBal();msgEl.textContent='🎡 Spinning…';
+    if(resultEl){resultEl.textContent='…';resultEl.style.color='#e2e8f0';}
+    const n=Math.floor(Math.random()*37);
+    wheelRot+=1080+n*(360/37);
+    if(wheelEl){wheelEl.style.transition='transform 3s cubic-bezier(.17,.67,.12,.99)';wheelEl.style.transform=`rotate(${wheelRot}deg)`;}
+    setTimeout(()=>{
+      spinning=false;spinBtn.disabled=false;
+      const c=color(n);
+      const clr=c==='red'?'#f87171':c==='green'?'#4ade80':'#e2e8f0';
+      if(resultEl){resultEl.textContent=n;resultEl.style.color=clr;}
+      if(centerEl){centerEl.textContent=n;centerEl.style.color=clr;}
+      const[win,mult]=check(n,betType);
+      if(win){const w=Math.round(bet*mult);_COINS.add(w);msgEl.textContent=`✅ ${n} ${c}! +${w} coins (${mult}x)`;}
+      else{msgEl.textContent=`❌ ${n} ${c} — better luck next time!`;}
+      upBal();
+    },3200);
+  }
+
+  spinBtn&&spinBtn.addEventListener('click',spin);
+  function open(){
+    ov.classList.add('open');document.body.style.overflow='hidden';spinning=false;bet=25;betType=null;upBal();
+    if(resultEl){resultEl.textContent='—';resultEl.style.color='#e2e8f0';}if(centerEl){centerEl.textContent='0';centerEl.style.color='';}
+    msgEl.textContent='Choose bet type and amount, then spin!';
+    ov.querySelectorAll('.rl-type,.rl-bet').forEach(b=>b.classList.remove('sel'));
+    ov.querySelectorAll('.rl-bet').forEach(b=>{if(b.dataset.v==='25')b.classList.add('sel');});
+  }
+  GAMES.roulette=open;
 }
