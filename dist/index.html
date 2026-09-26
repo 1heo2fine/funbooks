@@ -1821,7 +1821,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 2px 12px rgba(0,0,0,0.55));
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .game-card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
     }
     .game-card-name {
       font-size: 0.63rem;
@@ -2248,7 +2257,7 @@
     .fish-cc-pct { font-size:0.46rem; font-weight:700; color:rgba(255,255,255,0.2); font-family:'JetBrains Mono',monospace; letter-spacing:0.02em; }
     .fish-cc-impossible { border-color:rgba(255,0,80,0.18); background:rgba(255,0,80,0.03); }
   </style>
-  <script type="module" crossorigin src="/assets/index-BgChORfE.js"></script>
+  <script type="module" crossorigin src="/assets/index-CrQ3XcTn.js"></script>
 </head>
 <body>
   <!-- Ambient Orbs & Geometric Rings matching reference -->
@@ -2508,12 +2517,8 @@
       <span class="games-sidebar-hd-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:7px;flex-shrink:0"><rect x="2" y="8" width="20" height="10" rx="5"/><line x1="8" y1="11" x2="8" y2="15"/><line x1="6" y1="13" x2="10" y2="13"/><circle cx="16" cy="12" r="1"/><circle cx="18" cy="14.5" r="1"/></svg>OUR GAMES</span>
       <button id="games-sidebar-x" class="games-sidebar-x">✕</button>
     </div>
-    <div class="games-grid">
-      <button class="game-card" data-game="subway">
-        <div class="game-card-icon"><svg viewBox="0 0 40 40" width="44" height="44" fill="none"><rect x="2" y="18" width="36" height="14" rx="5" fill="#f97316"/><rect x="5" y="14" width="30" height="4" rx="2" fill="#fb923c"/><circle cx="10" cy="32" r="4" fill="#1e293b"/><circle cx="10" cy="32" r="2" fill="#475569"/><circle cx="30" cy="32" r="4" fill="#1e293b"/><circle cx="30" cy="32" r="2" fill="#475569"/><rect x="8" y="20" width="8" height="6" rx="1.5" fill="rgba(255,255,255,0.9)"/><rect x="20" y="20" width="8" height="6" rx="1.5" fill="rgba(255,255,255,0.9)"/><path d="M36 22 L40 24 L40 28 L36 28 Z" fill="#fbbf24"/><path d="M2 14 L8 8 L32 8 L38 14" stroke="#f97316" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
-        <div class="game-card-name">Subway Surfers</div>
-        <span class="game-card-badge new-b">PLAY</span>
-      </button>
+    <div class="games-grid" id="games-grid-inner">
+      <!-- populated by app.js -->
     </div>
   </div>
 
@@ -2577,15 +2582,14 @@
     <audio id="music-audio"></audio>
   </div>
 
-  <!-- Subway Surfers Game -->
-  <div id="subway-overlay" class="game-modal">
+  <!-- Shared Game Overlay -->
+  <div id="game-overlay" class="game-modal">
     <div class="game-modal-bar">
-      <span class="game-modal-title">🚇 Subway Surfers</span>
-      <a id="subway-newtab" href="https://www.crazygames.com/game/subway-surfers" target="_blank" rel="noopener" style="margin-left:auto;margin-right:8px;color:#38bdf8;font-size:0.78rem;text-decoration:none;white-space:nowrap;opacity:0.85">⬡ open in tab</a>
-      <button class="game-modal-close" data-for="subway-overlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <span class="game-modal-title" id="game-overlay-title">Game</span>
+      <button id="game-overlay-close" class="game-modal-close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="game-modal-body" style="padding:0;overflow:hidden;">
-      <iframe id="subway-frame" src="" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;" loading="lazy"></iframe>
+      <iframe id="game-frame" src="" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;" loading="lazy"></iframe>
     </div>
   </div>
 

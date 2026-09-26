@@ -270,28 +270,145 @@ safeInit(initSiteBrowser);
 safeInit(initScrollHide);
 safeInit(initMusicPlayer);
 safeInit(initQuickHide);
-safeInit(initSubwayGame);
+safeInit(initDotGUIGames);
 safeInit(initFabGameHide);
 
-function initSubwayGame() {
-  const overlay = document.getElementById("subway-overlay");
-  if (!overlay) return;
-  const frame = document.getElementById("subway-frame");
-  const GAME_URL = "https://www.crazygames.com/embed/subway-surfers";
+const DOTGUI_GAMES = [
+  { key: "slope",                    name: "Slope",                       logo: "slope.jpg" },
+  { key: "retrobowl",                name: "Retro Bowl",                  logo: "unnamed.png" },
+  { key: "1v1lol",                   name: "1v1.lol",                     logo: "1v1.jpeg" },
+  { key: "subwaysurfersmiami",       name: "Subway Surfers: Miami",       logo: "subwaymiami.webp" },
+  { key: "subwaysurferswinterholiday", name: "Subway Surfers: Winter",    logo: "wintersurf.webp" },
+  { key: "geometrydash",             name: "Geometry Dash",               logo: "geometry.png" },
+  { key: "amongus",                  name: "Among Us",                    logo: "Among_Us.webp" },
+  { key: "tinyfishing",              name: "Tiny Fishing",                logo: "tiny-fishing-square-icon.png" },
+  { key: "agario",                   name: "Agar.io",                     logo: "agario.jpg" },
+  { key: "fnf",                      name: "Friday Night Funkin'",        logo: "fnf.webp" },
+  { key: "cookie",                   name: "Cookie Clicker",              logo: "cookieclicker.jpg" },
+  { key: "crossyroads",              name: "Crossy Road",                 logo: "Crossy_Road_icon.jpeg" },
+  { key: "bitlife",                  name: "BitLife",                     logo: "bitlife.png" },
+  { key: "motox3m",                  name: "Moto X3M",                    logo: "motox3m.png" },
+  { key: "paperio",                  name: "Paper.io",                    logo: "paperio.jpg" },
+  { key: "drifthunters",             name: "Drift Hunters",               logo: "drifthunters.jpeg" },
+  { key: "snowrider",                name: "Snow Rider 3D",               logo: "snowrider.jpg" },
+  { key: "retrobowlcollege",         name: "Retro Bowl College",          logo: "retrobowl2.webp" },
+  { key: "celeste",                  name: "Celeste",                     logo: "celeste.jpg" },
+  { key: "hollow",                   name: "Hollow Knight",               logo: "hollow.jpg" },
+  { key: "silksong",                 name: "Hollow Knight: Silksong",     logo: "silksong.jpg" },
+  { key: "fnaf",                     name: "Five Nights at Freddy's",     logo: "fnaf.jpg" },
+  { key: "fnaf2",                    name: "FNAF 2",                      logo: "fnaf2.jpg" },
+  { key: "fnaf3",                    name: "FNAF 3",                      logo: "fnaf3.jpg" },
+  { key: "fnaf4",                    name: "FNAF 4",                      logo: "fnaf4.jpg" },
+  { key: "omori",                    name: "Omori",                       logo: "omori.jpeg" },
+  { key: "deltarune",                name: "Deltarune",                   logo: "deltarune.webp" },
+  { key: "oneshot",                  name: "OneShot",                     logo: "oneshot.jpg" },
+  { key: "yume",                     name: "Yume Nikki",                  logo: "yume-nikki.webp" },
+  { key: "ultrakill",                name: "Ultrakill",                   logo: "ultrakill.jpeg" },
+  { key: "supermario64",             name: "Super Mario 64",              logo: "supermario64.jpg" },
+  { key: "mariokart64",              name: "Mario Kart 64",               logo: "mariokart.jpeg" },
+  { key: "mariocombat",              name: "Mario Combat",                logo: "mariocombat.png" },
+  { key: "sonicthehedgehog",         name: "Sonic the Hedgehog",          logo: "sonic.jpeg" },
+  { key: "doom",                     name: "Doom",                        logo: "doom.jpeg" },
+  { key: "metroidfusion",            name: "Metroid Fusion",              logo: "metroid.jpg" },
+  { key: "ocarina",                  name: "Ocarina of Time",             logo: "ocorina.jpg" },
+  { key: "pokemonemerald",           name: "Pokemon Emerald",             logo: "emerald.jpg" },
+  { key: "pokemonfirered",           name: "Pokemon Fire Red",            logo: "pokefire.jpg" },
+  { key: "pokemonleafgreen",         name: "Pokemon Leaf Green",          logo: "leafgreen.jpg" },
+  { key: "pokemonruby",              name: "Pokemon Ruby",                logo: "ruby.png" },
+  { key: "pokemonstadium",           name: "Pokemon Stadium",             logo: "stadium.webp" },
+  { key: "pokemonunbound",           name: "Pokemon Unbound",             logo: "pokeunbound.webp" },
+  { key: "pokemonemeraldrg",         name: "Pokemon Emerald RG",          logo: "rouge.png" },
+  { key: "eaglercraft122",           name: "Eaglercraft (Minecraft)",      logo: "eagler.png" },
+  { key: "supa",                     name: "Super Smash Bros",            logo: "supersmashbros.jpg" },
+  { key: "basketbros",               name: "Basketball Bros",             logo: "basketbros.jpg" },
+  { key: "basketrandom",             name: "Basketball Random",           logo: "basket.png" },
+  { key: "basketstars",              name: "Basket Stars",                logo: "basketstars.jpg" },
+  { key: "rooftopsnipers",           name: "Rooftop Snipers",             logo: "rooftop.png" },
+  { key: "rooftopsnipers2",          name: "Rooftop Snipers 2",           logo: "rooftop2.jpeg" },
+  { key: "getaway",                  name: "Getaway Shootout",            logo: "getaway.png" },
+  { key: "boxingrandom",             name: "Boxing Random",               logo: "boxing.png" },
+  { key: "volleyrandom",             name: "Volleyball Random",           logo: "volley.png" },
+  { key: "footbros",                 name: "Football Bros",               logo: "footbros.jpg" },
+  { key: "basebros",                 name: "Base Bros",                   logo: "basebros.jpg" },
+  { key: "gladd",                    name: "Gladdiahoppers",              logo: "gladdihoppers.jpg" },
+  { key: "ovo",                      name: "OvO",                         logo: "ovo.png" },
+  { key: "ovo2",                     name: "OvO 2",                       logo: "ovo2.webp" },
+  { key: "vex",                      name: "Vex",                         logo: "vex.png" },
+  { key: "vex2",                     name: "Vex 2",                       logo: "vex2.jpeg" },
+  { key: "vex3",                     name: "Vex 3",                       logo: "vex3.png" },
+  { key: "slopeplus",                name: "Slope+",                      logo: "slopeplus.png" },
+  { key: "fruitninja",               name: "Fruit Ninja",                 logo: "fruit.webp" },
+  { key: "linerider",                name: "Line Rider",                  logo: "linerider.png" },
+  { key: "fancypantsadventure",      name: "Fancy Pants Adventure",       logo: "fancy.png" },
+  { key: "redball",                  name: "Red Ball",                    logo: "redball.webp" },
+  { key: "icedodo",                  name: "Ice Dodo",                    logo: "icedodo.jpg" },
+  { key: "jet",                      name: "Jetpack Joyride",             logo: "jetpack.jpg" },
+  { key: "snow",                     name: "Snow Battle",                 logo: "snowbattle.jpg" },
+  { key: "funnyshooter2",            name: "Funny Shooter 2",             logo: "funny-shooter-2.jpg" },
+  { key: "csgo",                     name: "CS:GO Classic",               logo: "csgo.jpeg" },
+  { key: "clash",                    name: "Clash Royale",                logo: "clash.jpg" },
+  { key: "codmw4",                   name: "Call of Duty: MW4",           logo: "codmw4.png" },
+  { key: "fifa11",                   name: "FIFA 11",                     logo: "fifa11.jpg" },
+  { key: "granny",                   name: "Granny",                      logo: "granny.jpg" },
+  { key: "granny2",                  name: "Granny 2",                    logo: "granny2.jpg" },
+  { key: "kinder",                   name: "Kindergarten",                logo: "kinder.jpg" },
+  { key: "kinder2",                  name: "Kindergarten 2",              logo: "kinder2.jpg" },
+  { key: "kinder3",                  name: "Kindergarten 3",              logo: "kinder3.jpg" },
+  { key: "taiseiproject",            name: "Taisei Project",              logo: "taisei.png" },
+  { key: "theycomin",                name: "They Are Coming",             logo: "theyarecoming.jpg" },
+  { key: "metal",                    name: "Metal Slug",                  logo: "metal.jpg" },
+  { key: "silent",                   name: "Silent Hill",                 logo: "silent.jpg" },
+  { key: "oblivoneve",               name: "Oblivion",                    logo: "oblivion.png" },
+  { key: "badtime",                  name: "Undertale: Bad Time",         logo: "badtime.webp" },
+  { key: "unfairundyne",             name: "Unfair Undyne",               logo: "Undyne_face.webp" },
+  { key: "baldibasics",              name: "Baldi's Basics",              logo: "baldi.png" },
+  { key: "bind",                     name: "Binding of Isaac",            logo: "binding.jpg" },
+  { key: "riddleschool",             name: "Riddle School",               logo: "riddle.jpeg" },
+  { key: "nutsnbolts",               name: "Nuts n Bolts",                logo: "nuts.png" },
+  { key: "hazard",                   name: "Hazard",                      logo: "hazard.png" },
+  { key: "karl",                     name: "Karl",                        logo: "karl.jpg" },
+  { key: "awesome",                  name: "Awesome Tanks 2",             logo: "awesome.jpg" },
+];
 
-  function open() {
-    if (frame && !frame.src) frame.src = GAME_URL;
+function initDotGUIGames() {
+  const grid = document.getElementById("games-grid-inner");
+  const overlay = document.getElementById("game-overlay");
+  const titleEl = document.getElementById("game-overlay-title");
+  const frame = document.getElementById("game-frame");
+  const closeBtn = document.getElementById("game-overlay-close");
+  if (!grid || !overlay || !frame) return;
+
+  function openGame(key, name) {
+    frame.src = "/games/" + key + ".html";
+    if (titleEl) titleEl.textContent = name;
     overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
   }
-  function close() {
+
+  function closeGame() {
     overlay.classList.remove("open");
+    document.body.style.overflow = "";
+    setTimeout(() => { frame.src = ""; }, 300);
   }
 
-  GAMES.subway = open;
+  const seen = new Set();
+  DOTGUI_GAMES.forEach(g => {
+    if (seen.has(g.key)) return;
+    seen.add(g.key);
+    GAMES[g.key] = () => openGame(g.key, g.name);
+    const btn = document.createElement("button");
+    btn.className = "game-card";
+    btn.dataset.game = g.key;
+    btn.innerHTML = `<div class="game-card-icon"><img src="/logos/${g.logo}" alt="${g.name}" loading="lazy"></div><div class="game-card-name">${g.name}</div>`;
+    btn.addEventListener("click", GAMES[g.key]);
+    grid.appendChild(btn);
+  });
 
-  const closeBtn = overlay.querySelector(".game-modal-close");
-  if (closeBtn) closeBtn.addEventListener("click", close);
-  overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+  if (closeBtn) closeBtn.addEventListener("click", closeGame);
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeGame(); });
+  document.addEventListener("keydown", e => {
+    if (overlay.classList.contains("open") && e.key === "Escape") closeGame();
+  });
 }
 
 function initFabGameHide() {
