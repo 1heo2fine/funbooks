@@ -400,7 +400,6 @@ function initDotGUIGames() {
     btn.className = "game-card";
     btn.dataset.game = g.key;
     btn.innerHTML = `<div class="game-card-icon"><img src="/logos/${g.logo}" alt="${g.name}" loading="lazy"></div><div class="game-card-name">${g.name}</div>`;
-    btn.addEventListener("click", GAMES[g.key]);
     grid.appendChild(btn);
   });
 
@@ -489,12 +488,12 @@ function initGamesHub() {
   closeX.addEventListener("click", close);
   bd.addEventListener("click", close);
 
-  sidebar.querySelectorAll(".game-card").forEach(card => {
-    card.addEventListener("click", () => {
-      close();
-      const g = card.dataset.game;
-      setTimeout(() => { if (GAMES[g]) GAMES[g](); }, 80);
-    });
+  sidebar.addEventListener("click", e => {
+    const card = e.target.closest(".game-card");
+    if (!card) return;
+    close();
+    const g = card.dataset.game;
+    setTimeout(() => { if (GAMES[g]) GAMES[g](); }, 80);
   });
 
   // Generic close buttons on all game modals
