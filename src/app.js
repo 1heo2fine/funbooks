@@ -256,13 +256,6 @@ function upgradeAvatars(root = document) {
 
 const GAMES = {};
 
-// Virtual coin wallet – shared across all casino games
-const _COINS = {
-  get() { try { return Math.max(0, parseInt(localStorage.getItem('sb_coins') || '1000')); } catch(e) { return 1000; } },
-  set(n) { try { localStorage.setItem('sb_coins', String(Math.max(0, n|0))); } catch(e) {} },
-  add(n) { this.set(this.get() + n); },
-};
-
 function safeInit(fn) {
   try { fn(); } catch (e) { console.error("[init error]", fn.name, e); }
 }
@@ -277,21 +270,29 @@ safeInit(initSiteBrowser);
 safeInit(initScrollHide);
 safeInit(initMusicPlayer);
 safeInit(initQuickHide);
-safeInit(initPlaneGame);
-safeInit(initSnakeGame);
-safeInit(initBrickGame);
-safeInit(initMemoryGame);
-safeInit(initTttGame);
-safeInit(initSpaceGame);
-safeInit(initSpeedTapGame);
-safeInit(initDuelGame);
-safeInit(initFishingGame);
-safeInit(initSlotsGame);
-safeInit(initBlackjackGame);
-safeInit(initMinesGame);
-safeInit(initLucky21Game);
-safeInit(initRouletteGame);
+safeInit(initSubwayGame);
 safeInit(initFabGameHide);
+
+function initSubwayGame() {
+  const overlay = document.getElementById("subway-overlay");
+  if (!overlay) return;
+  const frame = document.getElementById("subway-frame");
+  const GAME_URL = "https://www.crazygames.com/embed/subway-surfers";
+
+  function open() {
+    if (frame && !frame.src) frame.src = GAME_URL;
+    overlay.classList.add("open");
+  }
+  function close() {
+    overlay.classList.remove("open");
+  }
+
+  GAMES.subway = open;
+
+  const closeBtn = overlay.querySelector(".game-modal-close");
+  if (closeBtn) closeBtn.addEventListener("click", close);
+  overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+}
 
 function initFabGameHide() {
   const fab = document.getElementById("menu-fab");
@@ -674,19 +675,7 @@ function initSocialSidebar() {
   const exploreBtn = document.getElementById("explore-games-btn");
   if (exploreBtn) exploreBtn.addEventListener("click", () => {
     closeSidebar();
-    setTimeout(() => {
-      const overlay = document.createElement("div");
-      overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px";
-      const box = document.createElement("div");
-      box.style.cssText = "background:#1e1e2e;color:#e2e8f0;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1)";
-      box.innerHTML = `<div style="font-size:2rem;margin-bottom:12px">🎮</div><p style="margin:0 0 16px;font-size:1rem;line-height:1.5">Hey! all of these games were ai generated if u want to play real legit games go to <strong style="color:#a5b4fc">'Unblocked games'</strong></p><button id="_egOk" style="background:#6366f1;color:#fff;border:none;border-radius:8px;padding:10px 28px;font-size:0.95rem;cursor:pointer;font-weight:600">Got it</button>`;
-      overlay.appendChild(box);
-      document.body.appendChild(overlay);
-      const dismiss = () => overlay.remove();
-      overlay.addEventListener("click", e => { if (e.target === overlay) dismiss(); });
-      box.querySelector("#_egOk").addEventListener("click", dismiss);
-      setTimeout(() => { if (window._openGamesHub) window._openGamesHub(); }, 200);
-    }, 120);
+    setTimeout(() => { if (window._openGamesHub) window._openGamesHub(); }, 120);
   });
 
   const navHome = document.getElementById("sidebar-nav-home");
