@@ -1,7 +1,6 @@
 export const MIRRORS = [
   // Featured / Recommended
   { name: "StudySync", url: "https://studysync.co.uk", tag: "hot", featured: true, star: true },
-  { name: "Tutor", url: "https://tutor.wtf", featured: true },
   { name: "Smart Studies", url: "https://smartstudies.cc", featured: true },
   { name: "Classwork", url: "https://classwork.lol", featured: true },
   { name: "学", url: "https://xn--r8j.icu", featured: true },
