@@ -1,5 +1,195 @@
 import { GAMES as GAME_LIST, CATEGORIES } from './games-data.js';
 
+export function initMainGamesGrid(GAMES_REGISTRY) {
+  const grid       = document.getElementById('main-games-grid');
+  const overlay    = document.getElementById('game-overlay');
+  const titleEl    = document.getElementById('game-overlay-title');
+  const frame      = document.getElementById('game-frame');
+  const closeBtn   = document.getElementById('game-overlay-close');
+  const fsBtn      = document.getElementById('game-overlay-fullscreen');
+  const reloadBtn  = document.getElementById('game-overlay-reload');
+  const newTabBtn  = document.getElementById('game-overlay-newtab');
+  const favBtn     = document.getElementById('game-overlay-fav');
+  const spinner    = document.getElementById('game-overlay-spinner');
+  const searchInput = document.getElementById('search-input');
+
+  if (!grid) return;
+
+  let activeFilter = 'all';
+  let activeGame   = null;
+  let boredPool    = null;
+  let searchQ      = '';
+
+  // ── Filter logic ────────────────────────────────────────────
+  function getFilteredGames() {
+    let list = [...GAME_LIST];
+    if (searchQ) {
+      list = list.filter(g =>
+        g.title.toLowerCase().includes(searchQ) ||
+        g.category.toLowerCase().includes(searchQ) ||
+        (g.tags || []).some(t => t.toLowerCase().includes(searchQ))
+      );
+    }
+    if (activeFilter === 'all') return list;
+    if (activeFilter === 'shooting') return list.filter(g =>
+      g.category === 'Shooter' || (g.tags || []).some(t => ['shooting','fps','shooter','sniper','gun'].includes(t))
+    );
+    if (activeFilter === 'sports') return list.filter(g =>
+      g.category === 'Sports' || (g.tags || []).some(t => ['sport','sports','basketball','soccer','football','baseball'].includes(t))
+    );
+    if (activeFilter === 'boardgame') return list.filter(g =>
+      ['Puzzle','Strategy'].includes(g.category) ||
+      (g.tags || []).some(t => ['puzzle','board','strategy','chess','cards','2048','word'].includes(t))
+    );
+    if (activeFilter === 'bored') {
+      if (!boredPool) {
+        boredPool = [...list].sort(() => Math.random() - 0.5).slice(0, 24);
+      }
+      return boredPool;
+    }
+    return list;
+  }
+
+  function renderGames() {
+    const list = getFilteredGames();
+    grid.innerHTML = '';
+    if (list.length === 0) {
+      grid.insertAdjacentHTML('beforeend', '<p class="games-empty">No games found.</p>');
+      return;
+    }
+    list.forEach(g => { GAMES_REGISTRY[g.id] = () => handleGameClick(g); });
+    list.forEach(g => grid.appendChild(makeCard(g)));
+  }
+
+  function makeCard(g) {
+    const btn = document.createElement('button');
+    btn.className = 'game-card main-game-card';
+    btn.dataset.game = g.id;
+    const thumb = g.thumbnail || buildPlaceholderSvg(g.title);
+    btn.innerHTML =
+      `<div class="game-card-icon"><img src="${escHtml(thumb)}" alt="${escHtml(g.title)}" loading="lazy" onerror="this.src='${buildPlaceholderSvg(g.title)}'"></div>` +
+      `<div class="game-card-name">${escHtml(g.title)}</div>`;
+    return btn;
+  }
+
+  // ── Click on grid (event delegation) ────────────────────────
+  grid.addEventListener('click', e => {
+    const card = e.target.closest('.main-game-card');
+    if (!card) return;
+    const g = GAME_LIST.find(x => x.id === card.dataset.game);
+    if (g) handleGameClick(g);
+  });
+
+  function handleGameClick(g) {
+    if (g.embedPath && g.embedPath.startsWith('app:')) {
+      const appName = g.embedPath.slice(4);
+      const btn = document.querySelector(`.social-app-box[data-app="${appName}"]`);
+      if (btn) { btn.click(); return; }
+    }
+    openGame(g);
+  }
+
+  // ── Game player ─────────────────────────────────────────────
+  function openGame(g) {
+    if (!overlay || !frame) return;
+    activeGame = g;
+    frame.src = g.embedPath;
+    if (titleEl) titleEl.textContent = g.title;
+    if (spinner) spinner.classList.add('visible');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    saveRecent(g.id);
+    updateFavBtn();
+  }
+
+  function closeGame() {
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if (spinner) spinner.classList.remove('visible');
+    setTimeout(() => { if (frame) frame.src = ''; activeGame = null; }, 300);
+  }
+
+  if (frame) frame.addEventListener('load', () => { if (spinner) spinner.classList.remove('visible'); });
+  if (closeBtn) closeBtn.addEventListener('click', closeGame);
+  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeGame(); });
+  document.addEventListener('keydown', e => {
+    if (overlay && overlay.classList.contains('open') && e.key === 'Escape') closeGame();
+  });
+
+  if (fsBtn) fsBtn.addEventListener('click', () => {
+    const el = (overlay && overlay.querySelector('.game-modal-body')) || frame;
+    if (!el) return;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if (req) req.call(el).catch(() => {});
+  });
+
+  if (reloadBtn) reloadBtn.addEventListener('click', () => {
+    if (frame && frame.src) { const s = frame.src; frame.src = ''; frame.src = s; }
+    if (spinner) spinner.classList.add('visible');
+  });
+
+  if (newTabBtn) newTabBtn.addEventListener('click', () => {
+    if (activeGame) window.open(activeGame.embedPath, '_blank', 'noopener');
+  });
+
+  function updateFavBtn() {
+    if (!favBtn || !activeGame) return;
+    const isFav = loadFavs().includes(activeGame.id);
+    favBtn.classList.toggle('active', isFav);
+    favBtn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+  }
+
+  if (favBtn) favBtn.addEventListener('click', () => {
+    if (!activeGame) return;
+    let favs = loadFavs();
+    favs = favs.includes(activeGame.id) ? favs.filter(x => x !== activeGame.id) : [...favs, activeGame.id];
+    saveFavs(favs);
+    updateFavBtn();
+  });
+
+  // ── Tab switching ─────────────────────────────────────────
+  document.querySelectorAll('[data-game-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.gameFilter;
+      const linksList   = document.getElementById('links-list');
+      const resultsMeta = document.querySelector('.results-meta');
+
+      document.querySelectorAll('[data-game-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (f === 'sites') {
+        grid.style.display = 'none';
+        if (linksList)   linksList.style.display   = '';
+        if (resultsMeta) resultsMeta.style.display = '';
+        if (window.__setFilter) window.__setFilter('all');
+        return;
+      }
+
+      grid.style.display = '';
+      if (linksList)   linksList.style.display   = 'none';
+      if (resultsMeta) resultsMeta.style.display = 'none';
+
+      if (f === 'bored') boredPool = null;
+      activeFilter = f;
+      renderGames();
+    });
+  });
+
+  // ── Search ─────────────────────────────────────────────────
+  if (searchInput) searchInput.addEventListener('input', () => {
+    searchQ = searchInput.value.trim().toLowerCase();
+    if (activeFilter !== 'sites') renderGames();
+  });
+
+  // ── Initial render ───────────────────────────────────────────
+  const linksList   = document.getElementById('links-list');
+  const resultsMeta = document.querySelector('.results-meta');
+  if (linksList)   linksList.style.display   = 'none';
+  if (resultsMeta) resultsMeta.style.display = 'none';
+  renderGames();
+}
+
 const FAV_KEY = 'games-favorites';
 const RECENT_KEY = 'games-recent';
 const RECENT_MAX = 10;
