@@ -788,10 +788,9 @@ function initSocialSidebar() {
     });
   });
 
-  const exploreBtn = document.getElementById("explore-games-btn");
-  if (exploreBtn) exploreBtn.addEventListener("click", () => {
-    closeSidebar();
-    setTimeout(() => { if (window._openGamesHub) window._openGamesHub(); }, 120);
+  const gamesPill = document.getElementById("filter-games-pill");
+  if (gamesPill) gamesPill.addEventListener("click", () => {
+    if (window._openGamesHub) window._openGamesHub();
   });
 
   const navHome = document.getElementById("sidebar-nav-home");
