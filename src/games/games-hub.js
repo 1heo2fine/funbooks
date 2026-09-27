@@ -80,11 +80,28 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
     if (g) handleGameClick(g);
   });
 
+  const APP_URLS = { tiktok:'https://tiktok.com', reddit:'https://reddit.com', roblox:'https://roblox.com', omegle:'https://omegle.com' };
+
   function handleGameClick(g) {
     if (g.embedPath && g.embedPath.startsWith('app:')) {
       const appName = g.embedPath.slice(4);
-      const btn = document.querySelector(`.social-app-box[data-app="${appName}"]`);
-      if (btn) { btn.click(); return; }
+      if (appName === 'instagram') {
+        if (window._openInstagram) { window._openInstagram(); return; }
+        const ol = document.getElementById('ig-overlay');
+        if (ol) { ol.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        return;
+      }
+      if (appName === 'spotify') {
+        if (window._openMusicPlayer) window._openMusicPlayer();
+        return;
+      }
+      const ol = document.getElementById(appName + '-overlay');
+      if (!ol) return;
+      const frame = ol.querySelector('.app-overlay-frame');
+      if (frame && frame.src === 'about:blank') frame.src = APP_URLS[appName] || '';
+      ol.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      return;
     }
     openGame(g);
   }
