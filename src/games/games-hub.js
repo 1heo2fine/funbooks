@@ -1,5 +1,49 @@
 import { GAMES as GAME_LIST, CATEGORIES } from './games-data.js';
 
+// ── Vote helpers ─────────────────────────────────────────────────────────
+const VOTE_PREFIX = 'gv_';
+function loadVotes(id) {
+  try { return JSON.parse(localStorage.getItem(VOTE_PREFIX + id) || '{"l":0,"d":0,"v":null}'); }
+  catch { return {l:0, d:0, v:null}; }
+}
+function saveVotes(id, obj) {
+  try { localStorage.setItem(VOTE_PREFIX + id, JSON.stringify(obj)); } catch {}
+}
+function castVote(id, type) {
+  const v = loadVotes(id);
+  if (v.v === type) {
+    // undo vote
+    if (type === 'l') v.l = Math.max(0, v.l - 1);
+    else v.d = Math.max(0, v.d - 1);
+    v.v = null;
+  } else {
+    // switch or new vote
+    if (v.v === 'l') v.l = Math.max(0, v.l - 1);
+    if (v.v === 'd') v.d = Math.max(0, v.d - 1);
+    if (type === 'l') v.l++;
+    else v.d++;
+    v.v = type;
+  }
+  saveVotes(id, v);
+  return v;
+}
+
+// ── Similar games ────────────────────────────────────────────────────────
+function getSimilarGames(g, count = 8) {
+  const others = GAME_LIST.filter(x => x.id !== g.id && !x.embedPath?.startsWith('app:'));
+  // score by category + tag overlap
+  const scored = others.map(x => {
+    let score = 0;
+    if (x.category === g.category) score += 3;
+    const gTags = g.tags || [];
+    const xTags = x.tags || [];
+    score += gTags.filter(t => xTags.includes(t)).length;
+    return {game: x, score};
+  });
+  scored.sort((a, b) => b.score - a.score || Math.random() - 0.5);
+  return scored.slice(0, count).map(s => s.game);
+}
+
 export function initMainGamesGrid(GAMES_REGISTRY) {
   const grid       = document.getElementById('main-games-grid');
   const overlay    = document.getElementById('game-overlay');
@@ -11,6 +55,11 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
   const newTabBtn  = document.getElementById('game-overlay-newtab');
   const favBtn     = document.getElementById('game-overlay-fav');
   const spinner    = document.getElementById('game-overlay-spinner');
+  const likeBtn    = document.getElementById('game-overlay-like');
+  const dislikeBtn = document.getElementById('game-overlay-dislike');
+  const likeCount  = document.getElementById('game-overlay-like-count');
+  const dislikeCount = document.getElementById('game-overlay-dislike-count');
+  const simGrid    = document.getElementById('similar-games-grid');
   const searchInput = document.getElementById('search-input');
 
   if (!grid) return;
@@ -66,9 +115,11 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
     btn.className = 'game-card main-game-card';
     btn.dataset.game = g.id;
     const thumb = g.thumbnail || buildPlaceholderSvg(g.title);
+    const votes = loadVotes(g.id);
     btn.innerHTML =
       `<div class="game-card-icon"><img src="${escHtml(thumb)}" alt="${escHtml(g.title)}" loading="lazy" onerror="this.src='${buildPlaceholderSvg(g.title)}'"></div>` +
-      `<div class="game-card-name">${escHtml(g.title)}</div>`;
+      `<div class="game-card-name">${escHtml(g.title)}</div>` +
+      `<div class="game-card-votes"><span class="vote-like-badge">👍 ${votes.l}</span><span class="vote-dislike-badge">👎 ${votes.d}</span></div>`;
     return btn;
   }
 
@@ -117,6 +168,8 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
     document.body.style.overflow = 'hidden';
     saveRecent(g.id);
     updateFavBtn();
+    updateVoteUI();
+    renderSimilarGames(g);
   }
 
   function closeGame() {
@@ -127,6 +180,31 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
     setTimeout(() => { if (frame) frame.src = ''; activeGame = null; }, 300);
   }
 
+  function updateVoteUI() {
+    if (!activeGame) return;
+    const v = loadVotes(activeGame.id);
+    if (likeCount) likeCount.textContent = v.l;
+    if (dislikeCount) dislikeCount.textContent = v.d;
+    if (likeBtn) likeBtn.classList.toggle('voted', v.v === 'l');
+    if (dislikeBtn) dislikeBtn.classList.toggle('voted', v.v === 'd');
+  }
+
+  function renderSimilarGames(g) {
+    if (!simGrid) return;
+    simGrid.innerHTML = '';
+    const similar = getSimilarGames(g, 8);
+    similar.forEach(sg => {
+      const thumb = sg.thumbnail || buildPlaceholderSvg(sg.title);
+      const card = document.createElement('button');
+      card.className = 'sim-game-card';
+      card.innerHTML =
+        `<div class="sim-game-thumb"><img src="${escHtml(thumb)}" alt="${escHtml(sg.title)}" loading="lazy" onerror="this.src='${buildPlaceholderSvg(sg.title)}'"></div>` +
+        `<div class="sim-game-name">${escHtml(sg.title)}</div>`;
+      card.addEventListener('click', () => openGame(sg));
+      simGrid.appendChild(card);
+    });
+  }
+
   if (frame) frame.addEventListener('load', () => { if (spinner) spinner.classList.remove('visible'); });
   if (closeBtn) closeBtn.addEventListener('click', closeGame);
   if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeGame(); });
@@ -135,8 +213,7 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
   });
 
   if (fsBtn) fsBtn.addEventListener('click', () => {
-    const el = (overlay && overlay.querySelector('.game-modal-body')) || frame;
-    if (!el) return;
+    const el = frame;
     const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
     if (req) req.call(el).catch(() => {});
   });
@@ -149,6 +226,31 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
   if (newTabBtn) newTabBtn.addEventListener('click', () => {
     if (activeGame) window.open(activeGame.embedPath, '_blank', 'noopener');
   });
+
+  if (likeBtn) likeBtn.addEventListener('click', () => {
+    if (!activeGame) return;
+    castVote(activeGame.id, 'l');
+    updateVoteUI();
+    // refresh card in grid
+    refreshCardVotes(activeGame.id);
+  });
+
+  if (dislikeBtn) dislikeBtn.addEventListener('click', () => {
+    if (!activeGame) return;
+    castVote(activeGame.id, 'd');
+    updateVoteUI();
+    refreshCardVotes(activeGame.id);
+  });
+
+  function refreshCardVotes(id) {
+    const card = grid.querySelector(`[data-game="${id}"]`);
+    if (!card) return;
+    const v = loadVotes(id);
+    const likeBadge = card.querySelector('.vote-like-badge');
+    const dislikeBadge = card.querySelector('.vote-dislike-badge');
+    if (likeBadge) likeBadge.textContent = `👍 ${v.l}`;
+    if (dislikeBadge) dislikeBadge.textContent = `👎 ${v.d}`;
+  }
 
   function updateFavBtn() {
     if (!favBtn || !activeGame) return;
@@ -262,14 +364,12 @@ export function initGamesSection(GAMES_REGISTRY) {
 
   if (!grid || !overlay || !frame) return;
 
-  // ── State ──────────────────────────────────────────────────
-  let activeGame    = null;  // { id, title, embedPath }
+  let activeGame    = null;
   let searchQ       = '';
-  let activeCats    = new Set();  // empty = all
+  let activeCats    = new Set();
   let sortMode      = 'default';
   let filterOpen    = false;
 
-  // ── Build category checkboxes ───────────────────────────────
   if (catList) {
     CATEGORIES.filter(c => c !== 'All').forEach(cat => {
       const label = document.createElement('label');
@@ -304,7 +404,6 @@ export function initGamesSection(GAMES_REGISTRY) {
     });
   }
 
-  // ── Filter panel toggle ─────────────────────────────────────
   if (filterBtn && filterPanel) {
     filterBtn.addEventListener('click', e => {
       e.stopPropagation();
@@ -314,7 +413,6 @@ export function initGamesSection(GAMES_REGISTRY) {
     });
   }
 
-  // ── Search ─────────────────────────────────────────────────
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       searchQ = searchInput.value.trim().toLowerCase();
@@ -322,7 +420,6 @@ export function initGamesSection(GAMES_REGISTRY) {
     });
   }
 
-  // ── Render + filter ─────────────────────────────────────────
   function getFilteredGames() {
     let list = [...GAME_LIST];
     if (searchQ) {
@@ -360,9 +457,11 @@ export function initGamesSection(GAMES_REGISTRY) {
     btn.className = 'game-card';
     btn.dataset.game = g.id;
     const thumb = g.thumbnail || buildPlaceholderSvg(g.title);
+    const votes = loadVotes(g.id);
     btn.innerHTML =
       `<div class="game-card-icon"><img src="${escHtml(thumb)}" alt="${escHtml(g.title)}" loading="lazy" onerror="this.src='${buildPlaceholderSvg(g.title)}'"></div>` +
-      `<div class="game-card-name">${escHtml(g.title)}</div>`;
+      `<div class="game-card-name">${escHtml(g.title)}</div>` +
+      `<div class="game-card-votes"><span class="vote-like-badge">👍 ${votes.l}</span><span class="vote-dislike-badge">👎 ${votes.d}</span></div>`;
     if (favs.includes(g.id)) btn.classList.add('game-card-fav');
     return btn;
   }
@@ -373,7 +472,6 @@ export function initGamesSection(GAMES_REGISTRY) {
     filterBtn.classList.toggle('has-filters', hasFilters);
   }
 
-  // ── Game player ─────────────────────────────────────────────
   function openGame(g) {
     activeGame = g;
     frame.src = g.embedPath;
@@ -383,6 +481,8 @@ export function initGamesSection(GAMES_REGISTRY) {
     document.body.style.overflow = 'hidden';
     saveRecent(g.id);
     updateFavBtn();
+    updateVoteDisplay();
+    renderSimilarGames(g);
   }
 
   function closeGame() {
@@ -392,29 +492,53 @@ export function initGamesSection(GAMES_REGISTRY) {
     setTimeout(() => { frame.src = ''; activeGame = null; }, 300);
   }
 
-  // Hide spinner when iframe loads
+  function updateVoteDisplay() {
+    const likeCount = document.getElementById('game-overlay-like-count');
+    const dislikeCount = document.getElementById('game-overlay-dislike-count');
+    const likeBtn = document.getElementById('game-overlay-like');
+    const dislikeBtn = document.getElementById('game-overlay-dislike');
+    if (!activeGame) return;
+    const v = loadVotes(activeGame.id);
+    if (likeCount) likeCount.textContent = v.l;
+    if (dislikeCount) dislikeCount.textContent = v.d;
+    if (likeBtn) likeBtn.classList.toggle('voted', v.v === 'l');
+    if (dislikeBtn) dislikeBtn.classList.toggle('voted', v.v === 'd');
+  }
+
+  function renderSimilarGames(g) {
+    const simGrid = document.getElementById('similar-games-grid');
+    if (!simGrid) return;
+    simGrid.innerHTML = '';
+    const similar = getSimilarGames(g, 8);
+    similar.forEach(sg => {
+      const thumb = sg.thumbnail || buildPlaceholderSvg(sg.title);
+      const card = document.createElement('button');
+      card.className = 'sim-game-card';
+      card.innerHTML =
+        `<div class="sim-game-thumb"><img src="${escHtml(thumb)}" alt="${escHtml(sg.title)}" loading="lazy" onerror="this.src='${buildPlaceholderSvg(sg.title)}'"></div>` +
+        `<div class="sim-game-name">${escHtml(sg.title)}</div>`;
+      card.addEventListener('click', () => openGame(sg));
+      simGrid.appendChild(card);
+    });
+  }
+
   frame.addEventListener('load', () => {
     if (spinner) spinner.classList.remove('visible');
   });
 
-  // Close
   if (closeBtn) closeBtn.addEventListener('click', closeGame);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeGame(); });
   document.addEventListener('keydown', e => {
     if (overlay.classList.contains('open') && e.key === 'Escape') closeGame();
   });
 
-  // Fullscreen
   if (fsBtn) {
     fsBtn.addEventListener('click', () => {
-      const container = overlay.querySelector('.game-modal-body');
-      const el = container || frame;
-      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-      if (req) req.call(el).catch(() => {});
+      const req = frame.requestFullscreen || frame.webkitRequestFullscreen || frame.mozRequestFullScreen;
+      if (req) req.call(frame).catch(() => {});
     });
   }
 
-  // Reload
   if (reloadBtn) {
     reloadBtn.addEventListener('click', () => {
       if (frame.src) { const s = frame.src; frame.src = ''; frame.src = s; }
@@ -422,14 +546,12 @@ export function initGamesSection(GAMES_REGISTRY) {
     });
   }
 
-  // New tab
   if (newTabBtn) {
     newTabBtn.addEventListener('click', () => {
       if (activeGame) window.open(activeGame.embedPath, '_blank', 'noopener');
     });
   }
 
-  // Favorite toggle
   function updateFavBtn() {
     if (!favBtn || !activeGame) return;
     const favs = loadFavs();
@@ -449,12 +571,10 @@ export function initGamesSection(GAMES_REGISTRY) {
       }
       saveFavs(favs);
       updateFavBtn();
-      // update card in grid
       const card = grid.querySelector(`[data-game="${activeGame.id}"]`);
       if (card) card.classList.toggle('game-card-fav', favs.includes(activeGame.id));
     });
   }
 
-  // ── Initial render ───────────────────────────────────────────
   applyFilters();
 }
