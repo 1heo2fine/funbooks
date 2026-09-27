@@ -238,6 +238,7 @@ export function init() {
 
   document.querySelectorAll(".filter-glass-pill").forEach((chip) => {
     chip.addEventListener("click", () => {
+      if (chip.id === "filter-games-pill") return;
       setFilter(chip.dataset.filter);
     });
   });
