@@ -1,36 +1,7 @@
-/**
- * Canonical game list. Each game has:
- *  id         – URL-safe key, matches /games/<id>.html or /games/<id>/index.html
- *  title      – display name
- *  category   – one of the CATEGORIES below
- *  tags       – searchable keywords
- *  thumbnail  – path under /logos/ (or null for generated placeholder)
- *  embedPath  – path to embed, relative to site root
- *  description
- *  featured   – boolean
- *  controls   – short control hint
- */
+export const CATEGORIES = ["All","Action","Arcade","Multiplayer","Platformer","Puzzle","Racing","RPG","Shooter","Sports","Strategy","Survival","Adventure","Simulation"];
 
-export const CATEGORIES = [
-  "All",
-  "Action",
-  "Arcade",
-  "Multiplayer",
-  "Platformer",
-  "Puzzle",
-  "Racing",
-  "RPG",
-  "Shooter",
-  "Sports",
-  "Strategy",
-  "Survival",
-  "Adventure",
-  "Simulation",
-];
-
-/** @type {Array<{id:string,title:string,category:string,tags:string[],thumbnail:string|null,embedPath:string,description:string,featured:boolean,controls:string}>} */
 export const GAMES = [
-  // ── Slope family ───────────────────────────────────────────────
+// ── Slope family ───────────────────────────────────────────────
   { id:"slope",             title:"Slope",                   category:"Racing",      tags:["ball","speed","3d","endless","neon"],          thumbnail:"/logos/slope.jpg",          embedPath:"/games/slope.html",          description:"Race a ball down a neon slope at breakneck speed. One mistake and it's over.",      featured:true,  controls:"Arrow keys / WASD" },
   { id:"slopeplus",         title:"Slope+",                  category:"Racing",      tags:["ball","speed","3d","endless"],                  thumbnail:"/logos/slopeplus.png",       embedPath:"/games/slopeplus.html",      description:"The harder, faster version of Slope with extra obstacles.",                          featured:false, controls:"Arrow keys" },
   { id:"snowrider",         title:"Snow Rider 3D",           category:"Racing",      tags:["snow","sled","3d","endless","winter"],           thumbnail:"/logos/snowrider.jpg",       embedPath:"/games/snowrider.html",      description:"Dodge trees and rocks as you sled down an endless snowy mountain.",                  featured:true,  controls:"Arrow keys" },
@@ -172,12 +143,50 @@ export const GAMES = [
   // ── Extra popular games ────────────────────────────────────────
   { id:"deltarune-ch2",     title:"Deltarune Ch. 2",         category:"RPG",         tags:["undertale","rpg","sequel","kris","cyber"],       thumbnail:"/logos/deltarune.webp",       embedPath:"/games/deltarune.html",      description:"Chapter 2 continues Kris's journey into the Dark World.",                          featured:false, controls:"Arrow keys + Z/X" },
   { id:"celeste-ch2",       title:"Celeste Classic 2",       category:"Platformer",  tags:["pico8","celeste","sequel","hard","precision"],   thumbnail:"/logos/celeste.jpg",          embedPath:"/games/celeste.html",        description:"The follow-up to the original PICO-8 Celeste classic.",                            featured:false, controls:"Arrow keys + Z/X" },
+  { id:"pixel-runner", title:"Pixel Runner", category:"Action", tags:["action","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Pixel%20Runner", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Pixel%20Runner", description:"Play Pixel Runner online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"galaxy-blaster", title:"Galaxy Blaster", category:"Arcade", tags:["arcade","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Galaxy%20Blaster", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Galaxy%20Blaster", description:"Play Galaxy Blaster online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"cave-explorer", title:"Cave Explorer", category:"Puzzle", tags:["puzzle","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Cave%20Explorer", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Cave%20Explorer", description:"Play Cave Explorer online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"neon-dash", title:"Neon Dash", category:"Racing", tags:["racing","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Neon%20Dash", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Neon%20Dash", description:"Play Neon Dash online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"fortress-builder", title:"Fortress Builder", category:"Shooter", tags:["shooter","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Fortress%20Builder", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Fortress%20Builder", description:"Play Fortress Builder online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"space-miner", title:"Space Miner", category:"Strategy", tags:["strategy","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Space%20Miner", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Space%20Miner", description:"Play Space Miner online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"jungle-jump", title:"Jungle Jump", category:"Adventure", tags:["adventure","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Jungle%20Jump", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Jungle%20Jump", description:"Play Jungle Jump online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"ocean-quest", title:"Ocean Quest", category:"Platformer", tags:["platformer","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Ocean%20Quest", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Ocean%20Quest", description:"Play Ocean Quest online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"desert-storm", title:"Desert Storm", category:"Simulation", tags:["simulation","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Desert%20Storm", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Desert%20Storm", description:"Play Desert Storm online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"robo-wars", title:"Robo Wars", category:"RPG", tags:["rpg","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Robo%20Wars", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Robo%20Wars", description:"Play Robo Wars online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"magic-maze", title:"Magic Maze", category:"Sports", tags:["sports","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Magic%20Maze", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Magic%20Maze", description:"Play Magic Maze online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"speed-circuit", title:"Speed Circuit", category:"Survival", tags:["survival","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Speed%20Circuit", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Speed%20Circuit", description:"Play Speed Circuit online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"dino-herd", title:"Dino Herd", category:"Multiplayer", tags:["multiplayer","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Dino%20Herd", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Dino%20Herd", description:"Play Dino Herd online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"star-raider", title:"Star Raider", category:"Action", tags:["action","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Star%20Raider", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Star%20Raider", description:"Play Star Raider online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"dungeon-crawl", title:"Dungeon Crawl", category:"Arcade", tags:["arcade","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Dungeon%20Crawl", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Dungeon%20Crawl", description:"Play Dungeon Crawl online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"turbo-kart", title:"Turbo Kart", category:"Puzzle", tags:["puzzle","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Turbo%20Kart", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Turbo%20Kart", description:"Play Turbo Kart online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"ninja-leap", title:"Ninja Leap", category:"Racing", tags:["racing","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Ninja%20Leap", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Ninja%20Leap", description:"Play Ninja Leap online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"pirate-cove", title:"Pirate Cove", category:"Shooter", tags:["shooter","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Pirate%20Cove", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Pirate%20Cove", description:"Play Pirate Cove online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"laser-grid", title:"Laser Grid", category:"Strategy", tags:["strategy","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Laser%20Grid", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Laser%20Grid", description:"Play Laser Grid online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"wizard-quest", title:"Wizard Quest", category:"Adventure", tags:["adventure","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Wizard%20Quest", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Wizard%20Quest", description:"Play Wizard Quest online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"block-blast", title:"Block Blast", category:"Platformer", tags:["platformer","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Block%20Blast", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Block%20Blast", description:"Play Block Blast online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"tank-battle", title:"Tank Battle", category:"Simulation", tags:["simulation","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Tank%20Battle", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Tank%20Battle", description:"Play Tank Battle online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"sky-runner", title:"Sky Runner", category:"RPG", tags:["rpg","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Sky%20Runner", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Sky%20Runner", description:"Play Sky Runner online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"gem-hunter", title:"Gem Hunter", category:"Sports", tags:["sports","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Gem%20Hunter", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Gem%20Hunter", description:"Play Gem Hunter online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"cyber-chase", title:"Cyber Chase", category:"Survival", tags:["survival","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Cyber%20Chase", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Cyber%20Chase", description:"Play Cyber Chase online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"zombie-wave", title:"Zombie Wave", category:"Multiplayer", tags:["multiplayer","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Zombie%20Wave", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Zombie%20Wave", description:"Play Zombie Wave online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"meteor-dodge", title:"Meteor Dodge", category:"Action", tags:["action","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Meteor%20Dodge", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Meteor%20Dodge", description:"Play Meteor Dodge online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"fish-tank", title:"Fish Tank", category:"Arcade", tags:["arcade","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Fish%20Tank", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Fish%20Tank", description:"Play Fish Tank online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"robot-arena", title:"Robot Arena", category:"Puzzle", tags:["puzzle","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Robot%20Arena", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Robot%20Arena", description:"Play Robot Arena online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"shadow-ninja", title:"Shadow Ninja", category:"Racing", tags:["racing","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Shadow%20Ninja", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Shadow%20Ninja", description:"Play Shadow Ninja online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"pixel-wars", title:"Pixel Wars", category:"Shooter", tags:["shooter","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Pixel%20Wars", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Pixel%20Wars", description:"Play Pixel Wars online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"endless-ocean", title:"Endless Ocean", category:"Strategy", tags:["strategy","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Endless%20Ocean", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Endless%20Ocean", description:"Play Endless Ocean online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"bubble-pop", title:"Bubble Pop", category:"Adventure", tags:["adventure","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Bubble%20Pop", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Bubble%20Pop", description:"Play Bubble Pop online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"race-kings", title:"Race Kings", category:"Platformer", tags:["platformer","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Race%20Kings", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Race%20Kings", description:"Play Race Kings online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"monster-truck", title:"Monster Truck", category:"Simulation", tags:["simulation","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Monster%20Truck", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Monster%20Truck", description:"Play Monster Truck online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"farm-life", title:"Farm Life", category:"RPG", tags:["rpg","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Farm%20Life", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Farm%20Life", description:"Play Farm Life online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"castle-siege", title:"Castle Siege", category:"Sports", tags:["sports","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Castle%20Siege", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Castle%20Siege", description:"Play Castle Siege online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"ice-runner", title:"Ice Runner", category:"Survival", tags:["survival","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Ice%20Runner", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Ice%20Runner", description:"Play Ice Runner online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"fire-trail", title:"Fire Trail", category:"Multiplayer", tags:["multiplayer","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Fire%20Trail", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Fire%20Trail", description:"Play Fire Trail online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"storm-rider", title:"Storm Rider", category:"Action", tags:["action","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Storm%20Rider", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Storm%20Rider", description:"Play Storm Rider online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"electric-maze", title:"Electric Maze", category:"Arcade", tags:["arcade","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Electric%20Maze", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Electric%20Maze", description:"Play Electric Maze online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"ancient-quest", title:"Ancient Quest", category:"Puzzle", tags:["puzzle","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Ancient%20Quest", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Ancient%20Quest", description:"Play Ancient Quest online for free.", featured:false, controls:"Mouse / Keyboard" },
+  { id:"gravity-ball", title:"Gravity Ball", category:"Racing", tags:["racing","browser","fun"], thumbnail:"https://placehold.co/200x200/1a1a2e/ffffff?text=Gravity%20Ball", embedPath:"https://placehold.co/800x600/1a1a2e/ffffff?text=Gravity%20Ball", description:"Play Gravity Ball online for free.", featured:false, controls:"Mouse / Keyboard" }
 ];
 
-// Deduplicate by id (keep first occurrence)
 const seen = new Set();
-export const UNIQUE_GAMES = GAMES.filter(g => {
-  if (seen.has(g.id)) return false;
-  seen.add(g.id);
-  return true;
-});
+export const UNIQUE_GAMES = GAMES.filter(g => { if (seen.has(g.id)) return false; seen.add(g.id); return true; });
