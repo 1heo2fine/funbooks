@@ -1,6 +1,11 @@
-export const CATEGORIES = ["All","Action","Arcade","Multiplayer","Platformer","Puzzle","Racing","RPG","Shooter","Sports","Strategy","Survival","Adventure","Simulation"];
+export const CATEGORIES = ["All","Action","Apps","Arcade","Multiplayer","Platformer","Puzzle","Racing","RPG","Shooter","Sports","Strategy","Survival","Adventure","Simulation"];
 
 export const GAMES = [
+  // ── Featured Apps (open in overlay) ──────────────────────────────
+  { id:"instagram", title:"Instagram",  category:"Apps",    tags:["social","photos","app","instagram"], thumbnail:"https://www.google.com/s2/favicons?domain=instagram.com&sz=128",  embedPath:"app:instagram", description:"Browse Instagram unblocked.",  featured:true, controls:"Mouse" },
+  { id:"tiktok",    title:"TikTok",     category:"Apps",    tags:["social","video","app","tiktok"],   thumbnail:"https://www.google.com/s2/favicons?domain=tiktok.com&sz=128",     embedPath:"app:tiktok",    description:"Watch TikTok videos.",          featured:true, controls:"Mouse" },
+  { id:"reddit",    title:"Reddit",     category:"Apps",    tags:["social","news","app","reddit"],   thumbnail:"https://www.google.com/s2/favicons?domain=reddit.com&sz=128",     embedPath:"app:reddit",    description:"Browse Reddit.",                featured:true, controls:"Mouse" },
+  { id:"roblox",    title:"Roblox",     category:"Shooter", tags:["roblox","multiplayer","game","build"],thumbnail:"https://www.google.com/s2/favicons?domain=roblox.com&sz=128",  embedPath:"app:roblox",    description:"Play Roblox unblocked.",        featured:true, controls:"Mouse + Keyboard" },
 // ── Slope family ───────────────────────────────────────────────
   { id:"slope",             title:"Slope",                   category:"Racing",      tags:["ball","speed","3d","endless","neon"],          thumbnail:"/logos/slope.jpg",          embedPath:"/games/slope.html",          description:"Race a ball down a neon slope at breakneck speed. One mistake and it's over.",      featured:true,  controls:"Arrow keys / WASD" },
   { id:"slopeplus",         title:"Slope+",                  category:"Racing",      tags:["ball","speed","3d","endless"],                  thumbnail:"/logos/slopeplus.png",       embedPath:"/games/slopeplus.html",      description:"The harder, faster version of Slope with extra obstacles.",                          featured:false, controls:"Arrow keys" },

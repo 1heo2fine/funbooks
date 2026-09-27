@@ -1,5 +1,5 @@
 import { MIRRORS } from './data/mirrors.js';
-import { initGamesSection } from './games/games-hub.js';
+import { initMainGamesGrid } from './games/games-hub.js';
 
 const VOTES_KEY = "mirror_votes";
 const SEEDED_KEY = "mirror_votes_seeded_v8";
@@ -196,7 +196,7 @@ export function renderAll() {
 
 export function setFilter(filter) {
   currentFilter = filter;
-  document.querySelectorAll(".filter-glass-pill").forEach((chip) => {
+  document.querySelectorAll(".filter-glass-pill[data-filter]").forEach((chip) => {
     chip.classList.toggle("active", chip.dataset.filter === filter);
   });
   renderAll();
@@ -236,13 +236,12 @@ export function init() {
     });
   }
 
-  document.querySelectorAll(".filter-glass-pill").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      if (chip.id === "filter-games-pill") return;
-      setFilter(chip.dataset.filter);
-    });
+  // Legacy mirror filter chips (data-filter only, not data-game-filter)
+  document.querySelectorAll(".filter-glass-pill[data-filter]").forEach((chip) => {
+    chip.addEventListener("click", () => setFilter(chip.dataset.filter));
   });
 
+  // Pre-render mirrors so they're ready when "Alternative Sites" tab is shown
   renderAll();
 }
 
@@ -272,7 +271,7 @@ safeInit(initSiteBrowser);
 safeInit(initScrollHide);
 safeInit(initMusicPlayer);
 safeInit(initQuickHide);
-safeInit(() => initGamesSection(GAMES));
+safeInit(() => initMainGamesGrid(GAMES));
 safeInit(initFabGameHide);
 
 function initFabGameHide() {
