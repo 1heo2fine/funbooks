@@ -182,19 +182,53 @@
       z-index: 1;
     }
 
+    @keyframes rainbowHue {
+      0%   { filter: hue-rotate(0deg)   drop-shadow(0 0 8px rgba(255,80,80,0.7)); }
+      16%  { filter: hue-rotate(60deg)  drop-shadow(0 0 8px rgba(255,200,0,0.7)); }
+      33%  { filter: hue-rotate(120deg) drop-shadow(0 0 8px rgba(0,220,80,0.7)); }
+      50%  { filter: hue-rotate(180deg) drop-shadow(0 0 8px rgba(0,200,255,0.7)); }
+      66%  { filter: hue-rotate(240deg) drop-shadow(0 0 8px rgba(100,80,255,0.7)); }
+      83%  { filter: hue-rotate(300deg) drop-shadow(0 0 8px rgba(255,0,200,0.7)); }
+      100% { filter: hue-rotate(360deg) drop-shadow(0 0 8px rgba(255,80,80,0.7)); }
+    }
+    .site-logo-ring {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #ff0000, #ff8000, #ffff00, #00ff80, #00ffff, #0080ff, #8000ff, #ff00ff, #ff0000
+      );
+      animation: rainbowHue 3s linear infinite;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .site-logo-inner {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--bg, #020910);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
     .page-title {
       font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
-      font-size: clamp(2.4rem, 6.5vw, 4.4rem);
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
       font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.05;
+      letter-spacing: -0.04em;
+      line-height: 1;
       text-align: center;
-      background: linear-gradient(170deg, #e8f8ff 0%, #7dd3fc 38%, #22d3ee 65%, #0ea5e9 100%);
+      background: linear-gradient(160deg, #ffffff 0%, #bae6fd 35%, #38bdf8 65%, #0ea5e9 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.25));
+      margin-bottom: 8px;
+      text-wrap: balance;
     }
 
     .page-subtitle {
@@ -1041,13 +1075,17 @@
       position: fixed;
       bottom: 20px;
       right: 16px;
-      z-index: 9500;
       z-index: 60;
       width: 236px;
-      border-radius: 18px;
-      background: rgba(6, 16, 36, 0.96);
-      border: 1px solid rgba(30,215,96,0.25);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+      border-radius: 20px;
+      background: rgba(6, 18, 40, 0.55);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgba(30,215,96,0.28);
+      box-shadow:
+        0 8px 40px rgba(0,0,0,0.55),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 0 0 1px rgba(0,0,0,0.18);
       overflow: hidden;
       transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
       padding-bottom: 2px;
@@ -2584,6 +2622,9 @@
 
   <div class="app-container">
     <!-- Title & Subtitle -->
+    <div class="site-logo-ring">
+      <div class="site-logo-inner">📚</div>
+    </div>
     <h1 class="page-title">schoolbooks.lol</h1>
     <p class="page-subtitle">new sites every day · made by 1heo</p>
 
@@ -2787,7 +2828,7 @@
         <span class="music-spotify-wordmark">Spotify</span>
       </div>
       <div class="music-player-actions">
-        <span class="music-player-counter" id="music-counter">1 / 4</span>
+        <span class="music-player-counter" id="music-counter">1 / 54</span>
         <button class="music-wm-btn" id="music-minimize" title="Minimize">
           <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><line x1="1.5" y1="4" x2="6.5" y2="4" stroke="#7a5400" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
