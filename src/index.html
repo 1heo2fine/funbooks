@@ -3072,25 +3072,49 @@
   <script type="module" src="./app.js"></script>
   <script>
     (function() {
-      // Pre-render 120 frames (every 3° hue) once at startup — runtime is just array[i]
-      const STEPS = 120;
-      const frames = [];
-      const c = document.createElement('canvas');
-      c.width = c.height = 16;
-      const x = c.getContext('2d');
-      for (let i = 0; i < STEPS; i++) {
-        x.fillStyle = `hsl(${(i / STEPS) * 360},100%,60%)`;
-        x.fillRect(0, 0, 16, 16);
-        frames.push(c.toDataURL());
+      const S = 32, cx = 16, cy = 16;
+
+      // 1. Draw the rainbow circle once into an offscreen canvas
+      const base = document.createElement('canvas');
+      base.width = base.height = S;
+      const bx = base.getContext('2d');
+      const SECTORS = 120;
+      for (let i = 0; i < SECTORS; i++) {
+        const a0 = (i / SECTORS) * Math.PI * 2;
+        const a1 = ((i + 1) / SECTORS) * Math.PI * 2;
+        bx.beginPath();
+        bx.moveTo(cx, cy);
+        bx.arc(cx, cy, cx, a0, a1);
+        bx.closePath();
+        bx.fillStyle = `hsl(${(i / SECTORS) * 360},100%,55%)`;
+        bx.fill();
       }
+
+      // 2. Pre-render every rotation frame — runtime cost is zero
+      const FRAMES = 90;
+      const buf = document.createElement('canvas');
+      buf.width = buf.height = S;
+      const bctx = buf.getContext('2d');
+      const frames = [];
+      for (let f = 0; f < FRAMES; f++) {
+        bctx.clearRect(0, 0, S, S);
+        bctx.save();
+        bctx.translate(cx, cy);
+        bctx.rotate((f / FRAMES) * Math.PI * 2);
+        bctx.translate(-cx, -cy);
+        bctx.drawImage(base, 0, 0);
+        bctx.restore();
+        frames.push(buf.toDataURL());
+      }
+
+      // 3. At runtime: just swap href from the array — no drawing, no encoding
       const link = document.getElementById('favicon-anim');
       if (!link) return;
       let step = 0, last = 0;
       function tick(ts) {
-        // ~24fps favicon update — smooth fade, no jank
-        if (ts - last >= 42) {
+        if (ts - last >= 16) {
           link.href = frames[step];
-          step = (step + 1) % STEPS;
+          step = (step + 1) % FRAMES;
           last = ts;
         }
         requestAnimationFrame(tick);
