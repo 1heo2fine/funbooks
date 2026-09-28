@@ -128,28 +128,22 @@
       background-repeat: repeat-x;
       background-size: 50% 100%;
       will-change: transform;
+      transform: translateZ(0);
     }
     #ocean-bg .wave1 {
-      bottom: 0; height: 38%;
-      opacity: 0.13;
+      bottom: 0; height: 34%;
+      opacity: 0.11;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 C1320,80 1380,40 1440,60 L1440,120 L0,120 Z' fill='%230ea5e9'/%3E%3C/svg%3E");
-      animation: waveDrift1 12s linear infinite;
+      animation: waveDrift1 18s linear infinite;
     }
     #ocean-bg .wave2 {
-      bottom: 0; height: 30%;
-      opacity: 0.09;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,120 L0,120 Z' fill='%2322d3ee'/%3E%3C/svg%3E");
-      animation: waveDrift2 9s linear infinite;
-    }
-    #ocean-bg .wave3 {
-      bottom: 0; height: 22%;
+      bottom: 0; height: 24%;
       opacity: 0.07;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,70 C180,40 360,90 540,55 C720,20 900,80 1080,50 C1260,20 1380,70 1440,55 L1440,120 L0,120 Z' fill='%2338bdf8'/%3E%3C/svg%3E");
-      animation: waveDrift3 7s linear infinite;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,120 L0,120 Z' fill='%2322d3ee'/%3E%3C/svg%3E");
+      animation: waveDrift2 14s linear infinite;
     }
-    @keyframes waveDrift1 { to { transform: translateX(25%); } }
-    @keyframes waveDrift2 { to { transform: translateX(-25%); } }
-    @keyframes waveDrift3 { to { transform: translateX(20%); } }
+    @keyframes waveDrift1 { to { transform: translateX(25%) translateZ(0); } }
+    @keyframes waveDrift2 { to { transform: translateX(-25%) translateZ(0); } }
     .ocean-surface-glow {
       position: fixed;
       top: -100px; left: 50%;
@@ -338,7 +332,7 @@
 
     .filter-glass-pill {
       position: relative;
-      background: rgba(5, 22, 58, 0.48);
+      background: rgba(5, 22, 60, 0.86);
       border: 1px solid rgba(56, 189, 248, 0.16);
       border-radius: var(--radius-full);
       padding: 9px 18px;
@@ -347,12 +341,10 @@
       letter-spacing: 0.03em;
       color: var(--text-muted);
       cursor: pointer;
-      backdrop-filter: blur(14px) saturate(150%);
-      -webkit-backdrop-filter: blur(14px) saturate(150%);
       box-shadow:
-        inset 0 1px 0 rgba(186, 230, 253, 0.18),
+        inset 0 1px 0 rgba(186, 230, 253, 0.17),
         inset 0 -1px 0 rgba(0, 18, 55, 0.3),
-        0 4px 16px rgba(0, 8, 30, 0.35);
+        0 4px 14px rgba(0, 8, 30, 0.3);
       transition: all 0.25s var(--ease);
       user-select: none;
       display: inline-flex;
@@ -414,19 +406,18 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      background: rgba(5, 20, 55, 0.45);
+      background: rgba(5, 20, 58, 0.84);
       border: 1px solid rgba(56, 189, 248, 0.14);
       border-radius: var(--radius-md);
       padding: 14px 18px;
-      backdrop-filter: blur(12px) saturate(140%);
-      -webkit-backdrop-filter: blur(12px) saturate(140%);
       box-shadow:
-        inset 0 1px 0 rgba(186, 230, 253, 0.16),
+        inset 0 1px 0 rgba(186, 230, 253, 0.15),
         inset 0 -1px 0 rgba(0, 12, 45, 0.3),
-        0 8px 28px rgba(0, 8, 32, 0.45);
+        0 6px 24px rgba(0, 8, 32, 0.4);
       cursor: pointer;
       transition: all 0.25s var(--ease);
       overflow: hidden;
+      will-change: transform;
     }
 
     .link-card::before {
@@ -1828,7 +1819,7 @@
     }
     .game-card {
       position: relative;
-      background: rgba(5, 18, 50, 0.42);
+      background: rgba(5, 18, 52, 0.82);
       border: 1px solid rgba(56, 189, 248, 0.13);
       border-radius: 14px;
       padding: 0 0 8px;
@@ -1841,11 +1832,11 @@
       color: var(--text-main);
       text-align: left;
       overflow: hidden;
-      backdrop-filter: blur(10px) saturate(140%);
-      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      will-change: transform;
+      contain: layout style;
       box-shadow:
-        inset 0 1px 0 rgba(186, 230, 253, 0.14),
-        0 4px 18px rgba(0, 8, 32, 0.5);
+        inset 0 1px 0 rgba(186, 230, 253, 0.13),
+        0 4px 16px rgba(0, 8, 32, 0.45);
     }
     .game-card::before {
       content: "";
@@ -1980,6 +1971,25 @@
     .games-empty {
       grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.3);
       font-size: 0.78rem; padding: 24px 0;
+    }
+    .games-load-more {
+      grid-column: 1 / -1;
+      background: rgba(5, 20, 55, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 11px;
+      cursor: pointer;
+      transition: background .2s, border-color .2s, color .2s;
+      margin-top: 4px;
+    }
+    .games-load-more:hover {
+      background: rgba(10, 36, 90, 0.85);
+      border-color: rgba(125, 211, 252, 0.35);
+      color: var(--text-main);
     }
     .game-card-fav .game-card-icon::after {
       content: '♥'; position: absolute; top: 6px; right: 6px;
@@ -2568,7 +2578,6 @@
   <div id="ocean-bg">
     <div class="wave wave1"></div>
     <div class="wave wave2"></div>
-    <div class="wave wave3"></div>
   </div>
   <div class="ocean-surface-glow"></div>
   <div class="ocean-depth-vignette"></div>
