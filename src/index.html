@@ -60,7 +60,8 @@
   }
   </script>
 
-  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png" id="favicon-anim">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
   <link rel="manifest" href="manifest.json">
@@ -3071,19 +3072,30 @@
   <script type="module" src="./app.js"></script>
   <script>
     (function() {
-      const canvas = document.createElement('canvas');
-      canvas.width = canvas.height = 16;
-      const ctx = canvas.getContext('2d');
-      const link = document.querySelector('link[sizes="32x32"]') || document.querySelector('link[rel="icon"]');
-      let hue = 0;
-      function frame() {
-        ctx.fillStyle = `hsl(${hue},100%,55%)`;
-        ctx.fillRect(0, 0, 16, 16);
-        if (link) link.href = canvas.toDataURL();
-        hue = (hue + 3) % 360;
-        requestAnimationFrame(frame);
+      // Pre-render 120 frames (every 3° hue) once at startup — runtime is just array[i]
+      const STEPS = 120;
+      const frames = [];
+      const c = document.createElement('canvas');
+      c.width = c.height = 16;
+      const x = c.getContext('2d');
+      for (let i = 0; i < STEPS; i++) {
+        x.fillStyle = `hsl(${(i / STEPS) * 360},100%,60%)`;
+        x.fillRect(0, 0, 16, 16);
+        frames.push(c.toDataURL());
       }
-      frame();
+      const link = document.getElementById('favicon-anim');
+      if (!link) return;
+      let step = 0, last = 0;
+      function tick(ts) {
+        // ~24fps favicon update — smooth fade, no jank
+        if (ts - last >= 42) {
+          link.href = frames[step];
+          step = (step + 1) % STEPS;
+          last = ts;
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     })();
   </script>
 </body>
