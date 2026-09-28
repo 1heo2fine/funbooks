@@ -3071,58 +3071,41 @@
   <script type="module" src="./app.js"></script>
   <script>
     (function() {
-      const canvas = document.createElement('canvas');
-      canvas.width = canvas.height = 64;
-      const ctx = canvas.getContext('2d');
-      const link32 = document.querySelector('link[sizes="32x32"]') || document.querySelector('link[rel="icon"]');
-      let angle = 0;
-      function drawFavicon() {
-        ctx.clearRect(0, 0, 64, 64);
-        const cx = 32, cy = 32, r = 32;
-        const grad = ctx.createConicalGradient
-          ? ctx.createConicalGradient(cx, cy, angle)
-          : null;
-        if (grad) {
-          grad.addColorStop(0,     '#ff0000');
-          grad.addColorStop(1/6,   '#ff8800');
-          grad.addColorStop(2/6,   '#ffff00');
-          grad.addColorStop(3/6,   '#00ff88');
-          grad.addColorStop(4/6,   '#00ccff');
-          grad.addColorStop(5/6,   '#cc00ff');
-          grad.addColorStop(1,     '#ff0000');
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, 64, 64);
-        } else {
-          // Fallback: rotate hue on a conic-like linear gradient
-          const h = (angle * 180 / Math.PI) % 360;
-          for (let i = 0; i < 6; i++) {
-            const a0 = angle + (i / 6) * Math.PI * 2;
-            const a1 = angle + ((i + 1) / 6) * Math.PI * 2;
-            const g = ctx.createLinearGradient(
-              cx + Math.cos(a0) * r, cy + Math.sin(a0) * r,
-              cx + Math.cos(a1) * r, cy + Math.sin(a1) * r
-            );
-            g.addColorStop(0, `hsl(${(h + i * 60) % 360},100%,55%)`);
-            g.addColorStop(1, `hsl(${(h + (i+1) * 60) % 360},100%,55%)`);
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.arc(cx, cy, r, a0, a1);
-            ctx.closePath();
-            ctx.fillStyle = g;
-            ctx.fill();
-          }
-        }
-        // Clip to circle
-        ctx.globalCompositeOperation = 'destination-in';
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalCompositeOperation = 'source-over';
-        if (link32) link32.href = canvas.toDataURL('image/png');
-        angle += 0.04;
-        requestAnimationFrame(drawFavicon);
+      const S = 64, cx = 32, cy = 32;
+      // Pre-render the conic rainbow once into an offscreen canvas
+      const src = document.createElement('canvas');
+      src.width = src.height = S;
+      const sctx = src.getContext('2d');
+      const STEPS = 180;
+      for (let i = 0; i < STEPS; i++) {
+        const a0 = (i / STEPS) * Math.PI * 2;
+        const a1 = ((i + 1) / STEPS) * Math.PI * 2;
+        sctx.beginPath();
+        sctx.moveTo(cx, cy);
+        sctx.arc(cx, cy, cx, a0, a1);
+        sctx.closePath();
+        sctx.fillStyle = `hsl(${(i / STEPS) * 360},100%,55%)`;
+        sctx.fill();
       }
-      drawFavicon();
+      // Main canvas that gets written to the favicon
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = S;
+      const ctx = canvas.getContext('2d');
+      const link = document.querySelector('link[sizes="32x32"]') || document.querySelector('link[rel="icon"]');
+      let angle = 0;
+      function frame() {
+        ctx.clearRect(0, 0, S, S);
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+        ctx.translate(-cx, -cy);
+        ctx.drawImage(src, 0, 0);
+        ctx.restore();
+        if (link) link.href = canvas.toDataURL();
+        angle += 0.18;
+        requestAnimationFrame(frame);
+      }
+      frame();
     })();
   </script>
 </body>
