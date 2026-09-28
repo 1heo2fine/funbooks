@@ -68,6 +68,8 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
   let activeGame   = null;
   let boredPool    = null;
   let searchQ      = '';
+  const PAGE_SIZE  = 40;
+  let currentPage  = 0;
 
   // ── Filter logic ────────────────────────────────────────────
   function getFilteredGames() {
@@ -99,15 +101,38 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
     return list;
   }
 
-  function renderGames() {
+  function renderGames(reset = true) {
     const list = getFilteredGames();
-    grid.innerHTML = '';
+    if (reset) {
+      currentPage = 0;
+      grid.innerHTML = '';
+    }
+    // remove any existing load-more sentinel
+    const old = grid.querySelector('.games-load-more');
+    if (old) old.remove();
+
     if (list.length === 0) {
       grid.insertAdjacentHTML('beforeend', '<p class="games-empty">No games found.</p>');
       return;
     }
-    list.forEach(g => { GAMES_REGISTRY[g.id] = () => handleGameClick(g); });
-    list.forEach(g => grid.appendChild(makeCard(g)));
+    const start = currentPage * PAGE_SIZE;
+    const slice = list.slice(start, start + PAGE_SIZE);
+    slice.forEach(g => {
+      GAMES_REGISTRY[g.id] = () => handleGameClick(g);
+      grid.appendChild(makeCard(g));
+    });
+
+    // append load-more button if more remain
+    if (start + PAGE_SIZE < list.length) {
+      const btn = document.createElement('button');
+      btn.className = 'games-load-more';
+      btn.textContent = `Load more (${list.length - start - PAGE_SIZE} left)`;
+      btn.addEventListener('click', () => {
+        currentPage++;
+        renderGames(false);
+      });
+      grid.appendChild(btn);
+    }
   }
 
   function makeCard(g) {
