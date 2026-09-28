@@ -182,40 +182,6 @@
       z-index: 1;
     }
 
-    @keyframes rainbowHue {
-      0%   { filter: hue-rotate(0deg)   drop-shadow(0 0 8px rgba(255,80,80,0.7)); }
-      16%  { filter: hue-rotate(60deg)  drop-shadow(0 0 8px rgba(255,200,0,0.7)); }
-      33%  { filter: hue-rotate(120deg) drop-shadow(0 0 8px rgba(0,220,80,0.7)); }
-      50%  { filter: hue-rotate(180deg) drop-shadow(0 0 8px rgba(0,200,255,0.7)); }
-      66%  { filter: hue-rotate(240deg) drop-shadow(0 0 8px rgba(100,80,255,0.7)); }
-      83%  { filter: hue-rotate(300deg) drop-shadow(0 0 8px rgba(255,0,200,0.7)); }
-      100% { filter: hue-rotate(360deg) drop-shadow(0 0 8px rgba(255,80,80,0.7)); }
-    }
-    .site-logo-ring {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: conic-gradient(
-        #ff0000, #ff8000, #ffff00, #00ff80, #00ffff, #0080ff, #8000ff, #ff00ff, #ff0000
-      );
-      animation: rainbowHue 3s linear infinite;
-      margin: 0 auto 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .site-logo-inner {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: var(--bg, #020910);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      line-height: 1;
-    }
     .page-title {
       font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
       font-size: clamp(2.2rem, 5.5vw, 3.8rem);
@@ -2622,9 +2588,6 @@
 
   <div class="app-container">
     <!-- Title & Subtitle -->
-    <div class="site-logo-ring">
-      <div class="site-logo-inner">📚</div>
-    </div>
     <h1 class="page-title">schoolbooks.lol</h1>
     <p class="page-subtitle">new sites every day · made by 1heo</p>
 
@@ -3106,5 +3069,61 @@
   </div>
 
   <script type="module" src="./app.js"></script>
+  <script>
+    (function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      const link32 = document.querySelector('link[sizes="32x32"]') || document.querySelector('link[rel="icon"]');
+      let angle = 0;
+      function drawFavicon() {
+        ctx.clearRect(0, 0, 64, 64);
+        const cx = 32, cy = 32, r = 32;
+        const grad = ctx.createConicalGradient
+          ? ctx.createConicalGradient(cx, cy, angle)
+          : null;
+        if (grad) {
+          grad.addColorStop(0,     '#ff0000');
+          grad.addColorStop(1/6,   '#ff8800');
+          grad.addColorStop(2/6,   '#ffff00');
+          grad.addColorStop(3/6,   '#00ff88');
+          grad.addColorStop(4/6,   '#00ccff');
+          grad.addColorStop(5/6,   '#cc00ff');
+          grad.addColorStop(1,     '#ff0000');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, 64, 64);
+        } else {
+          // Fallback: rotate hue on a conic-like linear gradient
+          const h = (angle * 180 / Math.PI) % 360;
+          for (let i = 0; i < 6; i++) {
+            const a0 = angle + (i / 6) * Math.PI * 2;
+            const a1 = angle + ((i + 1) / 6) * Math.PI * 2;
+            const g = ctx.createLinearGradient(
+              cx + Math.cos(a0) * r, cy + Math.sin(a0) * r,
+              cx + Math.cos(a1) * r, cy + Math.sin(a1) * r
+            );
+            g.addColorStop(0, `hsl(${(h + i * 60) % 360},100%,55%)`);
+            g.addColorStop(1, `hsl(${(h + (i+1) * 60) % 360},100%,55%)`);
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.arc(cx, cy, r, a0, a1);
+            ctx.closePath();
+            ctx.fillStyle = g;
+            ctx.fill();
+          }
+        }
+        // Clip to circle
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+        if (link32) link32.href = canvas.toDataURL('image/png');
+        angle += 0.04;
+        requestAnimationFrame(drawFavicon);
+      }
+      drawFavicon();
+    })();
+  </script>
 </body>
 </html>
