@@ -28,6 +28,30 @@ function castVote(id, type) {
   return v;
 }
 
+function hashNum(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+function seedVotes() {
+  if (localStorage.getItem('sb_votes_seeded')) return;
+  const popular = new Set(['shs-subway-surfers','shs-cookie-clicker','shs-geometry-dash','shs-retro-bowl','shs-happy-wheels','shs-monkey-mart','shs-stickman-hook','shs-suika','shs-smb','shs-cut-rope','shs-hill-climb','shs-doodle-jump','shs-tetris','shs-territorial','shs-bball-legends','shs-fbwg','shs-snow-rider','shs-basketball-stars','shs-fruit-ninja','shs-crossy-road','shs-subway-surfers-2','shs-drive-mad','shs-worlds-hardest-2','shs-whg2']);
+  const medium = new Set(['shs-2048','shs-wordle','shs-adcap','shs-baldi','shs-dogeminer','shs-doodle-god','shs-knife-hit','shs-lose95','shs-dogeminer2','shs-boxing2','shs-bison','shs-chrome-dino','shs-maze','shs-drift','shs-tunnel-rush','shs-breaklock','shs-head-soccer','shs-stick-duel','shs-aquapark','shs-sticky-road']);
+  GAME_LIST.forEach(g => {
+    if (localStorage.getItem(VOTE_PREFIX + g.id)) return;
+    let base;
+    if (popular.has(g.id)) base = 200 + Math.floor(hashNum(g.id) % 800);
+    else if (medium.has(g.id)) base = 50 + Math.floor(hashNum(g.id) % 200);
+    else base = 5 + Math.floor(hashNum(g.id) % 60);
+    const dislikes = Math.floor(base * (0.04 + (hashNum(g.id + 'd') % 18) / 100));
+    saveVotes(g.id, { l: base, d: dislikes, v: null });
+  });
+  localStorage.setItem('sb_votes_seeded', '1');
+}
+
+seedVotes();
+
 // ── Similar games ────────────────────────────────────────────────────────
 function getSimilarGames(g, count = 8) {
   const others = GAME_LIST.filter(x => x.id !== g.id && !x.embedPath?.startsWith('app:'));
@@ -126,7 +150,7 @@ export function initMainGamesGrid(GAMES_REGISTRY) {
     if (start + PAGE_SIZE < list.length) {
       const btn = document.createElement('button');
       btn.className = 'games-load-more';
-      btn.textContent = `Load more (${list.length - start - PAGE_SIZE} left)`;
+      btn.textContent = 'Load more';
       btn.addEventListener('click', () => {
         currentPage++;
         renderGames(false);

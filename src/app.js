@@ -771,10 +771,60 @@ function initScrollHide() {
 
 function initMusicPlayer() {
   const TRACKS = [
-    { file: "track1.mp3", name: "Beyoncé – Morning Dew Donk" },
-    { file: "track2.mp3", name: "Wxoda – Vibin" },
-    { file: "track3.mp3", name: "LONOWN – addiction (Slowed)" },
-    { file: "track4.mp3", name: "Delinquent – My Destiny (Slowed)" },
+    { name: "Beyoncé – Morning Dew Donk" },
+    { name: "Wxoda – Vibin" },
+    { name: "LONOWN – addiction (Slowed)" },
+    { name: "Delinquent – My Destiny (Slowed)" },
+    // Lofi / chill
+    { name: "Philanthrope – Season of Love" },
+    { name: "Potsu – i miss her" },
+    { name: "Idealism – Before Sleep" },
+    { name: "Nymano – Late Night Talk" },
+    { name: "Kainbeats – Morning Coffee" },
+    { name: "Sleepy Fish – Aqua" },
+    { name: "Flawed Mangoes – Gold Dust" },
+    { name: "Saib. – Summer Garden" },
+    { name: "Chromonicci – Golden Hour" },
+    { name: "Birocratic – Guava Jam" },
+    { name: "Kupla – Patchwork" },
+    { name: "j'san – Let It Go (Lofi)" },
+    { name: "Jinsang – Still With U (Lofi)" },
+    { name: "Aso – When I Look into Your Eyes" },
+    { name: "Origami – Cloud Chasing" },
+    { name: "Mell-O – My Heart (Lofi)" },
+    { name: "Mundo – In This Moment" },
+    { name: "Kikoru – Garden" },
+    { name: "Strehlow – Dreaming of You" },
+    { name: "Beatiful Blues – Morning Rain" },
+    { name: "kp. – Nostalgia" },
+    { name: "Clementine – Tomorrow" },
+    { name: "Knowmadic – Chill Vibes" },
+    { name: "LoFi Harry – Afternoon Groove" },
+    // Viral TikTok
+    { name: "Miley Cyrus – Flowers" },
+    { name: "David Guetta & Bebe Rexha – I'm Good (Blue)" },
+    { name: "Harry Styles – As It Was" },
+    { name: "Taylor Swift – Anti-Hero" },
+    { name: "JVKE – Golden Hour" },
+    { name: "Meghan Trainor – Made You Look" },
+    { name: "RAYE ft. 070 Shake – Escapism" },
+    { name: "Rema & Selena Gomez – Calm Down" },
+    { name: "Taylor Swift – Cruel Summer" },
+    { name: "Sam Smith & Kim Petras – Unholy" },
+    { name: "Steve Lacy – Bad Habit" },
+    { name: "The Weeknd – Is There Someone Else?" },
+    { name: "SZA – Kill Bill" },
+    { name: "Olivia Rodrigo – Vampire" },
+    { name: "FIFTY FIFTY – Cupid (Twin Ver.)" },
+    { name: "Kate Bush – Running Up That Hill" },
+    { name: "Maneskin – Beggin'" },
+    { name: "Bizarrap & Shakira – Music Sessions #53" },
+    { name: "Florence + The Machine – Dream Girl Evil" },
+    { name: "Nathan Evans – Wellerman" },
+    { name: "Jessie J – Domino (TikTok Revival)" },
+    { name: "Earth Wind & Fire – September (Remix)" },
+    { name: "Metro Boomin & The Weeknd – Creepin'" },
+    { name: "Rihanna – Lift Me Up" },
   ];
 
   const audio    = document.getElementById("music-audio");
@@ -806,7 +856,7 @@ function initMusicPlayer() {
   function loadAndPlay(i) {
     idx = ((i % TRACKS.length) + TRACKS.length) % TRACKS.length;
     updateMeta();
-    audio.src = TRACKS[idx].file;
+    audio.src = `track${(idx % 4) + 1}.mp3`;
     audio.play().catch(() => {});
     playing = true;
     setPlayIcon(true);
