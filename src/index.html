@@ -3071,38 +3071,16 @@
   <script type="module" src="./app.js"></script>
   <script>
     (function() {
-      const S = 64, cx = 32, cy = 32;
-      // Pre-render the conic rainbow once into an offscreen canvas
-      const src = document.createElement('canvas');
-      src.width = src.height = S;
-      const sctx = src.getContext('2d');
-      const STEPS = 180;
-      for (let i = 0; i < STEPS; i++) {
-        const a0 = (i / STEPS) * Math.PI * 2;
-        const a1 = ((i + 1) / STEPS) * Math.PI * 2;
-        sctx.beginPath();
-        sctx.moveTo(cx, cy);
-        sctx.arc(cx, cy, cx, a0, a1);
-        sctx.closePath();
-        sctx.fillStyle = `hsl(${(i / STEPS) * 360},100%,55%)`;
-        sctx.fill();
-      }
-      // Main canvas that gets written to the favicon
       const canvas = document.createElement('canvas');
-      canvas.width = canvas.height = S;
+      canvas.width = canvas.height = 16;
       const ctx = canvas.getContext('2d');
       const link = document.querySelector('link[sizes="32x32"]') || document.querySelector('link[rel="icon"]');
-      let angle = 0;
+      let hue = 0;
       function frame() {
-        ctx.clearRect(0, 0, S, S);
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate(angle);
-        ctx.translate(-cx, -cy);
-        ctx.drawImage(src, 0, 0);
-        ctx.restore();
+        ctx.fillStyle = `hsl(${hue},100%,55%)`;
+        ctx.fillRect(0, 0, 16, 16);
         if (link) link.href = canvas.toDataURL();
-        angle += 0.18;
+        hue = (hue + 3) % 360;
         requestAnimationFrame(frame);
       }
       frame();
